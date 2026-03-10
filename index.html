@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ЦИТАДЕЛЬ РЕШЕНИЙ - ИГРА</title>
+    <title>ЦИТАДЕЛЬ РЕШЕНИЙ - ПОЛНАЯ ВЕРСИЯ</title>
     <style>
         * {
             margin: 0;
@@ -53,7 +53,6 @@
             margin-top: 5px;
         }
         
-        /* ЭКРАН СТАРТА */
         .start-screen {
             text-align: center;
             padding: 60px 20px;
@@ -94,7 +93,6 @@
             box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 80px #ffaa00;
         }
         
-        /* ДАШБОРД */
         .dashboard {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -151,7 +149,6 @@
             color: #f5e6b3;
         }
         
-        /* ОБЛАСТЬ С ПЕРСОНАЖЕМ */
         .character-area {
             display: flex;
             gap: 20px;
@@ -192,7 +189,6 @@
             margin-top: 10px;
         }
         
-        /* ЛОКАЦИЯ */
         .location-indicator {
             display: flex;
             align-items: center;
@@ -228,7 +224,6 @@
             font-weight: bold;
         }
         
-        /* ЗАДАНИЕ */
         .quest-container {
             background: linear-gradient(145deg, #2a3a4a 0%, #1a2a3a 100%);
             border-radius: 20px;
@@ -265,7 +260,6 @@
             text-align: center;
         }
         
-        /* КНОПКИ ВЫБОРА */
         .choices-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -326,7 +320,6 @@
             border-radius: 5px;
         }
         
-        /* ОБРАТНАЯ СВЯЗЬ */
         .feedback-area {
             min-height: 70px;
             background: rgba(0, 0, 0, 0.6);
@@ -338,7 +331,6 @@
             color: #f0e6d2;
         }
         
-        /* КНОПКА ДАЛЕЕ */
         .next-btn {
             background: linear-gradient(145deg, #d4af37 0%, #b8860b 100%);
             color: #1a1a2e;
@@ -363,7 +355,6 @@
             display: none;
         }
         
-        /* ФИНАЛЬНЫЙ ЭКРАН */
         .ending-screen {
             text-align: center;
             padding: 40px;
@@ -410,13 +401,10 @@
 </head>
 <body>
     <div class="game-wrapper" id="gameWrapper">
-        <!-- ШАПКА -->
         <div class="game-header">
             <h1>ЦИТАДЕЛЬ РЕШЕНИЙ</h1>
             <p>Хроники молодого правителя</p>
         </div>
-        
-        <!-- КОНТЕЙНЕР ДЛЯ ДИНАМИЧЕСКОГО КОНТЕНТА -->
         <div id="gameContent"></div>
     </div>
 
@@ -438,17 +426,21 @@
             locations: [
                 "Тронный зал", "Городские ворота", "Торговая площадь", 
                 "Библиотека", "Казармы", "Порт", "Храм", 
-                "Университет", "Крепостная стена", "Замковый холм"
+                "Университет", "Крепостная стена", "Королевский совет"
             ],
             
             elderSpeech: [
-                "Приветствую тебя, молодой правитель! Я - старейшина Аристарх.",
-                "Наш город на грани гибели. Три ресурса должны быть в балансе: Экономика, Наука и Армия.",
-                "Перед тобой 10 испытаний. В каждом тексте есть ошибки. Выбирай мудро!",
-                "Смотри на модификаторы под кнопками - они покажут цену выбора.",
-                "Да пребудет с тобой мудрость! Начнем первое испытание."
+                "Приветствую тебя, молодой правитель! Я - старейшина Аристарх, хранитель знаний этого города.",
+                "Наш великий город на грани гибели. Казна пуста, армия деморализована, библиотеки сожжены.",
+                "У нас осталось 10 дней, чтобы принять судьбоносные решения. Каждый твой выбор будет влиять на три ресурса: Экономику, Науку и Армию.",
+                "Смотри внимательно на модификаторы под кнопками. Например: Экономика +5, Наука -10. Это цена твоего решения.",
+                "Если ресурс упадет до 0 - город погибнет. Если поднимешь до 100 - получишь силу. Выбирай мудро!",
+                "А теперь... Город ждет своего Правителя! Да пребудет с тобой мудрость предков!"
             ],
             
+            // ==========================================
+            // 10 ЗАДАНИЙ ПО РУССКОМУ ЯЗЫКУ
+            // ==========================================
             events: [
                 {
                     location: 0,
@@ -459,38 +451,301 @@
                         {
                             icon: "📝",
                             title: "Исправить ошибки",
+                            desc: "Найди ошибки в словах",
                             modifiers: { economy: 5, science: 10, army: -5 },
-                            feedback: "Ты нашел ошибку: «центральнай» → «центральной»"
+                            feedback: "Правильно: «центральнай» → «центральной». Ошибка в окончании прилагательного!"
                         },
                         {
                             icon: "🤷",
                             title: "Оставить как есть",
+                            desc: "Не тратить время",
                             modifiers: { economy: -5, science: -5, army: 10 },
-                            feedback: "Народ посмеялся над безграмотным указом"
+                            feedback: "Народ посмеялся над безграмотным указом. Твой авторитет упал."
                         },
                         {
                             icon: "⚔️",
                             title: "Казнить писаря",
+                            desc: "Жестокое наказание",
                             modifiers: { economy: -10, science: 5, army: 15 },
-                            feedback: "Все боятся ошибаться. Но казна пустеет..."
+                            feedback: "Все боятся ошибаться. Но казна потрачена на палача..."
+                        }
+                    ]
+                },
+                {
+                    location: 1,
+                    title: "Послание союзникам",
+                    quest: "Нужно отправить важное письмо соседнему королю. От грамотности зависит, поймут ли нас правильно.",
+                    errorText: "«Уважаемый король! Предлогаем заключить мирный договор. Наши армии могуг стать союзниками.»",
+                    choices: [
+                        {
+                            icon: "✏️",
+                            title: "Исправить 'предлогаем'",
+                            desc: "Ошибка в корне",
+                            modifiers: { economy: -10, science: 20, army: 0 },
+                            feedback: "Правильно: ПРЕДЛАГАЕМ (корень -лаг-/-лож-: перед Г пишем А)"
+                        },
+                        {
+                            icon: "🔤",
+                            title: "Исправить 'могуг'",
+                            desc: "Ошибка в окончании",
+                            modifiers: { economy: -5, science: 15, army: -5 },
+                            feedback: "Правильно: МОГУТ (3 лицо, мн.ч., I спряжение)"
+                        },
+                        {
+                            icon: "📨",
+                            title: "Отправить как есть",
+                            desc: "Пусть читают как хотят",
+                            modifiers: { economy: 10, science: -15, army: -5 },
+                            feedback: "Король обиделся на безграмотность. Отношения испорчены."
+                        }
+                    ]
+                },
+                {
+                    location: 2,
+                    title: "Донесение разведчиков",
+                    quest: "Разведчики принесли шифровку. Но в ней ошибки, из-за которых можно неправильно понять врага.",
+                    errorText: "«Враг собираеться напасть на рассвете. У них около тысячи салдат и много конницы.»",
+                    choices: [
+                        {
+                            icon: "🔍",
+                            title: "Исправить 'собираеться'",
+                            desc: "Ошибка в -тся/-ться",
+                            modifiers: { economy: -5, science: 10, army: 5 },
+                            feedback: "Правильно: СОБИРАЕТСЯ (что делает? без мягкого знака)"
+                        },
+                        {
+                            icon: "🛡️",
+                            title: "Исправить 'салдат'",
+                            desc: "Словарное слово",
+                            modifiers: { economy: -10, science: 5, army: 15 },
+                            feedback: "Правильно: СОЛДАТ (запомнить, проверочного нет)"
+                        },
+                        {
+                            icon: "🔮",
+                            title: "Исправить оба слова",
+                            desc: "Полная проверка",
+                            modifiers: { economy: -20, science: 20, army: 10 },
+                            feedback: "Идеально! Обе ошибки исправлены. Враг будет разбит."
+                        }
+                    ]
+                },
+                {
+                    location: 3,
+                    title: "Налоговая реформа",
+                    quest: "Казначей предлагает новый указ о налогах. Но есть сомнения в его грамотности.",
+                    errorText: "«Каждый горожанин обязан уплатить налог до пятнадцатого декабря. Неуплата грозит штраффом или тюрьмой.»",
+                    choices: [
+                        {
+                            icon: "💰",
+                            title: "Утвердить указ",
+                            desc: "Сэкономить время",
+                            modifiers: { economy: 15, science: -15, army: -5 },
+                            feedback: "Ошибка: «штраффом» → «штрафом». Народ не понял налог."
+                        },
+                        {
+                            icon: "✒️",
+                            title: "Исправить 'штраффом'",
+                            desc: "Двойная буква Ф",
+                            modifiers: { economy: -5, science: 15, army: -5 },
+                            feedback: "Правильно: ШТРАФОМ (одна Ф, словарное слово)"
+                        },
+                        {
+                            icon: "📜",
+                            title: "Переписать полностью",
+                            desc: "Полная проверка",
+                            modifiers: { economy: -15, science: 20, army: 5 },
+                            feedback: "Идеальный указ. Налоги собраны полностью."
+                        }
+                    ]
+                },
+                {
+                    location: 4,
+                    title: "Летопись города",
+                    quest: "Летописец закончил новую главу истории города. Но допустил ошибки в датах и событиях.",
+                    errorText: "«В тысяча восьмисотом году город основал князь Олег. С тех пор прошло много лет, город рос и развивался.»",
+                    choices: [
+                        {
+                            icon: "📖",
+                            title: "Оставить как есть",
+                            desc: "История не главное",
+                            modifiers: { economy: 5, science: -20, army: 5 },
+                            feedback: "Ошибка: князь Олег жил в IX-X веках, а не в 1800 году!"
+                        },
+                        {
+                            icon: "🔎",
+                            title: "Исправить дату",
+                            desc: "Найди ошибку",
+                            modifiers: { economy: -5, science: 15, army: -5 },
+                            feedback: "Ты нашел фактическую ошибку! Олег не мог жить в 1800 году."
+                        },
+                        {
+                            icon: "🏛️",
+                            title: "Проверить все",
+                            desc: "Полная экспертиза",
+                            modifiers: { economy: -10, science: 25, army: -10 },
+                            feedback: "Летопись восстановлена. История сохранится в веках."
+                        }
+                    ]
+                },
+                {
+                    location: 5,
+                    title: "Торговый договор",
+                    quest: "Купцы принесли договор. От его правильного понимания зависит экономика города.",
+                    errorText: "«Продавец обязуется передать товар, а покупатель обязуется принять товар и уплатить за него цену в течении трех дней.»",
+                    choices: [
+                        {
+                            icon: "🤝",
+                            title: "Подписать быстро",
+                            desc: "Главное — сделка",
+                            modifiers: { economy: 20, science: -15, army: -5 },
+                            feedback: "Ошибка: «в течении» → «в течение» (предлог времени)"
+                        },
+                        {
+                            icon: "⚖️",
+                            title: "Исправить предлог",
+                            desc: "Найди ошибку",
+                            modifiers: { economy: -5, science: 15, army: 0 },
+                            feedback: "Правильно: В ТЕЧЕНИЕ трех дней (предлог времени)"
+                        },
+                        {
+                            icon: "👨‍⚖️",
+                            title: "К юристам",
+                            desc: "Полная проверка",
+                            modifiers: { economy: -15, science: 20, army: -5 },
+                            feedback: "Договор идеален. Торговля процветает."
+                        }
+                    ]
+                },
+                {
+                    location: 6,
+                    title: "Речь перед народом",
+                    quest: "Твоя речь перед горожанами. Нужно говорить грамотно, чтобы тебя уважали.",
+                    errorText: "«Дорогие сограждане! Мы построим великий город. Никто не сможет нас побеить, потому что мы едины!»",
+                    choices: [
+                        {
+                            icon: "🗣️",
+                            title: "Сказать как есть",
+                            desc: "Искренность важнее",
+                            modifiers: { economy: -10, science: -10, army: 15 },
+                            feedback: "Ошибка: «побеить» → «победить»"
+                        },
+                        {
+                            icon: "🎭",
+                            title: "Исправить глагол",
+                            desc: "Найди ошибку",
+                            modifiers: { economy: 0, science: 15, army: 5 },
+                            feedback: "Правильно: ПОБЕДИТЬ (словарное слово)"
+                        },
+                        {
+                            icon: "📜",
+                            title: "Написать с учеными",
+                            desc: "Идеальная речь",
+                            modifiers: { economy: -10, science: 20, army: 10 },
+                            feedback: "Речь великолепна! Народ рукоплещет."
+                        }
+                    ]
+                },
+                {
+                    location: 7,
+                    title: "Письмо от союзников",
+                    quest: "Пришло письмо от союзников. Но оно на плохом русском. Может, это ловушка?",
+                    errorText: "«Дорогие друзя! Предлогаем вам союз против общего врага. Ждем ответа с гонцом.»",
+                    choices: [
+                        {
+                            icon: "🤝",
+                            title: "Ответить согласием",
+                            desc: "Неважно как написано",
+                            modifiers: { economy: 10, science: -20, army: 15 },
+                            feedback: "Это были мошенники! Ты попал в ловушку."
+                        },
+                        {
+                            icon: "✉️",
+                            title: "Исправить ошибки",
+                            desc: "Ответить грамотно",
+                            modifiers: { economy: -5, science: 15, army: -5 },
+                            feedback: "Правильно: «друзя» → «друзья»"
+                        },
+                        {
+                            icon: "🕵️",
+                            title: "Заподозрить обман",
+                            desc: "Проверить",
+                            modifiers: { economy: -15, science: 10, army: 20 },
+                            feedback: "Ты раскрыл шпионов! Враги обезврежены."
+                        }
+                    ]
+                },
+                {
+                    location: 8,
+                    title: "Завещание мудреца",
+                    quest: "Умирающий мудрец диктует завещание. Но он стар и делает ошибки.",
+                    errorText: "«Свою библиотеку завещаю городу. Ключь от сундука с книгами спрятан в тайнике.»",
+                    choices: [
+                        {
+                            icon: "😢",
+                            title: "Записать дословно",
+                            desc: "Уважение к старцу",
+                            modifiers: { economy: -5, science: -10, army: 5 },
+                            feedback: "Ошибка: «ключь» → «ключ» (мужской род, без Ь)"
+                        },
+                        {
+                            icon: "🔑",
+                            title: "Исправить 'ключь'",
+                            desc: "Мягкий знак",
+                            modifiers: { economy: 0, science: 15, army: 0 },
+                            feedback: "Правильно: КЛЮЧ (мужской род, 2 склонение - без Ь)"
+                        },
+                        {
+                            icon: "📚",
+                            title: "Проверить тайник",
+                            desc: "Найти книги",
+                            modifiers: { economy: -10, science: 20, army: -5 },
+                            feedback: "Ты нашел и ошибку, и тайник. Библиотека спасена!"
+                        }
+                    ]
+                },
+                {
+                    location: 9,
+                    title: "Финальное воззвание",
+                    quest: "Город в опасности. Твое последнее слово решит судьбу. Скажи его без ошибок!",
+                    errorText: "«Кто с мечем к нам придет, тот от меча и погибнет!»",
+                    choices: [
+                        {
+                            icon: "⚔️",
+                            title: "Сказать эту фразу",
+                            desc: "Классика",
+                            modifiers: { economy: -5, science: -10, army: 20 },
+                            feedback: "Ошибка: «с мечем» → «с мечом» (творительный падеж)"
+                        },
+                        {
+                            icon: "📖",
+                            title: "Исправить 'мечем'",
+                            desc: "Найди ошибку",
+                            modifiers: { economy: -5, science: 15, army: 10 },
+                            feedback: "Правильно: С МЕЧОМ (окончание -ом в творительном падеже)"
+                        },
+                        {
+                            icon: "🎭",
+                            title: "Своя речь",
+                            desc: "Творческий подход",
+                            modifiers: { economy: 10, science: 20, army: -5 },
+                            feedback: "Твоя речь войдет в историю! Ты великий оратор."
                         }
                     ]
                 }
-                // Здесь можно добавить остальные 9 событий по аналогии
             ]
         };
         
         // ==========================================
-        // ФУНКЦИИ ОТОБРАЖЕНИЯ
+        // ФУНКЦИИ ИГРЫ
         // ==========================================
         
-        // ПОКАЗАТЬ СТАРТОВЫЙ ЭКРАН
         function showStartScreen() {
             const content = document.getElementById('gameContent');
             content.innerHTML = `
                 <div class="start-screen">
                     <h2>👑 Добро пожаловать, Правитель!</h2>
                     <p>Старый князь мертв. Город в руинах.<br>
+                    Казна пуста, армия деморализована, библиотеки сожжены.<br>
                     Ты - последний наследник древнего рода.<br>
                     10 испытаний ждут тебя. Сможешь ли ты спасти Цитадель?</p>
                     <button class="start-btn" onclick="startGame()">СТАТЬ ПРАВИТЕЛЕМ</button>
@@ -498,13 +753,11 @@
             `;
         }
         
-        // НАЧАТЬ ИГРУ (ПОКАЗАТЬ СТАРЕЙШИНУ)
         function startGame() {
             GAME.gameStarted = true;
             showElderIntroduction();
         }
         
-        // ПОКАЗАТЬ ДИАЛОГ СО СТАРЕЙШИНОЙ
         function showElderIntroduction() {
             let elderIndex = 0;
             
@@ -512,14 +765,14 @@
                 if (elderIndex < GAME.elderSpeech.length) {
                     const content = document.getElementById('gameContent');
                     content.innerHTML = `
-                        <div class="character-area" style="min-height: 300px; justify-content: center; align-items: center;">
+                        <div class="character-area" style="min-height: 400px; justify-content: center; align-items: center;">
                             <div class="character-portrait">🧙</div>
                             <div class="character-info">
                                 <div class="character-name">Старейшина Аристарх</div>
-                                <div class="character-speech">${GAME.elderSpeech[elderIndex]}</div>
+                                <div class="character-speech" style="font-size: 1.2rem;">${GAME.elderSpeech[elderIndex]}</div>
                                 ${elderIndex < GAME.elderSpeech.length - 1 ? 
                                     '<button class="next-btn" style="margin-top: 20px;" onclick="showNextSpeech()">Далее →</button>' : 
-                                    '<button class="next-btn" style="margin-top: 20px;" onclick="showFirstQuest()">Начать испытание →</button>'}
+                                    '<button class="next-btn" style="margin-top: 20px;" onclick="showFirstQuest()">Начать правление →</button>'}
                             </div>
                         </div>
                     `;
@@ -530,13 +783,11 @@
             showNextSpeech();
         }
         
-        // ПОКАЗАТЬ ПЕРВОЕ ЗАДАНИЕ
         function showFirstQuest() {
             GAME.currentEvent = 0;
             renderQuest();
         }
         
-        // ОТОБРАЗИТЬ ТЕКУЩЕЕ ЗАДАНИЕ
         function renderQuest() {
             const event = GAME.events[GAME.currentEvent];
             if (!event) {
@@ -546,7 +797,6 @@
             
             const content = document.getElementById('gameContent');
             
-            // Создаем модификаторы для кнопок
             const choicesHTML = event.choices.map((choice, index) => {
                 const mods = [];
                 if (choice.modifiers.economy !== 0) {
@@ -604,7 +854,7 @@
                 <div class="character-area">
                     <div class="character-portrait">👑</div>
                     <div class="character-info">
-                        <div class="character-name">${GAME.character.name}</div>
+                        <div class="character-name">${GAME.character.name} ${GAME.character.title}</div>
                         <div class="character-speech" id="characterSpeech">${GAME.character.speech}</div>
                     </div>
                 </div>
@@ -627,33 +877,27 @@
                     <div class="quest-text">${event.quest}</div>
                     <div class="error-text">${event.errorText}</div>
                     
-                    <!-- КНОПКИ ВЫБОРА -->
                     <div class="choices-grid">
                         ${choicesHTML}
                     </div>
                     
-                    <!-- ОБРАТНАЯ СВЯЗЬ -->
                     <div class="feedback-area" id="feedback">
                         Выбери вариант решения...
                     </div>
                     
-                    <!-- КНОПКА ДАЛЕЕ (скрыта, пока не сделан выбор) -->
                     <button class="next-btn hidden" id="nextBtn" onclick="nextQuest()">ПРОДОЛЖИТЬ ПУТЬ →</button>
                 </div>
             `;
         }
         
-        // СДЕЛАТЬ ВЫБОР
         function makeChoice(choiceIndex) {
             const event = GAME.events[GAME.currentEvent];
             const choice = event.choices[choiceIndex];
             
-            // Применяем изменения к ресурсам
             GAME.resources.economy = Math.min(100, Math.max(0, GAME.resources.economy + choice.modifiers.economy));
             GAME.resources.science = Math.min(100, Math.max(0, GAME.resources.science + choice.modifiers.science));
             GAME.resources.army = Math.min(100, Math.max(0, GAME.resources.army + choice.modifiers.army));
             
-            // Обновляем отображение ресурсов
             document.getElementById('ecoFill').style.width = GAME.resources.economy + '%';
             document.getElementById('sciFill').style.width = GAME.resources.science + '%';
             document.getElementById('armFill').style.width = GAME.resources.army + '%';
@@ -661,7 +905,6 @@
             document.getElementById('sciValue').innerText = GAME.resources.science;
             document.getElementById('armValue').innerText = GAME.resources.army;
             
-            // Показываем обратную связь
             document.getElementById('feedback').innerHTML = `
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <span style="font-size: 2rem;">${choice.icon}</span>
@@ -669,20 +912,15 @@
                 </div>
             `;
             
-            // Обновляем речь персонажа
             document.getElementById('characterSpeech').innerText = `Я выбрал: ${choice.title}`;
-            
-            // Показываем кнопку "Далее"
             document.getElementById('nextBtn').classList.remove('hidden');
             
-            // Блокируем кнопки выбора (чтобы нельзя было нажать дважды)
             document.querySelectorAll('.choice-card').forEach(btn => {
                 btn.style.pointerEvents = 'none';
                 btn.style.opacity = '0.7';
             });
         }
         
-        // ПЕРЕЙТИ К СЛЕДУЮЩЕМУ ЗАДАНИЮ
         function nextQuest() {
             GAME.currentEvent++;
             
@@ -693,9 +931,7 @@
             }
         }
         
-        // ПОКАЗАТЬ ФИНАЛ
         function showEnding() {
-            // Определяем концовку
             let endingType = 'economy';
             if (GAME.resources.science > GAME.resources.economy && GAME.resources.science >= GAME.resources.army) {
                 endingType = 'science';
@@ -706,17 +942,17 @@
             const endings = {
                 economy: {
                     title: '💰 ЭКОНОМИСТ',
-                    text: 'Ты построил торговую империю! Корабли со всего мира прибывают в твой порт. Город утопает в золоте и роскоши.',
+                    text: 'Ты построил торговую империю! Корабли со всего мира прибывают в твой порт. Город утопает в золоте и роскоши. Купцы называют тебя самым мудрым правителем в истории!',
                     emoji: '🏭'
                 },
                 science: {
                     title: '📚 УЧЕНЫЙ',
-                    text: 'Великая академия магии открыта! Ученые со всего света едут к тебе. Знания стали главной силой города.',
+                    text: 'Великая академия магии открыта! Ученые со всего света едут к тебе. Знания стали главной силой города. Ты раскрыл тайны древних и подарил людям бессмертие!',
                     emoji: '🔮'
                 },
                 army: {
                     title: '⚔️ ВОИН',
-                    text: 'Враг разбит! Твоя армия непобедима. Никто не посмеет угрожать Цитадели. Слава Императору!',
+                    text: 'Враг разбит! Твоя армия непобедима. Никто не посмеет угрожать Цитадели. Ты создал самую мощную империю в мире! Слава Императору!',
                     emoji: '🏰'
                 }
             };
@@ -728,14 +964,13 @@
                 <div class="ending-screen">
                     <h2>${ending.emoji} ${ending.title} ${ending.emoji}</h2>
                     <p>${ending.text}</p>
-                    <p style="font-size: 1.5rem; color: #d4af37;">Итоговые ресурсы:</p>
-                    <p>💰 Экономика: ${GAME.resources.economy} | 📚 Наука: ${GAME.resources.science} | ⚔️ Армия: ${GAME.resources.army}</p>
+                    <p style="font-size: 1.5rem; color: #d4af37; margin: 20px 0;">Итоговые ресурсы:</p>
+                    <p style="font-size: 1.3rem;">💰 Экономика: ${GAME.resources.economy} | 📚 Наука: ${GAME.resources.science} | ⚔️ Армия: ${GAME.resources.army}</p>
                     <button class="restart-btn" onclick="restartGame()">СЫГРАТЬ ЗАНОВО</button>
                 </div>
             `;
         }
         
-        // ПЕРЕЗАПУСК ИГРЫ
         function restartGame() {
             GAME.resources = { economy: 50, science: 50, army: 50 };
             GAME.currentEvent = 0;
@@ -743,7 +978,6 @@
             showStartScreen();
         }
         
-        // ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ
         window.onload = function() {
             showStartScreen();
         };
