@@ -3,382 +3,339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ЦИТАДЕЛЬ РЕШЕНИЙ - ПОЛНАЯ ВЕРСИЯ</title>
+    <title>ЦИТАДЕЛЬ РЕШЕНИЙ</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', 'MedievalSharp', cursive, Arial;
+            font-family: 'Segoe UI', Arial, sans-serif;
         }
         
         body {
-            background: #0a0c14;
+            background: #1a1a2e;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 10px;
-        }
-        
-        .game-wrapper {
-            width: 1200px;
-            max-width: 100%;
-            background: linear-gradient(145deg, #1e2a3a 0%, #0f1a24 100%);
-            border-radius: 30px;
             padding: 20px;
-            box-shadow: 0 25px 50px -8px rgba(0,0,0,0.8), inset 0 2px 5px rgba(255,215,0,0.2);
-            border: 2px solid #aa8c5e;
-            position: relative;
         }
         
-        .game-header {
+        .game-container {
+            max-width: 1000px;
+            width: 100%;
+            background: #16213e;
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid gold;
+        }
+        
+        h1 {
             text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .game-header h1 {
+            color: gold;
             font-size: 3rem;
-            background: linear-gradient(180deg, #f5e6b3 0%, #d4af37 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 5px 15px rgba(0,0,0,0.7), 0 0 20px #ffd700;
-            letter-spacing: 4px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px gold;
         }
         
-        .game-header p {
-            color: #b8a07c;
-            font-style: italic;
-            letter-spacing: 2px;
-            margin-top: 5px;
-        }
-        
+        /* СТАРТОВЫЙ ЭКРАН */
         .start-screen {
             text-align: center;
-            padding: 60px 20px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 20px;
-            border: 2px solid #d4af37;
+            padding: 50px 20px;
+            background: #0f3460;
+            border-radius: 15px;
+            border: 2px solid gold;
         }
         
         .start-screen h2 {
-            font-size: 2.5rem;
-            color: #d4af37;
+            color: gold;
+            font-size: 2rem;
             margin-bottom: 20px;
         }
         
         .start-screen p {
-            font-size: 1.3rem;
-            color: #f0e6d2;
-            margin-bottom: 40px;
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
             line-height: 1.8;
         }
         
         .start-btn {
-            background: linear-gradient(145deg, #d4af37 0%, #b8860b 100%);
+            background: gold;
             color: #1a1a2e;
             border: none;
-            padding: 20px 60px;
-            font-size: 1.8rem;
+            padding: 20px 50px;
+            font-size: 2rem;
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
-            border: 2px solid #f5e6b3;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 50px #ffd700;
-            transition: all 0.3s;
+            transition: 0.3s;
+            border: 2px solid white;
         }
         
         .start-btn:hover {
             transform: scale(1.1);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 80px #ffaa00;
+            box-shadow: 0 0 30px gold;
         }
         
+        /* ДАШБОРД */
         .dashboard {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-bottom: 30px;
-            background: rgba(0, 0, 0, 0.5);
+            background: #0f3460;
             padding: 20px;
-            border-radius: 20px;
-            border: 2px solid #5a4a3a;
-        }
-        
-        .resource-card {
-            background: linear-gradient(145deg, #2a3745 0%, #1a2530 100%);
             border-radius: 15px;
-            padding: 15px;
-            border: 1px solid #aa8c5e;
+            border: 2px solid gold;
         }
         
-        .resource-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .resource {
+            text-align: center;
+        }
+        
+        .resource h3 {
+            color: gold;
             font-size: 1.5rem;
-            color: #f5e6b3;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #5a4a3a;
-            padding-bottom: 10px;
+            margin-bottom: 10px;
         }
         
-        .progress-container {
+        .progress-bar {
             width: 100%;
             height: 25px;
-            background: #1a1f2a;
+            background: #1a1a2e;
             border-radius: 15px;
-            border: 2px solid #3a3f4a;
             overflow: hidden;
             margin-bottom: 10px;
+            border: 1px solid gold;
         }
         
         .progress-fill {
             height: 100%;
             width: 50%;
-            transition: width 0.8s ease;
-            background: linear-gradient(90deg, #ffd700, #ffaa00);
+            transition: width 0.5s;
         }
         
-        .science-fill { background: linear-gradient(90deg, #00ffff, #0088ff); }
-        .army-fill { background: linear-gradient(90deg, #ff4444, #cc0000); }
+        .eco-fill { background: linear-gradient(90deg, gold, orange); }
+        .sci-fill { background: linear-gradient(90deg, cyan, blue); }
+        .army-fill { background: linear-gradient(90deg, red, darkred); }
         
         .resource-value {
-            font-size: 2.2rem;
+            color: white;
+            font-size: 2rem;
             font-weight: bold;
-            text-align: center;
-            color: #f5e6b3;
         }
         
-        .character-area {
+        /* ПЕРСОНАЖ */
+        .character-box {
             display: flex;
             gap: 20px;
-            margin-bottom: 25px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 20px;
-            padding: 15px;
-            border: 2px solid #5a4a3a;
+            background: #0f3460;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid gold;
+            margin-bottom: 20px;
         }
         
-        .character-portrait {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(145deg, #3a4a5a 0%, #1a2a3a 100%);
+        .character-avatar {
+            width: 100px;
+            height: 100px;
+            background: #1a1a2e;
             border-radius: 50%;
-            border: 4px solid #d4af37;
+            border: 3px solid gold;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 4rem;
+            font-size: 3rem;
         }
         
-        .character-info {
+        .character-text {
             flex: 1;
-            color: #f0e6d2;
+            color: white;
         }
         
         .character-name {
-            font-size: 2rem;
-            color: #d4af37;
+            color: gold;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
         }
         
         .character-speech {
-            background: rgba(0, 0, 0, 0.6);
+            background: #1a1a2e;
             padding: 15px;
-            border-radius: 15px;
-            border-left: 5px solid #d4af37;
-            margin-top: 10px;
+            border-radius: 10px;
+            border-left: 5px solid gold;
+            font-size: 1.1rem;
+            line-height: 1.5;
         }
         
-        .location-indicator {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            background: #1a2530;
-            padding: 8px 15px;
-            border-radius: 30px;
-            border: 1px solid #5a4a3a;
-            width: fit-content;
-        }
-        
-        .location-name {
-            color: #d4af37;
-            font-weight: bold;
-        }
-        
-        .turn-counter {
+        /* ИНФО */
+        .info-bar {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            background: rgba(0, 0, 0, 0.5);
+            background: #0f3460;
             padding: 10px 20px;
             border-radius: 10px;
+            border: 1px solid gold;
+            margin-bottom: 20px;
         }
         
-        .turn-number {
-            background: #d4af37;
+        .location {
+            color: gold;
+            font-size: 1.2rem;
+        }
+        
+        .step {
+            background: gold;
             color: #1a1a2e;
             padding: 5px 15px;
             border-radius: 20px;
             font-weight: bold;
         }
         
-        .quest-container {
-            background: linear-gradient(145deg, #2a3a4a 0%, #1a2a3a 100%);
-            border-radius: 20px;
+        /* ЗАДАНИЕ */
+        .quest-box {
+            background: #0f3460;
             padding: 25px;
-            margin-bottom: 25px;
-            border: 2px solid #aa8c5e;
+            border-radius: 15px;
+            border: 2px solid gold;
+            margin-bottom: 20px;
         }
         
         .quest-title {
+            color: gold;
             font-size: 1.8rem;
-            color: #f5e6b3;
             margin-bottom: 15px;
         }
         
         .quest-text {
+            color: white;
             font-size: 1.2rem;
-            color: #e0d6c0;
             margin-bottom: 20px;
-            line-height: 1.8;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 20px;
-            border-radius: 10px;
+            line-height: 1.6;
         }
         
         .error-text {
-            font-family: 'Courier New', monospace;
-            font-size: 1.3rem;
+            background: #1a1a2e;
             color: #ffaa00;
-            background: rgba(30, 20, 10, 0.9);
+            font-family: monospace;
+            font-size: 1.3rem;
             padding: 20px;
             border-radius: 10px;
+            border: 2px dashed gold;
             margin-bottom: 20px;
-            border: 2px solid #b8860b;
             text-align: center;
         }
         
-        .choices-grid {
+        /* КНОПКИ */
+        .choices {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 15px;
             margin-bottom: 20px;
         }
         
-        .choice-card {
-            background: linear-gradient(145deg, #2a3745 0%, #1e2a36 100%);
-            border: 2px solid #5a4a3a;
-            border-radius: 15px;
+        .choice-btn {
+            background: #1a1a2e;
+            border: 2px solid gold;
+            border-radius: 10px;
             padding: 20px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: 0.3s;
             text-align: center;
         }
         
-        .choice-card:hover {
+        .choice-btn:hover {
             transform: translateY(-5px);
-            border-color: #d4af37;
-            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
         }
         
         .choice-icon {
-            font-size: 2.5rem;
+            font-size: 2rem;
             margin-bottom: 10px;
         }
         
         .choice-title {
-            font-size: 1.3rem;
-            color: #d4af37;
-            margin-bottom: 10px;
+            color: gold;
+            font-size: 1.2rem;
             font-weight: bold;
+            margin-bottom: 10px;
         }
         
-        .choice-modifiers {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.9rem;
+        .modifiers {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 10px;
             flex-wrap: wrap;
         }
         
-        .modifier-positive {
-            background: rgba(0, 255, 0, 0.2);
-            color: #a5d6a5;
+        .mod {
             padding: 3px 8px;
             border-radius: 5px;
+            font-size: 0.9rem;
         }
         
-        .modifier-negative {
-            background: rgba(255, 0, 0, 0.2);
-            color: #ffaaaa;
-            padding: 3px 8px;
-            border-radius: 5px;
-        }
+        .mod.plus { background: rgba(0, 255, 0, 0.2); color: lightgreen; border: 1px solid green; }
+        .mod.minus { background: rgba(255, 0, 0, 0.2); color: pink; border: 1px solid red; }
         
-        .feedback-area {
-            min-height: 70px;
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 10px;
+        /* ОБРАТНАЯ СВЯЗЬ */
+        .feedback {
+            background: #1a1a2e;
             padding: 15px;
+            border-radius: 10px;
             margin: 20px 0;
-            border-left: 5px solid #d4af37;
+            border-left: 5px solid gold;
+            color: white;
             font-size: 1.1rem;
-            color: #f0e6d2;
         }
         
+        /* КНОПКА ДАЛЕЕ */
         .next-btn {
-            background: linear-gradient(145deg, #d4af37 0%, #b8860b 100%);
+            background: gold;
             color: #1a1a2e;
             border: none;
             padding: 15px 40px;
             font-size: 1.3rem;
             font-weight: bold;
-            border-radius: 50px;
+            border-radius: 30px;
             cursor: pointer;
             display: block;
             margin: 20px auto 0;
-            border: 2px solid #f5e6b3;
-            transition: all 0.3s;
+            border: 2px solid white;
         }
         
         .next-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 30px gold;
+            box-shadow: 0 0 20px gold;
         }
         
         .next-btn.hidden {
             display: none;
         }
         
+        /* ФИНАЛ */
         .ending-screen {
             text-align: center;
+            background: #0f3460;
             padding: 40px;
-            background: linear-gradient(145deg, #1a2a3a 0%, #0a1a2a 100%);
-            border-radius: 20px;
-            border: 3px solid #d4af37;
-            margin-top: 20px;
+            border-radius: 15px;
+            border: 3px solid gold;
         }
         
         .ending-screen h2 {
-            font-size: 3rem;
-            color: #d4af37;
+            color: gold;
+            font-size: 2.5rem;
             margin-bottom: 20px;
         }
         
         .ending-screen p {
-            font-size: 1.3rem;
-            color: #f0e6d2;
-            line-height: 1.8;
-            margin-bottom: 30px;
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
         }
         
         .restart-btn {
-            background: #d4af37;
+            background: gold;
             color: #1a1a2e;
             border: none;
             padding: 15px 40px;
@@ -386,402 +343,153 @@
             border-radius: 30px;
             cursor: pointer;
             font-weight: bold;
-            border: 2px solid #f5e6b3;
-        }
-        
-        .restart-btn:hover {
-            background: #f5e6b3;
-            box-shadow: 0 0 30px gold;
         }
         
         .hidden {
             display: none;
         }
-        
-        .elder-container {
-            min-height: 400px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
     </style>
 </head>
 <body>
-    <div class="game-wrapper" id="gameWrapper">
-        <div class="game-header">
-            <h1>ЦИТАДЕЛЬ РЕШЕНИЙ</h1>
-            <p>Хроники молодого правителя</p>
-        </div>
-        <div id="gameContent"></div>
+    <div class="game-container">
+        <h1>⚔️ ЦИТАДЕЛЬ РЕШЕНИЙ ⚔️</h1>
+        <div id="gameArea"></div>
     </div>
 
     <script>
-        // ==========================================
         // ДАННЫЕ ИГРЫ
-        // ==========================================
-        const GAME = {
-            resources: { economy: 50, science: 50, army: 50 },
-            currentEvent: 0,
-            gameStarted: false,
+        const gameData = {
+            economy: 50,
+            science: 50,
+            army: 50,
+            currentQuest: 0,
+            elderStep: 0,
             
-            character: {
-                name: "Артур",
-                title: "Молодой Правитель",
-                speech: "Город ждет твоих решений..."
-            },
-            
-            locations: [
-                "Тронный зал", "Городские ворота", "Торговая площадь", 
-                "Библиотека", "Казармы", "Порт", "Храм", 
-                "Университет", "Крепостная стена", "Королевский совет"
-            ],
-            
-            elderSpeech: [
+            // Речи старейшины
+            elderSpeeches: [
                 "Приветствую тебя, молодой правитель! Я - старейшина Аристарх, хранитель знаний этого города.",
                 "Наш великий город на грани гибели. Казна пуста, армия деморализована, библиотеки сожжены.",
-                "У нас осталось 10 дней, чтобы принять судьбоносные решения. Каждый твой выбор будет влиять на три ресурса: Экономику, Науку и Армию.",
-                "Смотри внимательно на модификаторы под кнопками. Например: Экономика +5, Наука -10. Это цена твоего решения.",
-                "Если ресурс упадет до 0 - город погибнет. Если поднимешь до 100 - получишь силу. Выбирай мудро!",
-                "А теперь... Город ждет своего Правителя! Да пребудет с тобой мудрость предков!"
+                "У нас осталось 10 испытаний. Каждый твой выбор будет влиять на три ресурса: Экономику, Науку и Армию.",
+                "Смотри внимательно на модификаторы под кнопками. Например: Экономика +5, Наука -10.",
+                "Если ресурс упадет до 0 - город погибнет. Если поднимешь до 100 - получишь силу.",
+                "А теперь... Город ждет своего Правителя! Да пребудет с тобой мудрость!"
             ],
             
-            elderIndex: 0,
-            
-            // ==========================================
-            // 10 ЗАДАНИЙ ПО РУССКОМУ ЯЗЫКУ
-            // ==========================================
-            events: [
+            // Задания
+            quests: [
                 {
-                    location: 0,
+                    location: "Тронный зал",
                     title: "Указ правителя",
-                    quest: "Писарь принес указ для городской площади. Но допустил ошибки. Как поступишь?",
-                    errorText: "«Жители города! Завтра состоится собрание на центральнай площади. Явка обязательна для всех горожан.»",
+                    text: "Писарь принес указ для городской площади. Но допустил ошибки. Как поступишь?",
+                    error: "«Жители города! Завтра состоится собрание на центральнай площади.»",
                     choices: [
-                        {
-                            icon: "📝",
-                            title: "Исправить ошибки",
-                            desc: "Найди ошибки в словах",
-                            modifiers: { economy: 5, science: 10, army: -5 },
-                            feedback: "Правильно: «центральнай» → «центральной». Ошибка в окончании прилагательного!"
+                        { 
+                            icon: "📝", 
+                            title: "Исправить", 
+                            eco: 5, sci: 10, army: -5,
+                            feedback: "Правильно: центральнай → центральной"
                         },
-                        {
-                            icon: "🤷",
-                            title: "Оставить как есть",
-                            desc: "Не тратить время",
-                            modifiers: { economy: -5, science: -5, army: 10 },
-                            feedback: "Народ посмеялся над безграмотным указом. Твой авторитет упал."
+                        { 
+                            icon: "🤷", 
+                            title: "Оставить", 
+                            eco: -5, sci: -5, army: 10,
+                            feedback: "Народ посмеялся над ошибкой"
                         },
-                        {
-                            icon: "⚔️",
-                            title: "Казнить писаря",
-                            desc: "Жестокое наказание",
-                            modifiers: { economy: -10, science: 5, army: 15 },
-                            feedback: "Все боятся ошибаться. Но казна потрачена на палача..."
+                        { 
+                            icon: "⚔️", 
+                            title: "Казнить", 
+                            eco: -10, sci: 5, army: 15,
+                            feedback: "Все боятся ошибаться"
                         }
                     ]
                 },
                 {
-                    location: 1,
-                    title: "Послание союзникам",
-                    quest: "Нужно отправить важное письмо соседнему королю. От грамотности зависит, поймут ли нас правильно.",
-                    errorText: "«Уважаемый король! Предлогаем заключить мирный договор. Наши армии могуг стать союзниками.»",
+                    location: "Городские ворота",
+                    title: "Послание королю",
+                    text: "Нужно отправить письмо соседнему королю. Как поступишь?",
+                    error: "«Уважаемый король! Предлогаем мир. Наши армии могуг стать союзниками.»",
                     choices: [
-                        {
-                            icon: "✏️",
-                            title: "Исправить 'предлогаем'",
-                            desc: "Ошибка в корне",
-                            modifiers: { economy: -10, science: 20, army: 0 },
-                            feedback: "Правильно: ПРЕДЛАГАЕМ (корень -лаг-/-лож-: перед Г пишем А)"
+                        { 
+                            icon: "✏️", 
+                            title: "Предлогаем", 
+                            eco: -10, sci: 20, army: 0,
+                            feedback: "Правильно: предлагаем (лаг/лож)"
                         },
-                        {
-                            icon: "🔤",
-                            title: "Исправить 'могуг'",
-                            desc: "Ошибка в окончании",
-                            modifiers: { economy: -5, science: 15, army: -5 },
-                            feedback: "Правильно: МОГУТ (3 лицо, мн.ч., I спряжение)"
+                        { 
+                            icon: "🔤", 
+                            title: "Могуг", 
+                            eco: -5, sci: 15, army: -5,
+                            feedback: "Правильно: могут (спряжение)"
                         },
-                        {
-                            icon: "📨",
-                            title: "Отправить как есть",
-                            desc: "Пусть читают как хотят",
-                            modifiers: { economy: 10, science: -15, army: -5 },
-                            feedback: "Король обиделся на безграмотность. Отношения испорчены."
+                        { 
+                            icon: "📨", 
+                            title: "Отправить", 
+                            eco: 10, sci: -15, army: -5,
+                            feedback: "Король обиделся на ошибки"
                         }
                     ]
                 },
                 {
-                    location: 2,
-                    title: "Донесение разведчиков",
-                    quest: "Разведчики принесли шифровку. Но в ней ошибки, из-за которых можно неправильно понять врага.",
-                    errorText: "«Враг собираеться напасть на рассвете. У них около тысячи салдат и много конницы.»",
+                    location: "Лагерь разведчиков",
+                    title: "Донесение",
+                    text: "Разведчики принесли шифровку. В ней ошибки.",
+                    error: "«Враг собираеться напасть. У них тысяча салдат.»",
                     choices: [
-                        {
-                            icon: "🔍",
-                            title: "Исправить 'собираеться'",
-                            desc: "Ошибка в -тся/-ться",
-                            modifiers: { economy: -5, science: 10, army: 5 },
-                            feedback: "Правильно: СОБИРАЕТСЯ (что делает? без мягкого знака)"
+                        { 
+                            icon: "🔍", 
+                            title: "Собирается", 
+                            eco: -5, sci: 10, army: 5,
+                            feedback: "Правильно: собирается (без Ь)"
                         },
-                        {
-                            icon: "🛡️",
-                            title: "Исправить 'салдат'",
-                            desc: "Словарное слово",
-                            modifiers: { economy: -10, science: 5, army: 15 },
-                            feedback: "Правильно: СОЛДАТ (запомнить, проверочного нет)"
+                        { 
+                            icon: "🛡️", 
+                            title: "Солдат", 
+                            eco: -10, sci: 5, army: 15,
+                            feedback: "Правильно: солдат"
                         },
-                        {
-                            icon: "🔮",
-                            title: "Исправить оба слова",
-                            desc: "Полная проверка",
-                            modifiers: { economy: -20, science: 20, army: 10 },
-                            feedback: "Идеально! Обе ошибки исправлены. Враг будет разбит."
-                        }
-                    ]
-                },
-                {
-                    location: 3,
-                    title: "Налоговая реформа",
-                    quest: "Казначей предлагает новый указ о налогах. Но есть сомнения в его грамотности.",
-                    errorText: "«Каждый горожанин обязан уплатить налог до пятнадцатого декабря. Неуплата грозит штраффом или тюрьмой.»",
-                    choices: [
-                        {
-                            icon: "💰",
-                            title: "Утвердить указ",
-                            desc: "Сэкономить время",
-                            modifiers: { economy: 15, science: -15, army: -5 },
-                            feedback: "Ошибка: «штраффом» → «штрафом». Народ не понял налог."
-                        },
-                        {
-                            icon: "✒️",
-                            title: "Исправить 'штраффом'",
-                            desc: "Двойная буква Ф",
-                            modifiers: { economy: -5, science: 15, army: -5 },
-                            feedback: "Правильно: ШТРАФОМ (одна Ф, словарное слово)"
-                        },
-                        {
-                            icon: "📜",
-                            title: "Переписать полностью",
-                            desc: "Полная проверка",
-                            modifiers: { economy: -15, science: 20, army: 5 },
-                            feedback: "Идеальный указ. Налоги собраны полностью."
-                        }
-                    ]
-                },
-                {
-                    location: 4,
-                    title: "Летопись города",
-                    quest: "Летописец закончил новую главу истории города. Но допустил ошибки в датах и событиях.",
-                    errorText: "«В тысяча восьмисотом году город основал князь Олег. С тех пор прошло много лет, город рос и развивался.»",
-                    choices: [
-                        {
-                            icon: "📖",
-                            title: "Оставить как есть",
-                            desc: "История не главное",
-                            modifiers: { economy: 5, science: -20, army: 5 },
-                            feedback: "Ошибка: князь Олег жил в IX-X веках, а не в 1800 году!"
-                        },
-                        {
-                            icon: "🔎",
-                            title: "Исправить дату",
-                            desc: "Найди ошибку",
-                            modifiers: { economy: -5, science: 15, army: -5 },
-                            feedback: "Ты нашел фактическую ошибку! Олег не мог жить в 1800 году."
-                        },
-                        {
-                            icon: "🏛️",
-                            title: "Проверить все",
-                            desc: "Полная экспертиза",
-                            modifiers: { economy: -10, science: 25, army: -10 },
-                            feedback: "Летопись восстановлена. История сохранится в веках."
-                        }
-                    ]
-                },
-                {
-                    location: 5,
-                    title: "Торговый договор",
-                    quest: "Купцы принесли договор. От его правильного понимания зависит экономика города.",
-                    errorText: "«Продавец обязуется передать товар, а покупатель обязуется принять товар и уплатить за него цену в течении трех дней.»",
-                    choices: [
-                        {
-                            icon: "🤝",
-                            title: "Подписать быстро",
-                            desc: "Главное — сделка",
-                            modifiers: { economy: 20, science: -15, army: -5 },
-                            feedback: "Ошибка: «в течении» → «в течение» (предлог времени)"
-                        },
-                        {
-                            icon: "⚖️",
-                            title: "Исправить предлог",
-                            desc: "Найди ошибку",
-                            modifiers: { economy: -5, science: 15, army: 0 },
-                            feedback: "Правильно: В ТЕЧЕНИЕ трех дней (предлог времени)"
-                        },
-                        {
-                            icon: "👨‍⚖️",
-                            title: "К юристам",
-                            desc: "Полная проверка",
-                            modifiers: { economy: -15, science: 20, army: -5 },
-                            feedback: "Договор идеален. Торговля процветает."
-                        }
-                    ]
-                },
-                {
-                    location: 6,
-                    title: "Речь перед народом",
-                    quest: "Твоя речь перед горожанами. Нужно говорить грамотно, чтобы тебя уважали.",
-                    errorText: "«Дорогие сограждане! Мы построим великий город. Никто не сможет нас побеить, потому что мы едины!»",
-                    choices: [
-                        {
-                            icon: "🗣️",
-                            title: "Сказать как есть",
-                            desc: "Искренность важнее",
-                            modifiers: { economy: -10, science: -10, army: 15 },
-                            feedback: "Ошибка: «побеить» → «победить»"
-                        },
-                        {
-                            icon: "🎭",
-                            title: "Исправить глагол",
-                            desc: "Найди ошибку",
-                            modifiers: { economy: 0, science: 15, army: 5 },
-                            feedback: "Правильно: ПОБЕДИТЬ (словарное слово)"
-                        },
-                        {
-                            icon: "📜",
-                            title: "Написать с учеными",
-                            desc: "Идеальная речь",
-                            modifiers: { economy: -10, science: 20, army: 10 },
-                            feedback: "Речь великолепна! Народ рукоплещет."
-                        }
-                    ]
-                },
-                {
-                    location: 7,
-                    title: "Письмо от союзников",
-                    quest: "Пришло письмо от союзников. Но оно на плохом русском. Может, это ловушка?",
-                    errorText: "«Дорогие друзя! Предлогаем вам союз против общего врага. Ждем ответа с гонцом.»",
-                    choices: [
-                        {
-                            icon: "🤝",
-                            title: "Ответить согласием",
-                            desc: "Неважно как написано",
-                            modifiers: { economy: 10, science: -20, army: 15 },
-                            feedback: "Это были мошенники! Ты попал в ловушку."
-                        },
-                        {
-                            icon: "✉️",
-                            title: "Исправить ошибки",
-                            desc: "Ответить грамотно",
-                            modifiers: { economy: -5, science: 15, army: -5 },
-                            feedback: "Правильно: «друзя» → «друзья»"
-                        },
-                        {
-                            icon: "🕵️",
-                            title: "Заподозрить обман",
-                            desc: "Проверить",
-                            modifiers: { economy: -15, science: 10, army: 20 },
-                            feedback: "Ты раскрыл шпионов! Враги обезврежены."
-                        }
-                    ]
-                },
-                {
-                    location: 8,
-                    title: "Завещание мудреца",
-                    quest: "Умирающий мудрец диктует завещание. Но он стар и делает ошибки.",
-                    errorText: "«Свою библиотеку завещаю городу. Ключь от сундука с книгами спрятан в тайнике.»",
-                    choices: [
-                        {
-                            icon: "😢",
-                            title: "Записать дословно",
-                            desc: "Уважение к старцу",
-                            modifiers: { economy: -5, science: -10, army: 5 },
-                            feedback: "Ошибка: «ключь» → «ключ» (мужской род, без Ь)"
-                        },
-                        {
-                            icon: "🔑",
-                            title: "Исправить 'ключь'",
-                            desc: "Мягкий знак",
-                            modifiers: { economy: 0, science: 15, army: 0 },
-                            feedback: "Правильно: КЛЮЧ (мужской род, 2 склонение - без Ь)"
-                        },
-                        {
-                            icon: "📚",
-                            title: "Проверить тайник",
-                            desc: "Найти книги",
-                            modifiers: { economy: -10, science: 20, army: -5 },
-                            feedback: "Ты нашел и ошибку, и тайник. Библиотека спасена!"
-                        }
-                    ]
-                },
-                {
-                    location: 9,
-                    title: "Финальное воззвание",
-                    quest: "Город в опасности. Твое последнее слово решит судьбу. Скажи его без ошибок!",
-                    errorText: "«Кто с мечем к нам придет, тот от меча и погибнет!»",
-                    choices: [
-                        {
-                            icon: "⚔️",
-                            title: "Сказать эту фразу",
-                            desc: "Классика",
-                            modifiers: { economy: -5, science: -10, army: 20 },
-                            feedback: "Ошибка: «с мечем» → «с мечом» (творительный падеж)"
-                        },
-                        {
-                            icon: "📖",
-                            title: "Исправить 'мечем'",
-                            desc: "Найди ошибку",
-                            modifiers: { economy: -5, science: 15, army: 10 },
-                            feedback: "Правильно: С МЕЧОМ (окончание -ом в творительном падеже)"
-                        },
-                        {
-                            icon: "🎭",
-                            title: "Своя речь",
-                            desc: "Творческий подход",
-                            modifiers: { economy: 10, science: 20, army: -5 },
-                            feedback: "Твоя речь войдет в историю! Ты великий оратор."
+                        { 
+                            icon: "🔮", 
+                            title: "Оба", 
+                            eco: -20, sci: 20, army: 10,
+                            feedback: "Все ошибки исправлены!"
                         }
                     ]
                 }
             ]
         };
         
-        // ==========================================
-        // ФУНКЦИИ ИГРЫ
-        // ==========================================
-        
-        function showStartScreen() {
-            const content = document.getElementById('gameContent');
-            content.innerHTML = `
+        // ОТОБРАЖЕНИЕ СТАРТА
+        function showStart() {
+            document.getElementById('gameArea').innerHTML = `
                 <div class="start-screen">
                     <h2>👑 Добро пожаловать, Правитель!</h2>
                     <p>Старый князь мертв. Город в руинах.<br>
-                    Казна пуста, армия деморализована, библиотеки сожжены.<br>
-                    Ты - последний наследник древнего рода.<br>
-                    10 испытаний ждут тебя. Сможешь ли ты спасти Цитадель?</p>
+                    Ты - последний наследник.<br>
+                    10 испытаний ждут тебя.</p>
                     <button class="start-btn" onclick="startGame()">СТАТЬ ПРАВИТЕЛЕМ</button>
                 </div>
             `;
         }
         
+        // СТАРТ ИГРЫ
         function startGame() {
-            GAME.gameStarted = true;
-            GAME.elderIndex = 0;
-            showElderSpeech();
+            gameData.elderStep = 0;
+            showElder();
         }
         
-        function showElderSpeech() {
-            const content = document.getElementById('gameContent');
+        // ПОКАЗ СТАРЕЙШИНЫ
+        function showElder() {
+            const area = document.getElementById('gameArea');
             
-            if (GAME.elderIndex < GAME.elderSpeech.length) {
-                content.innerHTML = `
-                    <div class="character-area elder-container">
-                        <div class="character-portrait">🧙</div>
-                        <div class="character-info">
+            if (gameData.elderStep < gameData.elderSpeeches.length) {
+                area.innerHTML = `
+                    <div class="character-box">
+                        <div class="character-avatar">🧙</div>
+                        <div class="character-text">
                             <div class="character-name">Старейшина Аристарх</div>
-                            <div class="character-speech" style="font-size: 1.2rem; min-height: 100px;">
-                                ${GAME.elderSpeech[GAME.elderIndex]}
-                            </div>
-                            <button class="next-btn" style="margin-top: 20px;" onclick="nextElderSpeech()">
-                                ${GAME.elderIndex === GAME.elderSpeech.length - 1 ? 'Начать правление →' : 'Далее →'}
+                            <div class="character-speech">${gameData.elderSpeeches[gameData.elderStep]}</div>
+                            <button class="next-btn" onclick="nextElder()" style="margin-top: 20px;">
+                                ${gameData.elderStep === gameData.elderSpeeches.length - 1 ? 'Начать правление →' : 'Далее →'}
                             </button>
                         </div>
                     </div>
@@ -789,83 +497,184 @@
             }
         }
         
-        function nextElderSpeech() {
-            GAME.elderIndex++;
+        // СЛЕДУЮЩАЯ РЕЧЬ СТАРЕЙШИНЫ
+        function nextElder() {
+            gameData.elderStep++;
             
-            if (GAME.elderIndex < GAME.elderSpeech.length) {
-                showElderSpeech();
+            if (gameData.elderStep < gameData.elderSpeeches.length) {
+                showElder();
             } else {
-                showFirstQuest();
+                gameData.currentQuest = 0;
+                showQuest();
             }
         }
         
-        function showFirstQuest() {
-            GAME.currentEvent = 0;
-            renderQuest();
-        }
-        
-        function renderQuest() {
-            const event = GAME.events[GAME.currentEvent];
-            if (!event) {
+        // ПОКАЗ ЗАДАНИЯ
+        function showQuest() {
+            const quest = gameData.quests[gameData.currentQuest];
+            
+            if (!quest) {
                 showEnding();
                 return;
             }
             
-            const content = document.getElementById('gameContent');
-            
-            const choicesHTML = event.choices.map((choice, index) => {
-                const mods = [];
-                if (choice.modifiers.economy !== 0) {
-                    const cls = choice.modifiers.economy > 0 ? 'modifier-positive' : 'modifier-negative';
-                    const sign = choice.modifiers.economy > 0 ? '+' : '';
-                    mods.push(`<span class="${cls}">💰 ${sign}${choice.modifiers.economy}</span>`);
-                }
-                if (choice.modifiers.science !== 0) {
-                    const cls = choice.modifiers.science > 0 ? 'modifier-positive' : 'modifier-negative';
-                    const sign = choice.modifiers.science > 0 ? '+' : '';
-                    mods.push(`<span class="${cls}">📚 ${sign}${choice.modifiers.science}</span>`);
-                }
-                if (choice.modifiers.army !== 0) {
-                    const cls = choice.modifiers.army > 0 ? 'modifier-positive' : 'modifier-negative';
-                    const sign = choice.modifiers.army > 0 ? '+' : '';
-                    mods.push(`<span class="${cls}">⚔️ ${sign}${choice.modifiers.army}</span>`);
-                }
-                
-                return `
-                    <div class="choice-card" onclick="makeChoice(${index})">
-                        <div class="choice-icon">${choice.icon}</div>
-                        <div class="choice-title">${choice.title}</div>
-                        <div class="choice-modifiers">${mods.join(' ')}</div>
+            // Создаем кнопки выбора
+            let choicesHtml = '';
+            for (let i = 0; i < quest.choices.length; i++) {
+                const c = quest.choices[i];
+                choicesHtml += `
+                    <div class="choice-btn" onclick="makeChoice(${i})">
+                        <div class="choice-icon">${c.icon}</div>
+                        <div class="choice-title">${c.title}</div>
+                        <div class="modifiers">
+                            ${c.eco !== 0 ? `<span class="mod ${c.eco > 0 ? 'plus' : 'minus'}">💰${c.eco > 0 ? '+' : ''}${c.eco}</span>` : ''}
+                            ${c.sci !== 0 ? `<span class="mod ${c.sci > 0 ? 'plus' : 'minus'}">📚${c.sci > 0 ? '+' : ''}${c.sci}</span>` : ''}
+                            ${c.army !== 0 ? `<span class="mod ${c.army > 0 ? 'plus' : 'minus'}">⚔️${c.army > 0 ? '+' : ''}${c.army}</span>` : ''}
+                        </div>
                     </div>
                 `;
-            }).join('');
+            }
             
-            content.innerHTML = `
+            document.getElementById('gameArea').innerHTML = `
                 <!-- ДАШБОРД -->
                 <div class="dashboard">
-                    <div class="resource-card">
-                        <div class="resource-title">💰 ЭКОНОМИКА</div>
-                        <div class="progress-container">
-                            <div class="progress-fill" id="ecoFill" style="width: ${GAME.resources.economy}%"></div>
-                        </div>
-                        <div class="resource-value" id="ecoValue">${GAME.resources.economy}</div>
+                    <div class="resource">
+                        <h3>💰 ЭКОНОМИКА</h3>
+                        <div class="progress-bar"><div class="progress-fill eco-fill" id="ecoFill" style="width: ${gameData.economy}%"></div></div>
+                        <div class="resource-value" id="ecoValue">${gameData.economy}</div>
                     </div>
-                    <div class="resource-card">
-                        <div class="resource-title">📚 НАУКА</div>
-                        <div class="progress-container">
-                            <div class="progress-fill science-fill" id="sciFill" style="width: ${GAME.resources.science}%"></div>
-                        </div>
-                        <div class="resource-value" id="sciValue">${GAME.resources.science}</div>
+                    <div class="resource">
+                        <h3>📚 НАУКА</h3>
+                        <div class="progress-bar"><div class="progress-fill sci-fill" id="sciFill" style="width: ${gameData.science}%"></div></div>
+                        <div class="resource-value" id="sciValue">${gameData.science}</div>
                     </div>
-                    <div class="resource-card">
-                        <div class="resource-title">⚔️ АРМИЯ</div>
-                        <div class="progress-container">
-                            <div class="progress-fill army-fill" id="armFill" style="width: ${GAME.resources.army}%"></div>
-                        </div>
-                        <div class="resource-value" id="armValue">${GAME.resources.army}</div>
+                    <div class="resource">
+                        <h3>⚔️ АРМИЯ</h3>
+                        <div class="progress-bar"><div class="progress-fill army-fill" id="armFill" style="width: ${gameData.army}%"></div></div>
+                        <div class="resource-value" id="armValue">${gameData.army}</div>
                     </div>
                 </div>
                 
                 <!-- ПЕРСОНАЖ -->
-                <div class="character-area">
-                    <div class="character-port
+                <div class="character-box">
+                    <div class="character-avatar">👑</div>
+                    <div class="character-text">
+                        <div class="character-name">Правитель Артур</div>
+                        <div class="character-speech" id="charSpeech">Что будем делать?</div>
+                    </div>
+                </div>
+                
+                <!-- ИНФО -->
+                <div class="info-bar">
+                    <span class="location">📍 ${quest.location}</span>
+                    <span class="step">${gameData.currentQuest + 1} / ${gameData.quests.length}</span>
+                </div>
+                
+                <!-- ЗАДАНИЕ -->
+                <div class="quest-box">
+                    <div class="quest-title">${quest.title}</div>
+                    <div class="quest-text">${quest.text}</div>
+                    <div class="error-text">${quest.error}</div>
+                    
+                    <div class="choices" id="choicesArea">
+                        ${choicesHtml}
+                    </div>
+                    
+                    <div class="feedback" id="feedback">Выбери вариант...</div>
+                    
+                    <button class="next-btn hidden" id="nextBtn" onclick="nextQuest()">ПРОДОЛЖИТЬ →</button>
+                </div>
+            `;
+        }
+        
+        // СДЕЛАТЬ ВЫБОР
+        function makeChoice(index) {
+            const quest = gameData.quests[gameData.currentQuest];
+            const choice = quest.choices[index];
+            
+            // Меняем ресурсы
+            gameData.economy = Math.min(100, Math.max(0, gameData.economy + choice.eco));
+            gameData.science = Math.min(100, Math.max(0, gameData.science + choice.sci));
+            gameData.army = Math.min(100, Math.max(0, gameData.army + choice.army));
+            
+            // Обновляем дашборд
+            document.getElementById('ecoFill').style.width = gameData.economy + '%';
+            document.getElementById('sciFill').style.width = gameData.science + '%';
+            document.getElementById('armFill').style.width = gameData.army + '%';
+            document.getElementById('ecoValue').innerText = gameData.economy;
+            document.getElementById('sciValue').innerText = gameData.science;
+            document.getElementById('armValue').innerText = gameData.army;
+            
+            // Показываем обратную связь
+            document.getElementById('feedback').innerHTML = `
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="font-size: 2rem;">${choice.icon}</span>
+                    <span>${choice.feedback}</span>
+                </div>
+            `;
+            
+            // Меняем речь персонажа
+            document.getElementById('charSpeech').innerText = `Я выбрал: ${choice.title}`;
+            
+            // Показываем кнопку "ПРОДОЛЖИТЬ"
+            document.getElementById('nextBtn').classList.remove('hidden');
+            
+            // Блокируем кнопки выбора
+            const buttons = document.querySelectorAll('.choice-btn');
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].style.pointerEvents = 'none';
+                buttons[i].style.opacity = '0.5';
+            }
+        }
+        
+        // СЛЕДУЮЩЕЕ ЗАДАНИЕ
+        function nextQuest() {
+            gameData.currentQuest++;
+            
+            if (gameData.currentQuest < gameData.quests.length) {
+                showQuest();
+            } else {
+                showEnding();
+            }
+        }
+        
+        // ПОКАЗ ФИНАЛА
+        function showEnding() {
+            let title = '', text = '';
+            
+            if (gameData.economy >= gameData.science && gameData.economy >= gameData.army) {
+                title = '💰 ЭКОНОМИСТ';
+                text = 'Ты построил торговую империю! Город утопает в золоте.';
+            } else if (gameData.science > gameData.economy && gameData.science >= gameData.army) {
+                title = '📚 УЧЕНЫЙ';
+                text = 'Великая академия открыта! Знания правят миром.';
+            } else {
+                title = '⚔️ ВОИН';
+                text = 'Враг разбит! Твоя армия непобедима.';
+            }
+            
+            document.getElementById('gameArea').innerHTML = `
+                <div class="ending-screen">
+                    <h2>${title}</h2>
+                    <p>${text}</p>
+                    <p>💰 Экономика: ${gameData.economy} | 📚 Наука: ${gameData.science} | ⚔️ Армия: ${gameData.army}</p>
+                    <button class="restart-btn" onclick="restartGame()">СЫГРАТЬ ЗАНОВО</button>
+                </div>
+            `;
+        }
+        
+        // РЕСТАРТ
+        function restartGame() {
+            gameData.economy = 50;
+            gameData.science = 50;
+            gameData.army = 50;
+            gameData.currentQuest = 0;
+            gameData.elderStep = 0;
+            showStart();
+        }
+        
+        // ЗАПУСК
+        showStart();
+    </script>
+</body>
+</html>
