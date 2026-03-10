@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Цитадель Решений - Образовательный квест</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .game-container {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        /* Дашборд */
+        .dashboard {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid gold;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .resource {
+            text-align: center;
+        }
+        
+        .resource-title {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px currentColor;
+        }
+        
+        .economy .resource-title { color: #ffd700; }
+        .science .resource-title { color: #00ffff; }
+        .army .resource-title { color: #ff4444; }
+        
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 50%;
+            transition: width 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-radius: 15px;
+        }
+        
+        .economy .progress-fill { background: linear-gradient(90deg, #ffd700, #ffaa00); }
+        .science .progress-fill { background: linear-gradient(90deg, #00ffff, #0088ff); }
+        .army .progress-fill { background: linear-gradient(90deg, #ff4444, #ff0000); }
+        
+        .resource-value {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px currentColor;
+        }
+        
+        .warning-icon {
+            display: inline-block;
+            margin-left: 5px;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0.5; transform: scale(1); }
+        }
+        
+        /* Игровая область */
+        .game-area {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 215, 0, 0.5);
+        }
+        
+        .situation {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            text-align: center;
+            font-style: italic;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 3px solid gold;
+        }
+        
+        .error-text {
+            color: #ffaa00;
+            font-family: monospace;
+            font-size: 1.3rem;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px dashed #ffaa00;
+        }
+        
+        .choices {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .choice-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px 15px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .choice-btn:hover:not(:disabled) {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: gold;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .choice-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .choice-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: gold;
+        }
+        
+        .choice-modifiers {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .choice-modifiers span {
+            display: inline-block;
+            margin: 0 5px;
+        }
+        
+        .modifier-positive { color: #00ff00; }
+        .modifier-negative { color: #ff4444; }
+        
+        .feedback-area {
+            min-height: 50px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        .feedback-success {
+            color: #00ff00;
+            animation: fadeIn 0.5s;
+        }
+        
+        .feedback-error {
+            color: #ff4444;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .next-btn {
+            background: gold;
+            color: #1a1a2e;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 20px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .next-btn:hover:not(:disabled) {
+            background: #ffaa00;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px gold;
+        }
+        
+        .next-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .restart-btn {
+            background: transparent;
+            color: white;
+            border: 1px solid gold;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        
+        .restart-btn:hover {
+            background: gold;
+            color: #1a1a2e;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .ending-screen {
+            text-align: center;
+            color: white;
+            padding: 30px;
+        }
+        
+        .ending-screen h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px gold;
+        }
+        
+        .ending-screen img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 3px solid gold;
+        }
+        
+        .ending-screen p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        /* Админ-панель (скрыта по умолчанию) */
+        .admin-panel {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid gold;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            color: white;
+        }
+        
+        .admin-panel h3 {
+            color: gold;
+            margin-bottom: 15px;
+        }
+        
+        .admin-panel input, .admin-panel textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            background: #333;
+            border: 1px solid gold;
+            color: white;
+            border-radius: 5px;
+        }
+        
+        .admin-panel button {
+            background: gold;
+            color: #1a1a2e;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .admin-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: gold;
+            border: 1px solid gold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <button class="admin-toggle" onclick="toggleAdminPanel()">⚙️ Админ-панель</button>
+    
+    <div class="game-container" id="gameContainer">
+        <!-- Дашборд -->
+        <div class="dashboard" id="dashboard">
+            <div class="resource economy">
+                <div class="resource-title">💰 ЭКОНОМИКА</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="economyFill" style="width: 50%"></div>
+                </div>
+                <div class="resource-value" id="economyValue">50</div>
+            </div>
+            <div class="resource science">
+                <div class="resource-title">📚 НАУКА</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="scienceFill" style="width: 50%"></div>
+                </div>
+                <div class="resource-value" id="scienceValue">50</div>
+            </div>
+            <div class="resource army">
+                <div class="resource-title">⚔️ АРМИЯ</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="armyFill" style="width: 50%"></div>
+                </div>
+                <div class="resource-value" id="armyValue">50</div>
+            </div>
+        </div>
+        
+        <!-- Игровая область -->
+        <div class="game-area" id="gameArea">
+            <!-- Сюда будет подгружаться текущий слайд -->
+        </div>
+        
+        <!-- Админ-панель (скрыта) -->
+        <div class="admin-panel hidden" id="adminPanel">
+            <h3>⚙️ НАСТРОЙКИ ИГРЫ (РЕДАКТОР)</h3>
+            
+            <h4>Стартовые значения</h4>
+            <label>Экономика (0-100):</label>
+            <input type="number" id="startEconomy" value="50" min="0" max="100">
+            <label>Наука (0-100):</label>
+            <input type="number" id="startScience" value="50" min="0" max="100">
+            <label>Армия (0-100):</label>
+            <input type="number" id="startArmy" value="50" min="0" max="100">
+            
+            <h4>Названия характеристик</h4>
+            <label>Экономика:</label>
+            <input type="text" id="nameEconomy" value="Экономика">
+            <label>Наука:</label>
+            <input type="text" id="nameScience" value="Наука">
+            <label>Армия:</label>
+            <input type="text" id="nameArmy" value="Армия">
+            
+            <h4>Коэффициенты сложности</h4>
+            <label>Множитель изменений (0.5 - 2.0):</label>
+            <input type="number" id="difficultyMultiplier" value="1.0" min="0.5" max="2.0" step="0.1">
+            
+            <h4>Тексты концовок</h4>
+            <label>Концовка Экономиста:</label>
+            <textarea id="endingEconomyText" rows="2">Ты построил торговую империю! Корабли со всего мира прибывают в твой порт. Город утопает в золоте и роскоши.</textarea>
+            <label>Концовка Ученого:</label>
+            <textarea id="endingScienceText" rows="2">Великая академия магии открыта! Ученые со всего света едут к тебе. Знания стали главной силой города.</textarea>
+            <label>Концовка Воина:</label>
+            <textarea id="endingArmyText" rows="2">Враг разбит! Твоя армия непобедима. Никто не посмеет угрожать Цитадели. Слава Императору!</textarea>
+            
+            <button onclick="applySettings()">Применить настройки</button>
+            <button onclick="resetToDefault()">Сброс</button>
+            <button onclick="toggleAdminPanel()">Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // НАСТРАИВАЕМЫЕ ПАРАМЕТРЫ (для учителя/админа)
+        // ==========================================
+        const CONFIG = {
+            // Стартовые значения
+            startValues: {
+                economy: 50,
+                science: 50,
+                army: 50
+            },
+            
+            // Названия характеристик (можно менять)
+            names: {
+                economy: "Экономика",
+                science: "Наука",
+                army: "Армия"
+            },
+            
+            // Коэффициент сложности (множитель изменений)
+            difficultyMultiplier: 1.0,
+            
+            // Тексты концовок (можно редактировать)
+            endings: {
+                economy: "Ты построил торговую империю! Корабли со всего мира прибывают в твой порт. Город утопает в золоте и роскоши.",
+                science: "Великая академия магии открыта! Ученые со всего света едут к тебе. Знания стали главной силой города.",
+                army: "Враг разбит! Твоя армия непобедима. Никто не посмеет угрожать Цитадели. Слава Императору!"
+            },
+            
+            // Изображения для концовок (можно заменить на свои URL)
+            images: {
+                economy: "https://via.placeholder.com/800x400/ffd700/000000?text=Торговая+Империя",
+                science: "https://via.placeholder.com/800x400/00ffff/000000?text=Академия+Магии",
+                army: "https://via.placeholder.com/800x400/ff4444/000000?text=Военная+Империя"
+            }
+        };
+        
+        // ==========================================
+        // ИГРОВЫЕ СОБЫТИЯ (10 штук + финалы)
+        // ==========================================
+        const GAME_DATA = {
+            // Текущие значения ресурсов
+            resources: {
+                economy: 50,
+                science: 50,
+                army: 50
+            },
+            
+            // Текущий слайд (0 - титульный, 1-10 - события, 11-13 - концовки)
+            currentSlide: 0,
+            
+            // История выбора (для аналитики)
+            history: [],
+            
+            // События (10 проблем по русскому языку)
+            events: [
+                {
+                    id: 1,
+                    situation: "Писарь принес указ для городской площади. Но допустил ошибки. Как поступишь?",
+                    errorText: "\"Жители города! Завтра состоится собрание на центральнай площади. Явка обязательна для всех горожан.\"",
+                    choices: [
+                        {
+                            title: "Исправить ошибки",
+                            description: "Найди ошибки и накажи писаря",
+                            modifiers: { economy: 5, science: 10, army: -5 },
+                            feedback: "Ты нашел ошибки в словах 'центральнай' (правильно: центральной) и проверил 'горожан' (ошибки нет!)",
+                            correctAnswer: "центральнай → центральной"
+                        },
+                        {
+                            title: "Оставить как есть",
+                            description: "Не тратить время на исправление",
+                            modifiers: { economy: -5, science: -5, army: 10 },
+                            feedback: "Народ посмеялся над безграмотным указом. Авторитет упал.",
+                            correctAnswer: "Ошибка осталась: центральнай"
+                        },
+                        {
+                            title: "Казнить писаря",
+                            description: "Жестоко, но назидательно",
+                            modifiers: { economy: -10, science: 5, army: 15 },
+                            feedback: "Все боятся ошибаться. Но казна потрачена на палача.",
+                            correctAnswer: "Радикальное решение"
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    situation: "Нужно отправить важное письмо соседнему королю. От грамотности зависит, поймут ли нас правильно.",
+                    errorText: "\"Уважаемый король! Предлогаем заключить мирный договор. Наши армии могуг стать союзниками.\"",
+                    choices: [
+                        {
+                            title: "Исправить 'предлогаем'",
+                            description: "Найди ошибку в приставке",
+                            modifiers: { economy: -10, science: 20, army: 0 },
+                            feedback: "Правильно: ПРЕДЛАГАЕМ (корень -лаг-/-лож-)",
+                            correctAnswer: "предлогаем → предлагаем"
+                        },
+                        {
+                            title: "Исправить 'могуг'",
+                            description: "Найди ошибку в окончании",
+                            modifiers: { economy: -5, science: 15, army: -5 },
+                            feedback: "Правильно: МОГУТ (3 лицо, мн.ч., I спряжение)",
+                            correctAnswer: "могуг → могут"
+                        },
+                        {
+                            title: "Отправить как есть",
+                            description: "Пусть читают как хотят",
+                            modifiers: { economy: 10, science: -15, army: -5 },
+                            feedback: "Король обиделся на безграмотность. Отношения испорчены.",
+                            correctAnswer: "Обе ошибки остались"
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    situation: "Разведчики принесли шифровку. Но в ней ошибки, из-за которых можно неправильно понять врага.",
+                    errorText: "\"Враг собираеться напасть на рассвете. У них около тысячи салдат и много конницы.\"",
+                    choices: [
+                        {
+                            title: "Исправить 'собираеться'",
+                            description: "Найди ошибку в -тся/-ться",
+                            modifiers: { economy: -5, science: 10, army: 5 },
+                            feedback: "Правильно: СОБИРАЕТСЯ (что делает? без Ь)",
+                            correctAnswer: "собираеться → собирается"
+                        },
+                        {
+                            title: "Исправить 'салдат'",
+                            description: "Найди ошибку в слове 'солдат'",
+                            modifiers: { economy: -10, science: 5, army: 15 },
+                            feedback: "Правильно: СОЛДАТ (словарное слово)",
+                            correctAnswer: "салдат → солдат"
+                        },
+                        {
+                            title: "Расшифровать оба слова",
+                            description: "Найди обе ошибки",
+                            modifiers: { economy: -20, science: 20, army: 10 },
+                            feedback: "Идеальная расшифровка! Враг будет разбит.",
+                            correctAnswer: "Обе ошибки исправлены"
+                        }
+                    ]
+                },
+                {
+                    id: 4,
+                    situation: "Казначей предлагает новый указ о налогах. Но есть сомнения в его грамотности.",
+                    errorText: "\"Каждый горожанин обязан уплатить налог до пятнадцатого декабря. Неуплата грозит штраффом или тюрьмой.\"",
+                    choices: [
+                        {
+                            title: "Утвердить указ",
+                            description: "Сэкономить время",
+                            modifiers: { economy: 15, science: -15, army: -5 },
+                            feedback: "Народ не понял, сколько платить. Сбор налогов провален.",
+                            correctAnswer: "Ошибка: штраффом → штрафом"
+                        },
+                        {
+                            title: "Исправить 'штраффом'",
+                            description: "Двойная буква Ф",
+                            modifiers: { economy: -5, science: 15, army: -5 },
+                            feedback: "Правильно: ШТРАФОМ (одна Ф)",
+                            correctAnswer: "штраффом → штрафом"
+                        },
+                        {
+                            title: "Переписать полностью",
+                            description: "Найди все ошибки",
+                            modifiers: { economy: -15, science: 20, army: 5 },
+                            feedback: "Идеальный указ. Налоги собраны полностью.",
+                            correctAnswer: "Все ошибки исправлены"
+                        }
+                    ]
+                },
+                {
+                    id: 5,
+                    situation: "Летописец закончил новую главу истории города. Но допустил ошибки в датах и событиях.",
+                    errorText: "\"В тысяча восьмисотом году город основал князь Олег. С тех пор прошло много лет, город рос и развивался.\"",
+                    choices: [
+                        {
+                            title: "Оставить как есть",
+                            description: "История не главное",
+                            modifiers: { economy: 5, science: -20, army: 5 },
+                            feedback: "Потомки будут смеяться над твоей безграмотностью.",
+                            correctAnswer: "Ошибка: князь Олег жил в IX-X веках"
+                        },
+                        {
+                            title: "Исправить дату",
+                            description: "Найди историческую ошибку",
+                            modifiers: { economy: -5, science: 15, army: -5 },
+                            feedback: "Ты нашел фактическую ошибку! Олег не мог жить в 1800 году.",
+                            correctAnswer: "Князь Олег → IX-X века"
+                        },
+                        {
+                            title: "Проверить все факты",
+                            description: "Полная экспертиза",
+                            modifiers: { economy: -10, science: 25, army: -10 },
+                            feedback: "Летопись восстановлена. История города сохранится в веках.",
+                            correctAnswer: "Все ошибки исправлены"
+                        }
+                    ]
+                },
+                {
+                    id: 6,
+                    situation: "Купцы принесли договор. От его правильного понимания зависит экономика города.",
+                    errorText: "\"Продавец обязуется передать товар, а покупатель обязуется принять товар и уплатить за него цену в течении трех дней.\"",
+                    choices: [
+                        {
+                            title: "Подписать быстро",
+                            description: "Главное — сделка",
+                            modifiers: { economy: 20, science: -15, army: -5 },
+                            feedback: "Потом суды разбирали ошибку полгода. Издержки огромны.",
+                            correctAnswer: "Ошибка: в течении → в течение"
+                        },
+                        {
+                            title: "Исправить 'в течении'",
+                            description: "Найди ошибку в предлоге",
+                            modifiers: { economy: -5, science: 15, army: 0 },
+                            feedback: "Правильно: В ТЕЧЕНИЕ трех дней (предлог времени)",
+                            correctAnswer: "в течении → в течение"
+                        },
+                        {
+                            title: "Отправить к юристам",
+                            description: "Полная экспертиза",
+                            modifiers: { economy: -15, science: 20, army: -5 },
+                            feedback: "Договор идеален. Торговля процветает.",
+                            correctAnswer: "Все ошибки исправлены"
+                        }
+                    ]
+                },
+                {
+                    id: 7,
+                    situation: "Твоя речь перед горожанами. Нужно говорить грамотно, чтобы тебя уважали.",
+                    errorText: "\"Дорогие сограждане! Мы построим великий город. Никто не сможет нас побеить, потому что мы едины!\"",
+                    choices: [
+                        {
+                            title: "Сказать как есть",
+                            description: "Искренность важнее",
+                            modifiers: { economy: -10, science: -10, army: 15 },
+                            feedback: "Народ посмеялся. Но армии понравился твой пыл.",
+                            correctAnswer: "Ошибка: побеить → победить"
+                        },
+                        {
+                            title: "Исправить 'побеить'",
+                            description: "Найди ошибку в глаголе",
+                            modifiers: { economy: 0, science: 15, army: 5 },
+                            feedback: "Правильно: ПОБЕДИТЬ (словарное слово)",
+                            correctAnswer: "побеить → победить"
+                        },
+                        {
+                            title: "Написать речь с учеными",
+                            description: "Идеальный текст",
+                            modifiers: { economy: -10, science: 20, army: 10 },
+                            feedback: "Речь великолепна! Народ рукоплещет.",
+                            correctAnswer: "Все ошибки исправлены"
+                        }
+                    ]
+                },
+                {
+                    id: 8,
+                    situation: "Пришло письмо от союзников. Но оно на плохом русском. Может, это ловушка?",
+                    errorText: "\"Дорогие друзя! Предлогаем вам союз против общего врага. Ждем ответа с гонцом.\"",
+                    choices: [
+                        {
+                            title: "Ответить согласием",
+                            description: "Неважно, как написано",
+                            modifiers: { economy: 10, science: -20, army: 15 },
+                            feedback: "Это были мошенники! Ты попал в ловушку.",
+                            correctAnswer: "Ошибки: друзя → друзья, предлогаем → предлагаем"
+                        },
+                        {
+                            title: "Исправить ошибки в ответе",
+                            description: "Показать свою грамотность",
+                            modifiers: { economy: -5, science: 15, army: -5 },
+                            feedback: "Союзники оценили твою грамотность. Союз заключен.",
+                            correctAnswer: "друзя → друзья"
+                        },
+                        {
+                            title: "Заподозрить обман",
+                            description: "Грамотный правитель так не пишет",
+                            modifiers: { economy: -15, science: 10, army: 20 },
+                            feedback: "Ты раскрыл шпионов! Враги обезврежены.",
+                            correctAnswer: "Обе ошибки указывают на обман"
+                        }
+                    ]
+                },
+                {
+                    id: 9,
+                    situation: "Умирающий мудрец диктует завещание. Но он стар и делает ошибки.",
+                    errorText: "\"Свою библиотеку завещаю городу. Ключь от сундука с книгами спрятан в тайнике.\"",
+                    choices: [
+                        {
+                            title: "Записать дословно",
+                            description: "Уважение к старцу",
+                            modifiers: { economy: -5, science: -10, army: 5 },
+                            feedback: "Ключ не нашли. Библиотека потеряна навсегда.",
+                            correctAnswer: "Ошибка: ключь → ключ"
+                        },
+                        {
+                            title: "Исправить 'ключь'",
+                            description: "Найди ошибку в мягком знаке",
+                            modifiers: { economy: 0, science: 15, army: 0 },
+                            feedback: "Правильно: КЛЮЧ (мужской род, без Ь). Библиотека спасена!",
+                            correctAnswer: "ключь → ключ"
+                        },
+                        {
+                            title: "Проверить тайник",
+                            description: "Найди ошибку и проверь факты",
+                            modifiers: { economy: -10, science: 20, army: -5 },
+                            feedback: "Ты нашел и ошибку, и тайник. Книги достались городу.",
+                            correctAnswer: "Ошибка исправлена, сокровища найдены"
+                        }
+                    ]
+                },
+                {
+                    id: 10,
+                    situation: "Город в опасности. Твое последнее слово решит судьбу. Скажи его без ошибок!",
+                    errorText: "\"Кто с мечем к нам придет, тот от меча и погибнет!\"",
+                    choices: [
+                        {
+                            title: "Сказать эту фразу",
+                            description: "Классика, все поймут",
+                            modifiers: { economy: -5, science: -10, army: 20 },
+                            feedback: "Армия воодушевлена! Но ученые морщатся от ошибки.",
+                            correctAnswer: "Ошибка: с мечем → с мечом"
+                        },
+                        {
+                            title: "Исправить 'мечем'",
+                            description: "Найди ошибку в падеже",
+                            modifiers: { economy: -5, science: 15, army: 10 },
+                            feedback: "Правильно: С МЕЧОМ (творительный падеж). Ты гениален!",
+                            correctAnswer: "с мечем → с мечом"
+                        },
+                        {
+                            title: "Придумать свою речь",
+                            description: "Творческий подход",
+                            modifiers: { economy: 10, science: 20, army: -5 },
+                            feedback: "Твоя речь войдет в историю. Ты великий оратор!",
+                            correctAnswer: "Оригинальное решение"
+                        }
+                    ]
+                }
+            ],
+            
+            // Концовки
+            endings: {
+                economy: {
+                    title: "💰 ЭКОНОМИСТ",
+                    text: CONFIG.endings.economy,
+                    image: CONFIG.images.economy
+                },
+                science: {
+                    title: "📚 УЧЕНЫЙ",
+                    text: CONFIG.endings.science,
+                    image: CONFIG.images.science
+                },
+                army: {
+                    title: "⚔️ ВОИН",
+                    text: CONFIG.endings.army,
+                    image: CONFIG.images.army
+                }
+            }
+        };
+        
+        // ==========================================
+        // ИНИЦИАЛИЗАЦИЯ ИГРЫ
+        // ==========================================
+        let currentEventIndex = 0;
+        let choiceMade = false;
+        
+        function initGame() {
+            // Устанавливаем стартовые значения из конфига
+            GAME_DATA.resources.economy = CONFIG.startValues.economy;
+            GAME_DATA.resources.science = CONFIG.startValues.science;
+            GAME_DATA.resources.army = CONFIG.startValues.army;
+            
+            // Обновляем названия характеристик
+            document.querySelector('.economy .resource-title').innerHTML = `💰 ${CONFIG.names.economy}`;
+            document.querySelector('.science .resource-title').innerHTML = `📚 ${CONFIG.names.science}`;
+            document.querySelector('.army .resource-title').innerHTML = `⚔️ ${CONFIG.names.army}`;
+            
+            // Обновляем дашборд
+            updateDashboard();
+            
+            // Показываем первое событие
+            currentEventIndex = 0;
+            renderEvent(currentEventIndex);
+        }
+        
+        function updateDashboard() {
+            // Обновляем значения
+            document.getElementById('economyValue').textContent = GAME_DATA.resources.economy;
+            document.getElementById('scienceValue').textContent = GAME_DATA.resources.science;
+            document.getElementById('armyValue').textContent = GAME_DATA.resources.army;
+            
+            // Обновляем ширину полосок (в процентах)
+            document.getElementById('economyFill').style.width = GAME_DATA.resources.economy + '%';
+            document.getElementById('scienceFill').style.width = GAME_DATA.resources.science + '%';
+            document.getElementById('armyFill').style.width = GAME_DATA.resources.army + '%';
+            
+            // Проверяем на критические значения (0 или 100)
+            checkCriticalValues();
+        }
+        
+        function checkCriticalValues() {
+            const resources = ['economy', 'science', '
