@@ -3,494 +3,781 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Цитадель Решений - Образовательный квест</title>
+    <title>ЦИТАДЕЛЬ РЕШЕНИЙ - ИГРА</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', 'MedievalSharp', cursive, Arial;
         }
         
         body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: #0a0c14;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 10px;
         }
         
-        .game-container {
-            max-width: 1000px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+        /* ОСНОВНОЙ КОНТЕЙНЕР ИГРЫ */
+        .game-wrapper {
+            width: 1200px;
+            max-width: 100%;
+            background: linear-gradient(145deg, #1e2a3a 0%, #0f1a24 100%);
+            border-radius: 30px;
+            padding: 20px;
+            box-shadow: 0 25px 50px -8px rgba(0,0,0,0.8), inset 0 2px 5px rgba(255,215,0,0.2);
+            border: 2px solid #aa8c5e;
+            position: relative;
+        }
+        
+        /* ДЕКОРАТИВНЫЙ УЗОР ПО КРАЯМ */
+        .game-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px solid rgba(170, 140, 94, 0.3);
             border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 215, 0, 0.3);
+            pointer-events: none;
         }
         
-        /* Дашборд */
+        /* ЗАГОЛОВОК С ГЕРБОМ */
+        .game-header {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .game-header h1 {
+            font-size: 3rem;
+            background: linear-gradient(180deg, #f5e6b3 0%, #d4af37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.7), 0 0 20px #ffd700;
+            letter-spacing: 4px;
+            font-weight: bold;
+            position: relative;
+            display: inline-block;
+            padding: 0 60px;
+        }
+        
+        .game-header h1::before, .game-header h1::after {
+            content: "⚔️";
+            font-size: 2rem;
+            position: absolute;
+            top: 10px;
+            color: #d4af37;
+            text-shadow: 0 0 10px gold;
+        }
+        
+        .game-header h1::before { left: 0; }
+        .game-header h1::after { right: 0; content: "🛡️"; }
+        
+        .game-header p {
+            color: #b8a07c;
+            font-style: italic;
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+        
+        /* ДАШБОРД РЕСУРСОВ */
         .dashboard {
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 25px;
-            border: 1px solid gold;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 20px;
+            border: 2px solid #5a4a3a;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
         }
         
-        .resource {
-            text-align: center;
+        .resource-card {
+            background: linear-gradient(145deg, #2a3745 0%, #1a2530 100%);
+            border-radius: 15px;
+            padding: 15px;
+            border: 1px solid #aa8c5e;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .resource-card::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+        
+        .resource-card:hover::after {
+            opacity: 1;
         }
         
         .resource-title {
-            color: white;
-            font-size: 1.2rem;
-            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            color: #f5e6b3;
+            margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 2px;
-            text-shadow: 0 0 10px currentColor;
+            border-bottom: 1px solid #5a4a3a;
+            padding-bottom: 10px;
         }
         
-        .economy .resource-title { color: #ffd700; }
-        .science .resource-title { color: #00ffff; }
-        .army .resource-title { color: #ff4444; }
+        .resource-icon {
+            font-size: 2rem;
+        }
         
-        .progress-bar {
+        .progress-container {
             width: 100%;
             height: 25px;
-            background: rgba(255, 255, 255, 0.1);
+            background: #1a1f2a;
             border-radius: 15px;
+            border: 2px solid #3a3f4a;
             overflow: hidden;
-            margin-bottom: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 10px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
         }
         
         .progress-fill {
             height: 100%;
             width: 50%;
-            transition: width 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 15px;
+            position: relative;
+            background-size: 30px 30px;
+            background-image: linear-gradient(
+                45deg,
+                rgba(255,255,255,0.2) 25%,
+                transparent 25%,
+                transparent 50%,
+                rgba(255,255,255,0.2) 50%,
+                rgba(255,255,255,0.2) 75%,
+                transparent 75%,
+                transparent
+            );
+            animation: moveStripes 1s linear infinite;
         }
         
-        .economy .progress-fill { background: linear-gradient(90deg, #ffd700, #ffaa00); }
-        .science .progress-fill { background: linear-gradient(90deg, #00ffff, #0088ff); }
-        .army .progress-fill { background: linear-gradient(90deg, #ff4444, #ff0000); }
+        @keyframes moveStripes {
+            0% { background-position: 0 0; }
+            100% { background-position: 30px 0; }
+        }
+        
+        .economy-fill { background: linear-gradient(90deg, #ffd700, #ffaa00); }
+        .science-fill { background: linear-gradient(90deg, #00ffff, #0088ff); }
+        .army-fill { background: linear-gradient(90deg, #ff4444, #cc0000); }
         
         .resource-value {
-            color: white;
-            font-size: 1.5rem;
+            font-size: 2.2rem;
             font-weight: bold;
-            text-shadow: 0 0 10px currentColor;
-        }
-        
-        .warning-icon {
-            display: inline-block;
-            margin-left: 5px;
-            animation: pulse 1s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 0.5; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
-            100% { opacity: 0.5; transform: scale(1); }
-        }
-        
-        /* Игровая область */
-        .game-area {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 15px;
-            padding: 25px;
-            border: 1px solid rgba(255, 215, 0, 0.5);
-        }
-        
-        .situation {
-            color: white;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            line-height: 1.6;
             text-align: center;
-            font-style: italic;
-            background: rgba(0, 0, 0, 0.3);
+            color: #f5e6b3;
+            text-shadow: 0 0 15px currentColor;
+            letter-spacing: 2px;
+        }
+        
+        .economy-value { color: #ffd700; }
+        .science-value { color: #00ffff; }
+        .army-value { color: #ff4444; }
+        
+        /* ОБЛАСТЬ С ПЕРСОНАЖЕМ */
+        .character-area {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
             padding: 15px;
+            border: 2px solid #5a4a3a;
+            min-height: 180px;
+        }
+        
+        .character-portrait {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(145deg, #3a4a5a 0%, #1a2a3a 100%);
+            border-radius: 50%;
+            border: 4px solid #d4af37;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.8), 0 0 30px #ffd700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 5rem;
+            position: relative;
+            overflow: hidden;
+            animation: glow 3s infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 10px 20px rgba(0,0,0,0.8), 0 0 30px #ffd700; }
+            50% { box-shadow: 0 10px 20px rgba(0,0,0,0.8), 0 0 50px #ffaa00; }
+        }
+        
+        .character-portrait::after {
+            content: "";
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .character-info {
+            flex: 1;
+            color: #f0e6d2;
+            padding: 10px;
+            position: relative;
+        }
+        
+        .character-name {
+            font-size: 2rem;
+            color: #d4af37;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            border-bottom: 1px solid #5a4a3a;
+            padding-bottom: 5px;
+        }
+        
+        .character-title {
+            font-size: 1.2rem;
+            color: #b8a07c;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        
+        .character-speech {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border-radius: 15px;
+            border-left: 5px solid #d4af37;
+            position: relative;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+        
+        .character-speech::before {
+            content: "❝";
+            font-size: 3rem;
+            position: absolute;
+            top: -10px;
+            left: 5px;
+            color: rgba(212, 175, 55, 0.3);
+            font-family: serif;
+        }
+        
+        /* КАРТА/ЛОКАЦИЯ */
+        .location-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            background: #1a2530;
+            padding: 8px 15px;
+            border-radius: 30px;
+            border: 1px solid #5a4a3a;
+            width: fit-content;
+        }
+        
+        .location-icon {
+            font-size: 1.3rem;
+        }
+        
+        .location-name {
+            color: #d4af37;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .location-step {
+            background: #d4af37;
+            color: #1a1a2e;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        /* КОНТЕЙНЕР ЗАДАНИЯ */
+        .quest-container {
+            background: linear-gradient(145deg, #2a3a4a 0%, #1a2a3a 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 2px solid #aa8c5e;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 10px 20px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        .quest-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+        }
+        
+        .quest-title {
+            font-size: 1.8rem;
+            color: #f5e6b3;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .quest-text {
+            font-size: 1.2rem;
+            color: #e0d6c0;
+            margin-bottom: 20px;
+            line-height: 1.8;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
             border-radius: 10px;
-            border-left: 3px solid gold;
+            border: 1px dashed #aa8c5e;
         }
         
         .error-text {
-            color: #ffaa00;
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
             font-size: 1.3rem;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 15px;
+            color: #ffaa00;
+            background: rgba(30, 20, 10, 0.9);
+            padding: 20px;
             border-radius: 10px;
             margin-bottom: 20px;
+            border: 2px solid #b8860b;
             text-align: center;
-            border: 1px dashed #ffaa00;
+            letter-spacing: 1px;
+            box-shadow: 0 0 20px rgba(255, 140, 0, 0.3);
+            position: relative;
         }
         
-        .choices {
+        .error-text::before {
+            content: "⚠️";
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            font-size: 2rem;
+            background: #1a2a3a;
+            padding: 5px 10px;
+            border-radius: 50%;
+            border: 2px solid #b8860b;
+        }
+        
+        /* КНОПКИ ВЫБОРА */
+        .choices-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+            gap: 20px;
             margin-bottom: 20px;
         }
         
-        .choice-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 10px;
-            padding: 20px 15px;
-            color: white;
+        .choice-card {
+            background: linear-gradient(145deg, #2a3745 0%, #1e2a36 100%);
+            border: 2px solid #5a4a3a;
+            border-radius: 15px;
+            padding: 20px;
             cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            text-align: center;
         }
         
-        .choice-btn:hover:not(:disabled) {
-            background: rgba(255, 215, 0, 0.2);
-            border-color: gold;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        .choice-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.2), transparent);
+            transition: left 0.5s;
         }
         
-        .choice-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
+        .choice-card:hover {
+            transform: translateY(-5px);
+            border-color: #d4af37;
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+        }
+        
+        .choice-card:hover::before {
+            left: 100%;
+        }
+        
+        .choice-card:active {
+            transform: translateY(2px);
+        }
+        
+        .choice-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
         }
         
         .choice-title {
-            font-size: 1.1rem;
-            font-weight: bold;
+            font-size: 1.3rem;
+            color: #d4af37;
             margin-bottom: 10px;
-            color: gold;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .choice-desc {
+            color: #b8a07c;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            min-height: 40px;
         }
         
         .choice-modifiers {
-            font-size: 0.8rem;
-            color: #aaa;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            border-top: 1px solid #5a4a3a;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
         
-        .choice-modifiers span {
-            display: inline-block;
-            margin: 0 5px;
+        .modifier {
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: bold;
         }
         
-        .modifier-positive { color: #00ff00; }
-        .modifier-negative { color: #ff4444; }
+        .modifier-positive {
+            background: rgba(0, 255, 0, 0.2);
+            color: #a5d6a5;
+            border: 1px solid #00aa00;
+        }
         
+        .modifier-negative {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ffaaaa;
+            border: 1px solid #aa0000;
+        }
+        
+        /* ОБЛАСТЬ ОБРАТНОЙ СВЯЗИ */
         .feedback-area {
-            min-height: 50px;
-            margin-top: 20px;
-            text-align: center;
+            min-height: 70px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #d4af37;
             font-size: 1.1rem;
-            transition: all 0.3s;
+            color: #f0e6d2;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.5s;
         }
         
-        .feedback-success {
-            color: #00ff00;
-            animation: fadeIn 0.5s;
+        .feedback-icon {
+            font-size: 2rem;
+            min-width: 50px;
+            text-align: center;
         }
         
-        .feedback-error {
-            color: #ff4444;
-            animation: shake 0.5s;
-        }
+        .feedback-success { border-left-color: #00ff00; background: rgba(0, 255, 0, 0.1); }
+        .feedback-error { border-left-color: #ff4444; background: rgba(255, 0, 0, 0.1); }
+        .feedback-warning { border-left-color: #ffaa00; background: rgba(255, 165, 0, 0.1); }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-        
+        /* КНОПКА ДАЛЕЕ */
         .next-btn {
-            background: gold;
+            background: linear-gradient(145deg, #d4af37 0%, #b8860b 100%);
             color: #1a1a2e;
             border: none;
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 18px 40px;
+            font-size: 1.3rem;
             font-weight: bold;
-            border-radius: 10px;
+            border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s;
             display: block;
             margin: 20px auto 0;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            border: 2px solid #f5e6b3;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5), 0 0 30px #ffd700;
+            position: relative;
+            overflow: hidden;
         }
         
-        .next-btn:hover:not(:disabled) {
-            background: #ffaa00;
+        .next-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            transition: left 0.5s;
+        }
+        
+        .next-btn:hover::before {
+            left: 100%;
+        }
+        
+        .next-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 20px gold;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6), 0 0 50px #ffaa00;
         }
         
         .next-btn:disabled {
-            opacity: 0.3;
+            opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
         
-        .restart-btn {
-            background: transparent;
-            color: white;
-            border: 1px solid gold;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 20px;
+        /* АНИМАЦИИ */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
         
-        .restart-btn:hover {
-            background: gold;
-            color: #1a1a2e;
+        .bounce {
+            animation: bounce 1s infinite;
         }
         
         .hidden {
             display: none;
         }
         
+        /* ФИНАЛЬНЫЙ ЭКРАН */
         .ending-screen {
             text-align: center;
-            color: white;
-            padding: 30px;
+            padding: 40px;
+            background: linear-gradient(145deg, #1a2a3a 0%, #0a1a2a 100%);
+            border-radius: 20px;
+            border: 3px solid #d4af37;
+            margin-top: 20px;
         }
         
         .ending-screen h2 {
-            font-size: 2.5rem;
+            font-size: 3rem;
+            color: #d4af37;
             margin-bottom: 20px;
-            text-shadow: 0 0 20px gold;
+            text-shadow: 0 0 30px gold;
         }
         
         .ending-screen img {
             max-width: 100%;
-            border-radius: 10px;
+            max-height: 300px;
+            border-radius: 15px;
             margin-bottom: 20px;
-            border: 3px solid gold;
+            border: 3px solid #aa8c5e;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
         }
         
         .ending-screen p {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        
-        /* Админ-панель (скрыта по умолчанию) */
-        .admin-panel {
-            background: rgba(0, 0, 0, 0.9);
-            border: 1px solid gold;
-            border-radius: 10px;
+            font-size: 1.3rem;
+            color: #f0e6d2;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.4);
             padding: 20px;
-            margin-top: 20px;
-            color: white;
+            border-radius: 10px;
         }
         
-        .admin-panel h3 {
-            color: gold;
-            margin-bottom: 15px;
-        }
-        
-        .admin-panel input, .admin-panel textarea {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            background: #333;
-            border: 1px solid gold;
-            color: white;
-            border-radius: 5px;
-        }
-        
-        .admin-panel button {
-            background: gold;
+        .restart-btn {
+            background: #d4af37;
             color: #1a1a2e;
             border: none;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 30px;
             cursor: pointer;
             font-weight: bold;
-            margin-right: 10px;
+            border: 2px solid #f5e6b3;
+            transition: all 0.3s;
         }
         
-        .admin-toggle {
-            position: fixed;
-            top: 10px;
-            right: 10px;
+        .restart-btn:hover {
+            background: #f5e6b3;
+            transform: scale(1.05);
+            box-shadow: 0 0 30px gold;
+        }
+        
+        /* АДАПТАЦИЯ ДЛЯ ТЕЛЕФОНОВ */
+        @media (max-width: 768px) {
+            .dashboard { grid-template-columns: 1fr; }
+            .choices-grid { grid-template-columns: 1fr; }
+            .character-area { flex-direction: column; align-items: center; }
+            .game-header h1 { font-size: 2rem; }
+        }
+        
+        /* СЧЁТЧИК ХОДОВ */
+        .turn-counter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
             background: rgba(0, 0, 0, 0.5);
-            color: gold;
-            border: 1px solid gold;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            z-index: 1000;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid #5a4a3a;
+        }
+        
+        .turn-text {
+            color: #b8a07c;
+            font-size: 1.1rem;
+        }
+        
+        .turn-number {
+            background: #d4af37;
+            color: #1a1a2e;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        /* ИНВЕНТАРЬ/ДОСТИЖЕНИЯ */
+        .inventory {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .achievement {
+            width: 40px;
+            height: 40px;
+            background: #2a3a4a;
+            border: 2px solid #5a4a3a;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.3rem;
+            color: #b8a07c;
+            transition: all 0.3s;
+        }
+        
+        .achievement-earned {
+            border-color: #d4af37;
+            color: #d4af37;
+            box-shadow: 0 0 15px gold;
         }
     </style>
 </head>
 <body>
-    <button class="admin-toggle" onclick="toggleAdminPanel()">⚙️ Админ-панель</button>
-    
-    <div class="game-container" id="gameContainer">
-        <!-- Дашборд -->
-        <div class="dashboard" id="dashboard">
-            <div class="resource economy">
-                <div class="resource-title">💰 ЭКОНОМИКА</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="economyFill" style="width: 50%"></div>
-                </div>
-                <div class="resource-value" id="economyValue">50</div>
-            </div>
-            <div class="resource science">
-                <div class="resource-title">📚 НАУКА</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="scienceFill" style="width: 50%"></div>
-                </div>
-                <div class="resource-value" id="scienceValue">50</div>
-            </div>
-            <div class="resource army">
-                <div class="resource-title">⚔️ АРМИЯ</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="armyFill" style="width: 50%"></div>
-                </div>
-                <div class="resource-value" id="armyValue">50</div>
-            </div>
+    <div class="game-wrapper">
+        <!-- ШАПКА С ТИТУЛОМ -->
+        <div class="game-header">
+            <h1>ЦИТАДЕЛЬ РЕШЕНИЙ</h1>
+            <p>Хроники молодого правителя</p>
         </div>
         
-        <!-- Игровая область -->
-        <div class="game-area" id="gameArea">
-            <!-- Сюда будет подгружаться текущий слайд -->
-        </div>
-        
-        <!-- Админ-панель (скрыта) -->
-        <div class="admin-panel hidden" id="adminPanel">
-            <h3>⚙️ НАСТРОЙКИ ИГРЫ (РЕДАКТОР)</h3>
-            
-            <h4>Стартовые значения</h4>
-            <label>Экономика (0-100):</label>
-            <input type="number" id="startEconomy" value="50" min="0" max="100">
-            <label>Наука (0-100):</label>
-            <input type="number" id="startScience" value="50" min="0" max="100">
-            <label>Армия (0-100):</label>
-            <input type="number" id="startArmy" value="50" min="0" max="100">
-            
-            <h4>Названия характеристик</h4>
-            <label>Экономика:</label>
-            <input type="text" id="nameEconomy" value="Экономика">
-            <label>Наука:</label>
-            <input type="text" id="nameScience" value="Наука">
-            <label>Армия:</label>
-            <input type="text" id="nameArmy" value="Армия">
-            
-            <h4>Коэффициенты сложности</h4>
-            <label>Множитель изменений (0.5 - 2.0):</label>
-            <input type="number" id="difficultyMultiplier" value="1.0" min="0.5" max="2.0" step="0.1">
-            
-            <h4>Тексты концовок</h4>
-            <label>Концовка Экономиста:</label>
-            <textarea id="endingEconomyText" rows="2">Ты построил торговую империю! Корабли со всего мира прибывают в твой порт. Город утопает в золоте и роскоши.</textarea>
-            <label>Концовка Ученого:</label>
-            <textarea id="endingScienceText" rows="2">Великая академия магии открыта! Ученые со всего света едут к тебе. Знания стали главной силой города.</textarea>
-            <label>Концовка Воина:</label>
-            <textarea id="endingArmyText" rows="2">Враг разбит! Твоя армия непобедима. Никто не посмеет угрожать Цитадели. Слава Императору!</textarea>
-            
-            <button onclick="applySettings()">Применить настройки</button>
-            <button onclick="resetToDefault()">Сброс</button>
-            <button onclick="toggleAdminPanel()">Закрыть</button>
+        <!-- ОСНОВНОЙ ИГРОВОЙ КОНТЕЙНЕР -->
+        <div id="gameContent">
+            <!-- СЮДА БУДЕТ ПОДГРУЖАТЬСЯ ИГРА -->
         </div>
     </div>
 
     <script>
         // ==========================================
-        // НАСТРАИВАЕМЫЕ ПАРАМЕТРЫ (для учителя/админа)
+        // НАСТРОЙКИ ИГРЫ
         // ==========================================
         const CONFIG = {
-            // Стартовые значения
-            startValues: {
-                economy: 50,
-                science: 50,
-                army: 50
-            },
-            
-            // Названия характеристик (можно менять)
-            names: {
-                economy: "Экономика",
-                science: "Наука",
-                army: "Армия"
-            },
-            
-            // Коэффициент сложности (множитель изменений)
-            difficultyMultiplier: 1.0,
-            
-            // Тексты концовок (можно редактировать)
-            endings: {
-                economy: "Ты построил торговую империю! Корабли со всего мира прибывают в твой порт. Город утопает в золоте и роскоши.",
-                science: "Великая академия магии открыта! Ученые со всего света едут к тебе. Знания стали главной силой города.",
-                army: "Враг разбит! Твоя армия непобедима. Никто не посмеет угрожать Цитадели. Слава Императору!"
-            },
-            
-            // Изображения для концовок (можно заменить на свои URL)
-            images: {
-                economy: "https://via.placeholder.com/800x400/ffd700/000000?text=Торговая+Империя",
-                science: "https://via.placeholder.com/800x400/00ffff/000000?text=Академия+Магии",
-                army: "https://via.placeholder.com/800x400/ff4444/000000?text=Военная+Империя"
-            }
+            startValues: { economy: 50, science: 50, army: 50 },
+            names: { economy: "Экономика", science: "Наука", army: "Армия" },
+            difficultyMultiplier: 1.0
         };
         
         // ==========================================
-        // ИГРОВЫЕ СОБЫТИЯ (10 штук + финалы)
+        // ДАННЫЕ ИГРЫ
         // ==========================================
-        const GAME_DATA = {
-            // Текущие значения ресурсов
-            resources: {
-                economy: 50,
-                science: 50,
-                army: 50
-            },
-            
-            // Текущий слайд (0 - титульный, 1-10 - события, 11-13 - концовки)
-            currentSlide: 0,
-            
-            // История выбора (для аналитики)
+        const GAME = {
+            resources: { economy: 50, science: 50, army: 50 },
+            currentEvent: 0,
+            choiceMade: false,
             history: [],
             
-            // События (10 проблем по русскому языку)
+            // ПЕРСОНАЖ
+            character: {
+                name: "Артур",
+                title: "Молодой Правитель",
+                level: 1,
+                experience: 0,
+                inventory: []
+            },
+            
+            // ЛОКАЦИИ (10 земель)
+            locations: [
+                { name: "Тронный зал", icon: "👑", step: 1 },
+                { name: "Городские ворота", icon: "🏰", step: 2 },
+                { name: "Торговая площадь", icon: "🏪", step: 3 },
+                { name: "Библиотека", icon: "📚", step: 4 },
+                { name: "Казармы", icon: "⚔️", step: 5 },
+                { name: "Порт", icon: "⚓", step: 6 },
+                { name: "Храм", icon: "⛪", step: 7 },
+                { name: "Университет", icon: "🎓", step: 8 },
+                { name: "Крепостная стена", icon: "🏯", step: 9 },
+                { name: "Замковый холм", icon: "🏔️", step: 10 }
+            ],
+            
+            // СОБЫТИЯ (10 заданий)
             events: [
                 {
-                    id: 1,
-                    situation: "Писарь принес указ для городской площади. Но допустил ошибки. Как поступишь?",
+                    location: 0,
+                    title: "Указ правителя",
+                    quest: "Писарь принес указ для городской площади. Но допустил ошибки. Как поступишь?",
                     errorText: "\"Жители города! Завтра состоится собрание на центральнай площади. Явка обязательна для всех горожан.\"",
                     choices: [
                         {
+                            icon: "📝",
                             title: "Исправить ошибки",
-                            description: "Найди ошибки и накажи писаря",
+                            desc: "Найди ошибки и накажи писаря",
                             modifiers: { economy: 5, science: 10, army: -5 },
                             feedback: "Ты нашел ошибки в словах 'центральнай' (правильно: центральной) и проверил 'горожан' (ошибки нет!)",
                             correctAnswer: "центральнай → центральной"
                         },
                         {
+                            icon: "🤷",
                             title: "Оставить как есть",
-                            description: "Не тратить время на исправление",
+                            desc: "Не тратить время на исправление",
                             modifiers: { economy: -5, science: -5, army: 10 },
                             feedback: "Народ посмеялся над безграмотным указом. Авторитет упал.",
                             correctAnswer: "Ошибка осталась: центральнай"
                         },
                         {
+                            icon: "⚔️",
                             title: "Казнить писаря",
-                            description: "Жестоко, но назидательно",
+                            desc: "Жестоко, но назидательно",
                             modifiers: { economy: -10, science: 5, army: 15 },
                             feedback: "Все боятся ошибаться. Но казна потрачена на палача.",
                             correctAnswer: "Радикальное решение"
@@ -498,27 +785,31 @@
                     ]
                 },
                 {
-                    id: 2,
-                    situation: "Нужно отправить важное письмо соседнему королю. От грамотности зависит, поймут ли нас правильно.",
+                    location: 1,
+                    title: "Послание союзникам",
+                    quest: "Нужно отправить важное письмо соседнему королю. От грамотности зависит, поймут ли нас правильно.",
                     errorText: "\"Уважаемый король! Предлогаем заключить мирный договор. Наши армии могуг стать союзниками.\"",
                     choices: [
                         {
+                            icon: "✏️",
                             title: "Исправить 'предлогаем'",
-                            description: "Найди ошибку в приставке",
+                            desc: "Найди ошибку в приставке",
                             modifiers: { economy: -10, science: 20, army: 0 },
                             feedback: "Правильно: ПРЕДЛАГАЕМ (корень -лаг-/-лож-)",
                             correctAnswer: "предлогаем → предлагаем"
                         },
                         {
+                            icon: "🔤",
                             title: "Исправить 'могуг'",
-                            description: "Найди ошибку в окончании",
+                            desc: "Найди ошибку в окончании",
                             modifiers: { economy: -5, science: 15, army: -5 },
                             feedback: "Правильно: МОГУТ (3 лицо, мн.ч., I спряжение)",
                             correctAnswer: "могуг → могут"
                         },
                         {
+                            icon: "📨",
                             title: "Отправить как есть",
-                            description: "Пусть читают как хотят",
+                            desc: "Пусть читают как хотят",
                             modifiers: { economy: 10, science: -15, army: -5 },
                             feedback: "Король обиделся на безграмотность. Отношения испорчены.",
                             correctAnswer: "Обе ошибки остались"
@@ -526,27 +817,31 @@
                     ]
                 },
                 {
-                    id: 3,
-                    situation: "Разведчики принесли шифровку. Но в ней ошибки, из-за которых можно неправильно понять врага.",
+                    location: 2,
+                    title: "Донесение разведчиков",
+                    quest: "Разведчики принесли шифровку. Но в ней ошибки, из-за которых можно неправильно понять врага.",
                     errorText: "\"Враг собираеться напасть на рассвете. У них около тысячи салдат и много конницы.\"",
                     choices: [
                         {
+                            icon: "🔍",
                             title: "Исправить 'собираеться'",
-                            description: "Найди ошибку в -тся/-ться",
+                            desc: "Найди ошибку в -тся/-ться",
                             modifiers: { economy: -5, science: 10, army: 5 },
                             feedback: "Правильно: СОБИРАЕТСЯ (что делает? без Ь)",
                             correctAnswer: "собираеться → собирается"
                         },
                         {
+                            icon: "🛡️",
                             title: "Исправить 'салдат'",
-                            description: "Найди ошибку в слове 'солдат'",
+                            desc: "Найди ошибку в слове 'солдат'",
                             modifiers: { economy: -10, science: 5, army: 15 },
                             feedback: "Правильно: СОЛДАТ (словарное слово)",
                             correctAnswer: "салдат → солдат"
                         },
                         {
+                            icon: "🔮",
                             title: "Расшифровать оба слова",
-                            description: "Найди обе ошибки",
+                            desc: "Найди обе ошибки",
                             modifiers: { economy: -20, science: 20, army: 10 },
                             feedback: "Идеальная расшифровка! Враг будет разбит.",
                             correctAnswer: "Обе ошибки исправлены"
@@ -554,27 +849,31 @@
                     ]
                 },
                 {
-                    id: 4,
-                    situation: "Казначей предлагает новый указ о налогах. Но есть сомнения в его грамотности.",
+                    location: 3,
+                    title: "Налоговая реформа",
+                    quest: "Казначей предлагает новый указ о налогах. Но есть сомнения в его грамотности.",
                     errorText: "\"Каждый горожанин обязан уплатить налог до пятнадцатого декабря. Неуплата грозит штраффом или тюрьмой.\"",
                     choices: [
                         {
+                            icon: "💰",
                             title: "Утвердить указ",
-                            description: "Сэкономить время",
+                            desc: "Сэкономить время",
                             modifiers: { economy: 15, science: -15, army: -5 },
                             feedback: "Народ не понял, сколько платить. Сбор налогов провален.",
                             correctAnswer: "Ошибка: штраффом → штрафом"
                         },
                         {
+                            icon: "✒️",
                             title: "Исправить 'штраффом'",
-                            description: "Двойная буква Ф",
+                            desc: "Двойная буква Ф",
                             modifiers: { economy: -5, science: 15, army: -5 },
                             feedback: "Правильно: ШТРАФОМ (одна Ф)",
                             correctAnswer: "штраффом → штрафом"
                         },
                         {
+                            icon: "📜",
                             title: "Переписать полностью",
-                            description: "Найди все ошибки",
+                            desc: "Найди все ошибки",
                             modifiers: { economy: -15, science: 20, army: 5 },
                             feedback: "Идеальный указ. Налоги собраны полностью.",
                             correctAnswer: "Все ошибки исправлены"
@@ -582,27 +881,31 @@
                     ]
                 },
                 {
-                    id: 5,
-                    situation: "Летописец закончил новую главу истории города. Но допустил ошибки в датах и событиях.",
+                    location: 4,
+                    title: "Летопись города",
+                    quest: "Летописец закончил новую главу истории города. Но допустил ошибки в датах и событиях.",
                     errorText: "\"В тысяча восьмисотом году город основал князь Олег. С тех пор прошло много лет, город рос и развивался.\"",
                     choices: [
                         {
+                            icon: "📖",
                             title: "Оставить как есть",
-                            description: "История не главное",
+                            desc: "История не главное",
                             modifiers: { economy: 5, science: -20, army: 5 },
                             feedback: "Потомки будут смеяться над твоей безграмотностью.",
                             correctAnswer: "Ошибка: князь Олег жил в IX-X веках"
                         },
                         {
+                            icon: "🔎",
                             title: "Исправить дату",
-                            description: "Найди историческую ошибку",
+                            desc: "Найди историческую ошибку",
                             modifiers: { economy: -5, science: 15, army: -5 },
                             feedback: "Ты нашел фактическую ошибку! Олег не мог жить в 1800 году.",
                             correctAnswer: "Князь Олег → IX-X века"
                         },
                         {
+                            icon: "🏛️",
                             title: "Проверить все факты",
-                            description: "Полная экспертиза",
+                            desc: "Полная экспертиза",
                             modifiers: { economy: -10, science: 25, army: -10 },
                             feedback: "Летопись восстановлена. История города сохранится в веках.",
                             correctAnswer: "Все ошибки исправлены"
@@ -610,206 +913,5 @@
                     ]
                 },
                 {
-                    id: 6,
-                    situation: "Купцы принесли договор. От его правильного понимания зависит экономика города.",
-                    errorText: "\"Продавец обязуется передать товар, а покупатель обязуется принять товар и уплатить за него цену в течении трех дней.\"",
-                    choices: [
-                        {
-                            title: "Подписать быстро",
-                            description: "Главное — сделка",
-                            modifiers: { economy: 20, science: -15, army: -5 },
-                            feedback: "Потом суды разбирали ошибку полгода. Издержки огромны.",
-                            correctAnswer: "Ошибка: в течении → в течение"
-                        },
-                        {
-                            title: "Исправить 'в течении'",
-                            description: "Найди ошибку в предлоге",
-                            modifiers: { economy: -5, science: 15, army: 0 },
-                            feedback: "Правильно: В ТЕЧЕНИЕ трех дней (предлог времени)",
-                            correctAnswer: "в течении → в течение"
-                        },
-                        {
-                            title: "Отправить к юристам",
-                            description: "Полная экспертиза",
-                            modifiers: { economy: -15, science: 20, army: -5 },
-                            feedback: "Договор идеален. Торговля процветает.",
-                            correctAnswer: "Все ошибки исправлены"
-                        }
-                    ]
-                },
-                {
-                    id: 7,
-                    situation: "Твоя речь перед горожанами. Нужно говорить грамотно, чтобы тебя уважали.",
-                    errorText: "\"Дорогие сограждане! Мы построим великий город. Никто не сможет нас побеить, потому что мы едины!\"",
-                    choices: [
-                        {
-                            title: "Сказать как есть",
-                            description: "Искренность важнее",
-                            modifiers: { economy: -10, science: -10, army: 15 },
-                            feedback: "Народ посмеялся. Но армии понравился твой пыл.",
-                            correctAnswer: "Ошибка: побеить → победить"
-                        },
-                        {
-                            title: "Исправить 'побеить'",
-                            description: "Найди ошибку в глаголе",
-                            modifiers: { economy: 0, science: 15, army: 5 },
-                            feedback: "Правильно: ПОБЕДИТЬ (словарное слово)",
-                            correctAnswer: "побеить → победить"
-                        },
-                        {
-                            title: "Написать речь с учеными",
-                            description: "Идеальный текст",
-                            modifiers: { economy: -10, science: 20, army: 10 },
-                            feedback: "Речь великолепна! Народ рукоплещет.",
-                            correctAnswer: "Все ошибки исправлены"
-                        }
-                    ]
-                },
-                {
-                    id: 8,
-                    situation: "Пришло письмо от союзников. Но оно на плохом русском. Может, это ловушка?",
-                    errorText: "\"Дорогие друзя! Предлогаем вам союз против общего врага. Ждем ответа с гонцом.\"",
-                    choices: [
-                        {
-                            title: "Ответить согласием",
-                            description: "Неважно, как написано",
-                            modifiers: { economy: 10, science: -20, army: 15 },
-                            feedback: "Это были мошенники! Ты попал в ловушку.",
-                            correctAnswer: "Ошибки: друзя → друзья, предлогаем → предлагаем"
-                        },
-                        {
-                            title: "Исправить ошибки в ответе",
-                            description: "Показать свою грамотность",
-                            modifiers: { economy: -5, science: 15, army: -5 },
-                            feedback: "Союзники оценили твою грамотность. Союз заключен.",
-                            correctAnswer: "друзя → друзья"
-                        },
-                        {
-                            title: "Заподозрить обман",
-                            description: "Грамотный правитель так не пишет",
-                            modifiers: { economy: -15, science: 10, army: 20 },
-                            feedback: "Ты раскрыл шпионов! Враги обезврежены.",
-                            correctAnswer: "Обе ошибки указывают на обман"
-                        }
-                    ]
-                },
-                {
-                    id: 9,
-                    situation: "Умирающий мудрец диктует завещание. Но он стар и делает ошибки.",
-                    errorText: "\"Свою библиотеку завещаю городу. Ключь от сундука с книгами спрятан в тайнике.\"",
-                    choices: [
-                        {
-                            title: "Записать дословно",
-                            description: "Уважение к старцу",
-                            modifiers: { economy: -5, science: -10, army: 5 },
-                            feedback: "Ключ не нашли. Библиотека потеряна навсегда.",
-                            correctAnswer: "Ошибка: ключь → ключ"
-                        },
-                        {
-                            title: "Исправить 'ключь'",
-                            description: "Найди ошибку в мягком знаке",
-                            modifiers: { economy: 0, science: 15, army: 0 },
-                            feedback: "Правильно: КЛЮЧ (мужской род, без Ь). Библиотека спасена!",
-                            correctAnswer: "ключь → ключ"
-                        },
-                        {
-                            title: "Проверить тайник",
-                            description: "Найди ошибку и проверь факты",
-                            modifiers: { economy: -10, science: 20, army: -5 },
-                            feedback: "Ты нашел и ошибку, и тайник. Книги достались городу.",
-                            correctAnswer: "Ошибка исправлена, сокровища найдены"
-                        }
-                    ]
-                },
-                {
-                    id: 10,
-                    situation: "Город в опасности. Твое последнее слово решит судьбу. Скажи его без ошибок!",
-                    errorText: "\"Кто с мечем к нам придет, тот от меча и погибнет!\"",
-                    choices: [
-                        {
-                            title: "Сказать эту фразу",
-                            description: "Классика, все поймут",
-                            modifiers: { economy: -5, science: -10, army: 20 },
-                            feedback: "Армия воодушевлена! Но ученые морщатся от ошибки.",
-                            correctAnswer: "Ошибка: с мечем → с мечом"
-                        },
-                        {
-                            title: "Исправить 'мечем'",
-                            description: "Найди ошибку в падеже",
-                            modifiers: { economy: -5, science: 15, army: 10 },
-                            feedback: "Правильно: С МЕЧОМ (творительный падеж). Ты гениален!",
-                            correctAnswer: "с мечем → с мечом"
-                        },
-                        {
-                            title: "Придумать свою речь",
-                            description: "Творческий подход",
-                            modifiers: { economy: 10, science: 20, army: -5 },
-                            feedback: "Твоя речь войдет в историю. Ты великий оратор!",
-                            correctAnswer: "Оригинальное решение"
-                        }
-                    ]
-                }
-            ],
-            
-            // Концовки
-            endings: {
-                economy: {
-                    title: "💰 ЭКОНОМИСТ",
-                    text: CONFIG.endings.economy,
-                    image: CONFIG.images.economy
-                },
-                science: {
-                    title: "📚 УЧЕНЫЙ",
-                    text: CONFIG.endings.science,
-                    image: CONFIG.images.science
-                },
-                army: {
-                    title: "⚔️ ВОИН",
-                    text: CONFIG.endings.army,
-                    image: CONFIG.images.army
-                }
-            }
-        };
-        
-        // ==========================================
-        // ИНИЦИАЛИЗАЦИЯ ИГРЫ
-        // ==========================================
-        let currentEventIndex = 0;
-        let choiceMade = false;
-        
-        function initGame() {
-            // Устанавливаем стартовые значения из конфига
-            GAME_DATA.resources.economy = CONFIG.startValues.economy;
-            GAME_DATA.resources.science = CONFIG.startValues.science;
-            GAME_DATA.resources.army = CONFIG.startValues.army;
-            
-            // Обновляем названия характеристик
-            document.querySelector('.economy .resource-title').innerHTML = `💰 ${CONFIG.names.economy}`;
-            document.querySelector('.science .resource-title').innerHTML = `📚 ${CONFIG.names.science}`;
-            document.querySelector('.army .resource-title').innerHTML = `⚔️ ${CONFIG.names.army}`;
-            
-            // Обновляем дашборд
-            updateDashboard();
-            
-            // Показываем первое событие
-            currentEventIndex = 0;
-            renderEvent(currentEventIndex);
-        }
-        
-        function updateDashboard() {
-            // Обновляем значения
-            document.getElementById('economyValue').textContent = GAME_DATA.resources.economy;
-            document.getElementById('scienceValue').textContent = GAME_DATA.resources.science;
-            document.getElementById('armyValue').textContent = GAME_DATA.resources.army;
-            
-            // Обновляем ширину полосок (в процентах)
-            document.getElementById('economyFill').style.width = GAME_DATA.resources.economy + '%';
-            document.getElementById('scienceFill').style.width = GAME_DATA.resources.science + '%';
-            document.getElementById('armyFill').style.width = GAME_DATA.resources.army + '%';
-            
-            // Проверяем на критические значения (0 или 100)
-            checkCriticalValues();
-        }
-        
-        function checkCriticalValues() {
-            const resources = ['economy', 'science', '
+                    location: 5,
+                    title: "Т
