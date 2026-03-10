@@ -75,9 +75,9 @@
             font-weight: bold;
         }
         
-        #ecoValue { color: #ffd700; text-shadow: 0 0 10px gold; }
-        #sciValue { color: #00ffff; text-shadow: 0 0 10px cyan; }
-        #armyValue { color: #ff4444; text-shadow: 0 0 10px red; }
+        #ecoValue { color: #ffd700; }
+        #sciValue { color: #00ffff; }
+        #armyValue { color: #ff4444; }
         
         /* Карта города */
         .city-map {
@@ -139,7 +139,6 @@
         .location-icon {
             font-size: 3rem;
             margin-bottom: 10px;
-            filter: drop-shadow(0 0 10px currentColor);
         }
         
         .location-name {
@@ -166,7 +165,6 @@
             right: 10px;
             font-size: 2rem;
             color: #00ff00;
-            filter: drop-shadow(0 0 10px green);
         }
         
         /* Игровая область */
@@ -180,15 +178,21 @@
         
         .location-scene {
             height: 350px;
-            background-size: cover;
-            background-position: center;
             position: relative;
             display: flex;
             align-items: flex-end;
             justify-content: center;
         }
         
-        /* Персонажи на сцене */
+        /* Фоны локаций */
+        .bg-throne { background: linear-gradient(145deg, #5a4a3a, #2a1a0a); }
+        .bg-gates { background: linear-gradient(145deg, #6a5a4a, #3a2a1a); }
+        .bg-port { background: linear-gradient(145deg, #2a5a7a, #1a3a5a); }
+        .bg-library { background: linear-gradient(145deg, #3a4a5a, #1a2a3a); }
+        .bg-barracks { background: linear-gradient(145deg, #5a3a2a, #3a1a0a); }
+        .bg-temple { background: linear-gradient(145deg, #5a5a7a, #2a2a4a); }
+        
+        /* Персонажи */
         .character-hero {
             width: 80px;
             height: 80px;
@@ -381,6 +385,27 @@
             border: 1px solid #ff0000;
         }
         
+        /* Кнопка задания */
+        .quest-button {
+            background: gold;
+            color: #1a1a2e;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            border: 2px solid white;
+            transition: 0.3s;
+        }
+        
+        .quest-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px gold;
+        }
+        
         /* Нижняя панель */
         .footer {
             display: flex;
@@ -440,7 +465,6 @@
         .ending-image {
             font-size: 8rem;
             margin: 30px;
-            filter: drop-shadow(0 0 50px gold);
         }
         
         .ending-text {
@@ -448,9 +472,6 @@
             font-size: 1.3rem;
             line-height: 1.8;
             margin-bottom: 30px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
         }
         
         .ending-resources {
@@ -482,14 +503,6 @@
         .hidden {
             display: none;
         }
-        
-        /* Фоны локаций */
-        .bg-throne { background: linear-gradient(145deg, #5a4a3a, #2a1a0a); background-image: radial-gradient(circle at 30% 50%, #b8860b 1px, transparent 1px), radial-gradient(circle at 70% 30%, #b8860b 1px, transparent 1px); background-size: 50px 50px; }
-        .bg-gates { background: linear-gradient(145deg, #6a5a4a, #3a2a1a); background-image: repeating-linear-gradient(45deg, #b8860b 0px, #b8860b 2px, transparent 2px, transparent 10px); }
-        .bg-port { background: linear-gradient(145deg, #2a5a7a, #1a3a5a); background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.1) 0px, rgba(255,255,255,0.1) 2px, transparent 2px, transparent 20px); }
-        .bg-library { background: linear-gradient(145deg, #3a4a5a, #1a2a3a); background-image: repeating-linear-gradient(0deg, #b8860b 0px, #b8860b 1px, transparent 1px, transparent 30px); }
-        .bg-barracks { background: linear-gradient(145deg, #5a3a2a, #3a1a0a); background-image: repeating-linear-gradient(135deg, #b8860b 0px, #b8860b 3px, transparent 3px, transparent 15px); }
-        .bg-temple { background: linear-gradient(145deg, #5a5a7a, #2a2a4a); background-image: radial-gradient(circle at 20% 80%, gold 2px, transparent 2px), radial-gradient(circle at 80% 20%, gold 2px, transparent 2px); background-size: 40px 40px; }
     </style>
 </head>
 <body>
@@ -541,7 +554,7 @@
             army: 50,
             currentLocation: 0,
             completedQuests: [],
-            totalQuests: 10,
+            totalQuests: 6, // Всего 6 локаций
             
             locations: [
                 { 
@@ -757,6 +770,36 @@
                             reply: "Всё исправлено!"
                         }
                     ]
+                },
+                {
+                    id: 5,
+                    locationId: 5,
+                    title: "Пророчество",
+                    dialog: [
+                        "Жрец прочитал древнее пророчество.",
+                        "«Кто с мечем к нам придет, тот от меча и погибнет!»"
+                    ],
+                    error: "«Кто с мечем к нам придет, тот от меча и погибнет!»",
+                    choices: [
+                        { 
+                            text: "Исправить", 
+                            icon: "⚔️",
+                            eco: -5, sci: 15, army: 10,
+                            reply: "Правильно: С МЕЧОМ (творительный падеж)"
+                        },
+                        { 
+                            text: "Оставить", 
+                            icon: "📜",
+                            eco: 10, sci: -10, army: 15,
+                            reply: "Ошибка останется в веках..."
+                        },
+                        { 
+                            text: "Своё пророчество", 
+                            icon: "✨",
+                            eco: 10, sci: 20, army: -5,
+                            reply: "Ты великий провидец!"
+                        }
+                    ]
                 }
             ]
         };
@@ -845,9 +888,10 @@
                             </div>
                         </div>
                         <div class="dialog-text">
-                            ${quest.dialog[0]}
+                            ${quest.dialog[0]}<br><br>
+                            ${quest.dialog[1] || ''}
                         </div>
-                        <button class="choice-card" style="margin: 0 auto; display: block; width: 200px;" onclick="startQuest()">
+                        <button class="quest-button" onclick="startQuest()">
                             📜 Начать задание
                         </button>
                     </div>
@@ -947,15 +991,15 @@
                         <br><br>
                         <span style="color: gold;">✨ Задание выполнено! ✨</span>
                     </div>
-                    <button class="choice-card" style="margin: 0 auto; display: block; width: 200px;" onclick="selectLocation(gameState.currentLocation)">
-                        ➡️ Продолжить
+                    <button class="quest-button" onclick="selectLocation(gameState.currentLocation)">
+                        ➡️ Вернуться
                     </button>
                 </div>
             `;
             
             // Проверяем финал
-            if (gameState.completedQuests.length >= 5) { // Для теста 5, потом заменим на 10
-                showEnding();
+            if (gameState.completedQuests.length >= gameState.totalQuests) {
+                setTimeout(showEnding, 1000);
             }
         }
         
@@ -983,4 +1027,5 @@
                 text = "Ты построил великую торговую империю! Корабли со всего мира прибывают в твой порт. Купцы называют тебя самым мудрым правителем. Город утопает в золоте и роскоши!";
             } else if (gameState.science > gameState.economy && gameState.science >= gameState.army) {
                 title = "📚 УЧЕНЫЙ";
-                image = "🔮
+                image = "🔮📚🔬";
+                text = "Великая академия магии открыта! Ученые со всего света едут к тебе. Знания стали главной
