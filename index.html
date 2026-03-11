@@ -437,11 +437,8 @@
             style: 'royal'
         };
         
-        // ⚠️ ВАЖНО: Исправь ссылки на свои картинки ⚠️
-        // Твой логин: milenajob29-arch
-        // Название репозитория: TiSTADEL-REShENIY
-        
-        const baseUrl = 'https://raw.githubusercontent.com/milenajob29-arch/TiSTADEL-REShENIY/main/images/';
+        // ✅ ИСПРАВЛЕННЫЕ ССЫЛКИ - РАБОТАЕТ ЧЕРЕЗ GITHUB PAGES
+        const baseUrl = 'https://milenajob29-arch.github.io/TiSTADEL-REShENIY/images/';
         
         const imageUrls = {
             male: {
@@ -517,8 +514,7 @@
             loadingText.style.display = 'block';
             loadingText.innerHTML = '✨ Загрузка...';
             
-            // Добавляем параметр для избежания кэширования
-            imgElement.src = imageUrl + '?t=' + new Date().getTime();
+            imgElement.src = imageUrl;
             
             imgElement.onload = function() {
                 imgElement.style.display = 'block';
@@ -534,7 +530,7 @@
             };
             
             imgElement.onerror = function() {
-                loadingText.innerHTML = '❌ Ошибка загрузки. Проверь ссылку: ' + imageUrl;
+                loadingText.innerHTML = '❌ Ошибка загрузки. Проверь имя файла: ' + player.gender + '_' + player.style + '.png';
                 console.error('Не удалось загрузить:', imageUrl);
             };
             
