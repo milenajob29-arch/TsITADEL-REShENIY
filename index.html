@@ -437,7 +437,7 @@
             style: 'royal'
         };
         
-        // ✅ ИСПРАВЛЕННЫЕ ССЫЛКИ - РАБОТАЕТ ЧЕРЕЗ GITHUB PAGES
+        // ✅ ИСПРАВЛЕННАЯ ССЫЛКА - РАБОТАЕТ ЧЕРЕЗ GITHUB PAGES
         const baseUrl = 'https://milenajob29-arch.github.io/TiSTADEL-REShENIY/images/';
         
         const imageUrls = {
@@ -510,13 +510,17 @@
             const imgElement = document.getElementById('characterImage');
             const loadingText = document.getElementById('loadingText');
             
+            // Показываем загрузку
             imgElement.style.display = 'none';
             loadingText.style.display = 'block';
             loadingText.innerHTML = '✨ Загрузка...';
             
+            console.log('Загружаю:', imageUrl); // Для отладки
+            
             imgElement.src = imageUrl;
             
             imgElement.onload = function() {
+                console.log('Успешно загружено!');
                 imgElement.style.display = 'block';
                 loadingText.style.display = 'none';
                 
@@ -530,8 +534,8 @@
             };
             
             imgElement.onerror = function() {
+                console.error('Ошибка загрузки:', imageUrl);
                 loadingText.innerHTML = '❌ Ошибка загрузки. Проверь имя файла: ' + player.gender + '_' + player.style + '.png';
-                console.error('Не удалось загрузить:', imageUrl);
             };
             
             document.getElementById('previewName').innerHTML = desc.name;
