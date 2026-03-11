@@ -456,8 +456,8 @@
             style: 'royal'
         };
         
-        // ✅ GitHub Pages ВКЛЮЧЕН! Картинки загружаются с твоего репозитория
-        const baseUrl = 'https://milenajob29-arch.github.io/TiSTADEL-REShENIY/images/';
+        // ✅ ИСПРАВЛЕННАЯ ССЫЛКА - ТОЧНОЕ НАЗВАНИЕ РЕПОЗИТОРИЯ
+        const baseUrl = 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/';
         
         const imageUrls = {
             male: {
@@ -471,6 +471,22 @@
                 warrior: baseUrl + 'female_warrior.png',
                 mage: baseUrl + 'female_mage.png',
                 hunter: baseUrl + 'female_hunter.png'
+            }
+        };
+        
+        // Запасные эмодзи на случай ошибки
+        const emojiMap = {
+            male: {
+                royal: '⚔️👑',
+                warrior: '🛡️⚔️',
+                mage: '🔮⚔️',
+                hunter: '🏹⚔️'
+            },
+            female: {
+                royal: '👸👑',
+                warrior: '🛡️👸',
+                mage: '🔮👸',
+                hunter: '🏹👸'
             }
         };
         
@@ -553,7 +569,8 @@
             
             imgElement.onerror = function() {
                 console.error('Ошибка загрузки картинки:', imageUrl);
-                loadingText.innerHTML = '❌ Ошибка загрузки. Проверь включен ли GitHub Pages';
+                // Показываем эмодзи как запасной вариант
+                loadingText.innerHTML = '🖼️ ' + emojiMap[player.gender][player.style];
             };
             
             document.getElementById('previewName').innerHTML = desc.name;
