@@ -43,8 +43,6 @@
             text-align: center;
             max-width: 800px;
             padding: 20px;
-            opacity: 0;
-            animation: fadeIn 3s forwards;
             text-shadow: 0 0 10px rgba(255,215,0,0.5);
             letter-spacing: 2px;
             line-height: 1.8;
@@ -57,7 +55,17 @@
             margin-top: 30px;
         }
         
-        @keyframes fadeIn {
+        /* Поэтапное появление текста */
+        .splash-line {
+            opacity: 0;
+            animation: fadeInLine 0.5s forwards;
+        }
+        
+        .splash-line:nth-child(1) { animation-delay: 0.5s; }
+        .splash-line:nth-child(2) { animation-delay: 2s; }
+        .splash-line:nth-child(3) { animation-delay: 3.5s; }
+        
+        @keyframes fadeInLine {
             0% { opacity: 0; transform: translateY(20px); }
             100% { opacity: 1; transform: translateY(0); }
         }
@@ -71,10 +79,15 @@
             margin-top: 50px;
             cursor: pointer;
             opacity: 0;
-            animation: fadeIn 1s 3s forwards;
+            animation: fadeInBtn 0.5s 5s forwards;
             transition: 0.3s;
             border-radius: 50px;
             font-weight: bold;
+        }
+        
+        @keyframes fadeInBtn {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
         }
         
         .splash-btn:hover {
@@ -335,17 +348,23 @@
             font-size: 1.2rem;
             text-align: center;
         }
+        
+        .error-text {
+            color: #ff6b6b;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <!-- ЗАСТАВКА -->
     <div class="splash-screen" id="splashScreen">
         <div class="splash-text">
-            Город умирает.<br>
-            Его жители потеряли надежду.<br>
-            <span>Только ты можешь стать его спасителем.</span>
+            <div class="splash-line">Город умирает.</div>
+            <div class="splash-line">Его жители потеряли надежду.</div>
+            <div class="splash-line"><span>Только ты можешь стать его спасителем.</span></div>
         </div>
-        <button class="splash-btn" onclick="showCreation()">ВСТАТЬ ПРАВИТЕЛЕМ</button>
+        <button class="splash-btn" onclick="showCreation()">СТАТЬ ПРАВИТЕЛЕМ</button>
     </div>
 
     <!-- ОСНОВНАЯ ИГРА -->
@@ -412,12 +431,14 @@
                 </div>
             </div>
             
-            <!-- ПРАВАЯ ПАНЕЛЬ - ПРЕВЬЮ -->
+            <!-- ПРАВАЯ ЧАСТЬ - ПРЕВЬЮ -->
             <div class="preview-panel">
                 <div class="preview-title">🔍 ПРЕДПРОСМОТР</div>
                 
                 <div class="preview-stage">
                     <div class="character-image-container" id="previewContainer">
+                        <!-- Используем эмодзи как запасной вариант -->
+                        <div class="character-image" id="characterEmoji" style="font-size: 8rem; display: none;">⚔️👑</div>
                         <img class="character-image" id="characterImage" src="" alt="Персонаж" style="display: none;">
                         <div class="loading-text" id="loadingText">Выберите персонажа</div>
                     </div>
@@ -437,21 +458,37 @@
             style: 'royal'
         };
         
-        // ✅ ИСПРАВЛЕННАЯ ССЫЛКА - РАБОТАЕТ ЧЕРЕЗ GITHUB PAGES
-        const baseUrl = 'https://milenajob29-arch.github.io/TiSTADEL-REShENIY/images/';
+        // Запасные эмодзи для каждого типа персонажа
+        const emojiMap = {
+            male: {
+                royal: '⚔️👑',
+                warrior: '🛡️⚔️',
+                mage: '🔮⚔️',
+                hunter: '🏹⚔️'
+            },
+            female: {
+                royal: '👸👑',
+                warrior: '🛡️👸',
+                mage: '🔮👸',
+                hunter: '🏹👸'
+            }
+        };
+        
+        // Пытаемся загрузить картинки, но если не получается - показываем эмодзи
+        const useImages = false; // Временно отключаем картинки, пока не настроим GitHub Pages
         
         const imageUrls = {
             male: {
-                royal: baseUrl + 'male_royal.png',
-                warrior: baseUrl + 'male_warrior.png',
-                mage: baseUrl + 'male_mage.png',
-                hunter: baseUrl + 'male_hunter.png'
+                royal: 'https://milenajob29-arch.github.io/TiSTADEL-REShENIY/images/male_royal.png',
+                warrior: 'https://milenajob29-arch.github.io/TiSTADEL-REShENIY/images/male_warrior.png',
+                mage: 'https://milenajob29-arch.github.io/TiSTADEL-REShENIY/images/male_mage.png',
+                hunter: 'https://milenajob29-arch.github.io/TiSTADEL-REShENIY/images/male_hunter.png'
             },
             female: {
-                royal: baseUrl + 'female_royal.png',
-                warrior: baseUrl + 'female_warrior.png',
-                mage: baseUrl + 'female_mage.png',
-                hunter: baseUrl + 'female_hunter.png'
+                royal: 'https://milenajob29-arch.github.io/TiSTADEL-REShENIY/images/female_royal.png',
+                warrior: 'https://milenajob29-arch.github.io/TiSTADEL-REShENIY/images/female_warrior.png',
+                mage: 'https://milenajob29-arch.github.io/TiSTADEL-REShENIY/images/female_mage.png',
+                hunter: 'https://milenajob29-arch.github.io/TiSTADEL-REShENIY/images/female_hunter.png'
             }
         };
         
@@ -504,39 +541,50 @@
         function updatePreview() {
             if (!player.gender) return;
             
-            const imageUrl = imageUrls[player.gender][player.style];
+            const imgElement = document.getElementById('characterImage');
+            const emojiElement = document.getElementById('characterEmoji');
+            const loadingText = document.getElementById('loadingText');
             const desc = descriptions[player.gender][player.style];
             
-            const imgElement = document.getElementById('characterImage');
-            const loadingText = document.getElementById('loadingText');
-            
-            // Показываем загрузку
-            imgElement.style.display = 'none';
-            loadingText.style.display = 'block';
-            loadingText.innerHTML = '✨ Загрузка...';
-            
-            console.log('Загружаю:', imageUrl); // Для отладки
-            
-            imgElement.src = imageUrl;
-            
-            imgElement.onload = function() {
-                console.log('Успешно загружено!');
-                imgElement.style.display = 'block';
+            if (useImages) {
+                // Пробуем загрузить картинку
+                const imageUrl = imageUrls[player.gender][player.style];
+                
+                imgElement.style.display = 'none';
+                emojiElement.style.display = 'none';
+                loadingText.style.display = 'block';
+                loadingText.innerHTML = '✨ Загрузка...';
+                
+                imgElement.src = imageUrl;
+                
+                imgElement.onload = function() {
+                    imgElement.style.display = 'block';
+                    emojiElement.style.display = 'none';
+                    loadingText.style.display = 'none';
+                    
+                    imgElement.style.opacity = '0';
+                    imgElement.style.transform = 'scale(0.9)';
+                    
+                    setTimeout(() => {
+                        imgElement.style.opacity = '1';
+                        imgElement.style.transform = 'scale(1)';
+                    }, 50);
+                };
+                
+                imgElement.onerror = function() {
+                    console.log('Не удалось загрузить картинку, показываем эмодзи');
+                    imgElement.style.display = 'none';
+                    emojiElement.style.display = 'block';
+                    emojiElement.innerHTML = emojiMap[player.gender][player.style];
+                    loadingText.style.display = 'none';
+                };
+            } else {
+                // Показываем эмодзи
+                imgElement.style.display = 'none';
+                emojiElement.style.display = 'block';
+                emojiElement.innerHTML = emojiMap[player.gender][player.style];
                 loadingText.style.display = 'none';
-                
-                imgElement.style.opacity = '0';
-                imgElement.style.transform = 'scale(0.9)';
-                
-                setTimeout(() => {
-                    imgElement.style.opacity = '1';
-                    imgElement.style.transform = 'scale(1)';
-                }, 50);
-            };
-            
-            imgElement.onerror = function() {
-                console.error('Ошибка загрузки:', imageUrl);
-                loadingText.innerHTML = '❌ Ошибка загрузки. Проверь имя файла: ' + player.gender + '_' + player.style + '.png';
-            };
+            }
             
             document.getElementById('previewName').innerHTML = desc.name;
             document.getElementById('previewDesc').innerHTML = desc.desc;
