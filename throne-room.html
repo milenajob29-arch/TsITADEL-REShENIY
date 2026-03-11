@@ -1,1 +1,248 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЦИТАДЕЛЬ РЕШЕНИЙ - ТРОННЫЙ ЗАЛ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Cinzel', serif;
+        }
+        
+        body {
+            background: #0a0c14;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .game-container {
+            width: 1400px;
+            max-width: 100%;
+            background: linear-gradient(145deg, #1e2a3a, #0f1a24);
+            border-radius: 30px;
+            padding: 30px;
+            border: 3px solid gold;
+            box-shadow: 0 0 50px rgba(255,215,0,0.2);
+        }
+        
+        .throne-room {
+            background: linear-gradient(145deg, #2a3a4a, #1a2a3a);
+            border: 3px solid gold;
+            border-radius: 20px;
+            padding: 30px;
+            min-height: 600px;
+            position: relative;
+            background-image: radial-gradient(circle at 20% 30%, #b8860b 1px, transparent 1px), 
+                              radial-gradient(circle at 80% 70%, #b8860b 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        .throne-decoration {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            height: 100px;
+            background: linear-gradient(90deg, transparent, gold, transparent);
+            opacity: 0.3;
+        }
+        
+        .character-show {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin: 50px 0;
+        }
+        
+        .hero-preview {
+            width: 200px;
+            height: 200px;
+            background: #ffffff;
+            border-radius: 50%;
+            border: 4px solid gold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            box-shadow: 0 0 50px gold;
+        }
+        
+        .hero-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .dialog-box {
+            flex: 1;
+            background: rgba(0,0,0,0.7);
+            border: 3px solid gold;
+            border-radius: 20px;
+            padding: 25px;
+            color: white;
+            backdrop-filter: blur(5px);
+        }
+        
+        .npc-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid gold;
+            padding-bottom: 15px;
+        }
+        
+        .npc-avatar {
+            font-size: 3rem;
+            background: #2a3a4a;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 2px solid gold;
+        }
+        
+        .npc-name {
+            color: gold;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .npc-title {
+            color: #b8a07c;
+        }
+        
+        .dialog-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            min-height: 100px;
+        }
+        
+        .dialog-text p {
+            margin-bottom: 15px;
+            opacity: 0;
+            animation: fadeInText 0.5s forwards;
+        }
+        
+        .dialog-text p:nth-child(1) { animation-delay: 0.5s; }
+        .dialog-text p:nth-child(2) { animation-delay: 2s; }
+        .dialog-text p:nth-child(3) { animation-delay: 3.5s; }
+        .dialog-text p:nth-child(4) { animation-delay: 5s; }
+        .dialog-text p:nth-child(5) { animation-delay: 6.5s; }
+        
+        @keyframes fadeInText {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .btn {
+            background: gold;
+            color: black;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            border: 2px solid white;
+            transition: 0.3s;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px gold;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: gold;
+            text-decoration: none;
+            font-size: 1.2rem;
+            border: 1px solid gold;
+            padding: 8px 15px;
+            border-radius: 30px;
+            transition: 0.3s;
+        }
+        
+        .back-link:hover {
+            background: gold;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <a href="index.html" class="back-link">← Назад</a>
+        
+        <div class="throne-room">
+            <div class="throne-decoration"></div>
+            
+            <div class="character-show">
+                <div class="hero-preview" id="heroPreview">
+                    <img src="" alt="Герой" id="heroImage" style="display: none;">
+                    <div id="heroEmoji" style="font-size: 5rem;">⚔️👑</div>
+                </div>
+                
+                <div class="dialog-box">
+                    <div class="npc-info">
+                        <div class="npc-avatar">🧙</div>
+                        <div>
+                            <div class="npc-name">Старейшина Аристарх</div>
+                            <div class="npc-title">Хранитель знаний</div>
+                        </div>
+                    </div>
+                    
+                    <div class="dialog-text" id="dialogText">
+                        <p>Приветствую тебя, Правитель!</p>
+                        <p>Я - старейшина Аристарх, хранитель знаний этого города.</p>
+                        <p>Наш город на грани гибели. Три ресурса решают всё: Экономика, Наука и Армия.</p>
+                        <p>Тебе предстоит посетить 6 мест в городе и помочь жителям. Каждый выбор влияет на ресурсы.</p>
+                        <p>Готов ли ты принять вызов и спасти Цитадель?</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button class="btn" onclick="goToMap()">НАЧАТЬ ПУТЬ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        // Получаем данные персонажа из localStorage
+        const playerData = JSON.parse(localStorage.getItem('player') || '{}');
+        
+        // Загружаем картинку персонажа
+        const heroImage = document.getElementById('heroImage');
+        const heroEmoji = document.getElementById('heroEmoji');
+        
+        if (playerData.imageUrl) {
+            heroImage.src = playerData.imageUrl;
+            heroImage.style.display = 'block';
+            heroEmoji.style.display = 'none';
+        } else {
+            heroEmoji.innerHTML = playerData.emoji || '⚔️👑';
+        }
+        
+        function goToMap() {
+            window.location.href = 'city-map.html';
+        }
+    </script>
+</body>
+</html>
