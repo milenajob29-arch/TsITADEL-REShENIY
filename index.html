@@ -265,7 +265,6 @@
             overflow: hidden;
         }
         
-        /* КОНТЕЙНЕР ДЛЯ КАРТИНКИ */
         .character-image-container {
             width: 100%;
             height: 350px;
@@ -438,24 +437,28 @@
             style: 'royal'
         };
         
-        // ВРЕМЕННЫЕ КАРТИНКИ (ЗАГЛУШКИ)
-        // Ты заменишь эти ссылки на свои, когда загрузишь картинки в GitHub
+        // ⚠️ ВАЖНО: Исправь ссылки на свои картинки ⚠️
+        // Твой логин: milenajob29-arch
+        // Название репозитория: TiSTADEL-REShENIY
+        
+        const baseUrl = 'https://raw.githubusercontent.com/milenajob29-arch/TiSTADEL-REShENIY/main/images/';
+        
         const imageUrls = {
             male: {
-                royal: 'https://via.placeholder.com/300x400/aa8c5e/ffffff?text=Воин+Король',
-                warrior: 'https://via.placeholder.com/300x400/8b4c39/ffffff?text=Воин+Боевой',
-                mage: 'https://via.placeholder.com/300x400/4a6c8f/ffffff?text=Воин+Маг',
-                hunter: 'https://via.placeholder.com/300x400/3d5a3d/ffffff?text=Воин+Охотник'
+                royal: baseUrl + 'male_royal.png',
+                warrior: baseUrl + 'male_warrior.png',
+                mage: baseUrl + 'male_mage.png',
+                hunter: baseUrl + 'male_hunter.png'
             },
             female: {
-                royal: 'https://via.placeholder.com/300x400/aa8c5e/ffffff?text=Правительница+Королева',
-                warrior: 'https://via.placeholder.com/300x400/8b4c39/ffffff?text=Воительница',
-                mage: 'https://via.placeholder.com/300x400/4a6c8f/ffffff?text=Чародейка',
-                hunter: 'https://via.placeholder.com/300x400/3d5a3d/ffffff?text=Охотница'
+                royal: baseUrl + 'female_royal.png',
+                warrior: baseUrl + 'female_warrior.png',
+                mage: baseUrl + 'female_mage.png',
+                hunter: baseUrl + 'female_hunter.png'
             }
         };
         
-        // ОПИСАНИЯ
+        // ОПИСАНИЯ ПЕРСОНАЖЕЙ
         const descriptions = {
             male: {
                 royal: { name: 'Король Артур', desc: 'Величественный правитель в золотых доспехах' },
@@ -510,18 +513,17 @@
             const imgElement = document.getElementById('characterImage');
             const loadingText = document.getElementById('loadingText');
             
-            // Показываем загрузку
             imgElement.style.display = 'none';
             loadingText.style.display = 'block';
             loadingText.innerHTML = '✨ Загрузка...';
             
-            // Загружаем картинку
-            imgElement.src = imageUrl;
+            // Добавляем параметр для избежания кэширования
+            imgElement.src = imageUrl + '?t=' + new Date().getTime();
+            
             imgElement.onload = function() {
                 imgElement.style.display = 'block';
                 loadingText.style.display = 'none';
                 
-                // Анимация появления
                 imgElement.style.opacity = '0';
                 imgElement.style.transform = 'scale(0.9)';
                 
@@ -529,6 +531,11 @@
                     imgElement.style.opacity = '1';
                     imgElement.style.transform = 'scale(1)';
                 }, 50);
+            };
+            
+            imgElement.onerror = function() {
+                loadingText.innerHTML = '❌ Ошибка загрузки. Проверь ссылку: ' + imageUrl;
+                console.error('Не удалось загрузить:', imageUrl);
             };
             
             document.getElementById('previewName').innerHTML = desc.name;
