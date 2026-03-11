@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ЦИТАДЕЛЬ РЕШЕНИЙ - СОЗДАНИЕ ПЕРСОНАЖА</title>
+    <title>ЦИТАДЕЛЬ РЕШЕНИЙ - ПРЕВЬЮ ПЕРСОНАЖА</title>
     <style>
         * {
             margin: 0;
@@ -106,7 +106,7 @@
         
         .creation-layout {
             display: grid;
-            grid-template-columns: 1fr 400px;
+            grid-template-columns: 1fr 500px;
             gap: 30px;
         }
         
@@ -214,6 +214,7 @@
         .stat-row {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             margin: 10px 0;
             color: white;
             font-size: 1.1rem;
@@ -253,7 +254,7 @@
         .preview-stage {
             background: linear-gradient(145deg, #2a3a4a, #1a2a3a);
             border-radius: 20px;
-            padding: 40px 20px;
+            padding: 20px;
             position: relative;
             min-height: 500px;
             display: flex;
@@ -261,15 +262,26 @@
             align-items: center;
             justify-content: flex-end;
             border: 1px solid #b8860b;
+            overflow: hidden;
         }
         
-        .character-preview {
-            font-size: 12rem;
-            line-height: 1;
-            filter: drop-shadow(0 0 30px gold);
-            transition: all 0.3s;
+        /* КОНТЕЙНЕР ДЛЯ КАРТИНКИ */
+        .character-image-container {
+            width: 100%;
+            height: 350px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .character-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 20px gold);
+            transition: opacity 0.3s, transform 0.3s;
             animation: float 3s infinite;
-            margin-bottom: 20px;
         }
         
         @keyframes float {
@@ -282,15 +294,16 @@
             font-size: 2rem;
             font-weight: bold;
             text-shadow: 0 0 10px gold;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.7);
             padding: 10px 30px;
             border-radius: 50px;
             border: 1px solid gold;
+            margin: 20px 0 10px;
         }
         
         .preview-desc {
             color: #b8a07c;
-            margin-top: 10px;
+            font-size: 1.1rem;
         }
         
         .btn {
@@ -318,10 +331,10 @@
             cursor: not-allowed;
         }
         
-        /* АНИМАЦИИ */
-        @keyframes glow {
-            0%, 100% { filter: drop-shadow(0 0 20px gold); }
-            50% { filter: drop-shadow(0 0 40px gold); }
+        .loading-text {
+            color: gold;
+            font-size: 1.2rem;
+            text-align: center;
         }
     </style>
 </head>
@@ -405,9 +418,12 @@
                 <div class="preview-title">🔍 ПРЕДПРОСМОТР</div>
                 
                 <div class="preview-stage">
-                    <div class="character-preview" id="characterPreview">⚔️👑</div>
-                    <div class="preview-name" id="previewName">Воин</div>
-                    <div class="preview-desc" id="previewDesc">Королевский стиль</div>
+                    <div class="character-image-container" id="previewContainer">
+                        <img class="character-image" id="characterImage" src="" alt="Персонаж" style="display: none;">
+                        <div class="loading-text" id="loadingText">Выберите персонажа</div>
+                    </div>
+                    <div class="preview-name" id="previewName">-</div>
+                    <div class="preview-desc" id="previewDesc">-</div>
                 </div>
                 
                 <button class="btn" id="continueBtn" onclick="continueToGame()" disabled>НАЧАТЬ ПУТЕШЕСТВИЕ</button>
@@ -422,19 +438,36 @@
             style: 'royal'
         };
         
-        // КОМБИНАЦИИ ДЛЯ ПРЕВЬЮ
-        const previews = {
+        // ВРЕМЕННЫЕ КАРТИНКИ (ЗАГЛУШКИ)
+        // Ты заменишь эти ссылки на свои, когда загрузишь картинки в GitHub
+        const imageUrls = {
             male: {
-                royal: { avatar: '⚔️👑', name: 'Воин', desc: 'Королевский воин' },
-                warrior: { avatar: '🛡️⚔️', name: 'Воин', desc: 'Боевой командир' },
-                mage: { avatar: '🔮⚔️', name: 'Маг', desc: 'Воитель-маг' },
-                hunter: { avatar: '🏹⚔️', name: 'Охотник', desc: 'Лесной страж' }
+                royal: 'https://via.placeholder.com/300x400/aa8c5e/ffffff?text=Воин+Король',
+                warrior: 'https://via.placeholder.com/300x400/8b4c39/ffffff?text=Воин+Боевой',
+                mage: 'https://via.placeholder.com/300x400/4a6c8f/ffffff?text=Воин+Маг',
+                hunter: 'https://via.placeholder.com/300x400/3d5a3d/ffffff?text=Воин+Охотник'
             },
             female: {
-                royal: { avatar: '👸👑', name: 'Правительница', desc: 'Королевский двор' },
-                warrior: { avatar: '🛡️👸', name: 'Воительница', desc: 'Боевая леди' },
-                mage: { avatar: '🔮👸', name: 'Чародейка', desc: 'Магическая сила' },
-                hunter: { avatar: '🏹👸', name: 'Охотница', desc: 'Лесная защитница' }
+                royal: 'https://via.placeholder.com/300x400/aa8c5e/ffffff?text=Правительница+Королева',
+                warrior: 'https://via.placeholder.com/300x400/8b4c39/ffffff?text=Воительница',
+                mage: 'https://via.placeholder.com/300x400/4a6c8f/ffffff?text=Чародейка',
+                hunter: 'https://via.placeholder.com/300x400/3d5a3d/ffffff?text=Охотница'
+            }
+        };
+        
+        // ОПИСАНИЯ
+        const descriptions = {
+            male: {
+                royal: { name: 'Король Артур', desc: 'Величественный правитель в золотых доспехах' },
+                warrior: { name: 'Генерал', desc: 'Закаленный в боях воин' },
+                mage: { name: 'Архимаг', desc: 'Повелитель магии и стали' },
+                hunter: { name: 'Лесной страж', desc: 'Защитник диких земель' }
+            },
+            female: {
+                royal: { name: 'Королева Элеонора', desc: 'Мудрая правительница' },
+                warrior: { name: 'Амазонка', desc: 'Непобедимая воительница' },
+                mage: { name: 'Волшебница', desc: 'Хранительница древних знаний' },
+                hunter: { name: 'Лучница', desc: 'Меткая и бесстрашная' }
             }
         };
         
@@ -449,14 +482,10 @@
         function selectGender(gender) {
             player.gender = gender;
             
-            // Снимаем выделение
             document.getElementById('genderMale').classList.remove('selected');
             document.getElementById('genderFemale').classList.remove('selected');
-            
-            // Выделяем выбранный
             document.getElementById('gender' + gender.charAt(0).toUpperCase() + gender.slice(1)).classList.add('selected');
             
-            // Обновляем превью
             updatePreview();
             checkSelection();
         }
@@ -464,36 +493,46 @@
         function selectStyle(style) {
             player.style = style;
             
-            // Снимаем выделение со всех стилей
             document.querySelectorAll('.style-card').forEach(card => {
                 card.classList.remove('selected');
             });
-            
-            // Выделяем выбранный
             event.currentTarget.classList.add('selected');
             
-            // Обновляем превью
             updatePreview();
         }
         
         function updatePreview() {
             if (!player.gender) return;
             
-            const preview = previews[player.gender][player.style];
+            const imageUrl = imageUrls[player.gender][player.style];
+            const desc = descriptions[player.gender][player.style];
             
-            // Анимация смены
-            const previewElement = document.getElementById('characterPreview');
-            previewElement.style.opacity = '0';
-            previewElement.style.transform = 'scale(0.9)';
+            const imgElement = document.getElementById('characterImage');
+            const loadingText = document.getElementById('loadingText');
             
-            setTimeout(() => {
-                previewElement.innerHTML = preview.avatar;
-                document.getElementById('previewName').innerHTML = preview.name;
-                document.getElementById('previewDesc').innerHTML = preview.desc;
+            // Показываем загрузку
+            imgElement.style.display = 'none';
+            loadingText.style.display = 'block';
+            loadingText.innerHTML = '✨ Загрузка...';
+            
+            // Загружаем картинку
+            imgElement.src = imageUrl;
+            imgElement.onload = function() {
+                imgElement.style.display = 'block';
+                loadingText.style.display = 'none';
                 
-                previewElement.style.opacity = '1';
-                previewElement.style.transform = 'scale(1)';
-            }, 200);
+                // Анимация появления
+                imgElement.style.opacity = '0';
+                imgElement.style.transform = 'scale(0.9)';
+                
+                setTimeout(() => {
+                    imgElement.style.opacity = '1';
+                    imgElement.style.transform = 'scale(1)';
+                }, 50);
+            };
+            
+            document.getElementById('previewName').innerHTML = desc.name;
+            document.getElementById('previewDesc').innerHTML = desc.desc;
         }
         
         function checkSelection() {
@@ -503,18 +542,16 @@
         }
         
         function continueToGame() {
-            const preview = previews[player.gender][player.style];
+            const desc = descriptions[player.gender][player.style];
             
             alert(`✅ ПЕРСОНАЖ СОЗДАН!\n\n` +
-                  `👤 Имя: ${preview.name}\n` +
-                  `🎭 Стиль: ${preview.desc}\n\n` +
+                  `👤 Имя: ${desc.name}\n` +
+                  `🎭 Описание: ${desc.desc}\n\n` +
                   `⚔️ Начальные статы:\n` +
                   `💰 Экономика: 50\n` +
                   `📚 Наука: 50\n` +
                   `⚔️ Армия: 50\n\n` +
                   `✨ Тронный зал ждет тебя, Правитель!`);
-            
-            // Здесь будет переход к следующему этапу
         }
     </script>
 </body>
