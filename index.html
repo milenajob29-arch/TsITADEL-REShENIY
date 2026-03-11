@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ЦИТАДЕЛЬ РЕШЕНИЙ - ПРЕВЬЮ ПЕРСОНАЖА</title>
+    <title>ЦИТАДЕЛЬ РЕШЕНИЙ - СОЗДАНИЕ ПЕРСОНАЖА</title>
     <style>
         * {
             margin: 0;
@@ -55,7 +55,6 @@
             margin-top: 30px;
         }
         
-        /* Поэтапное появление текста */
         .splash-line {
             opacity: 0;
             animation: fadeInLine 0.5s forwards;
@@ -253,8 +252,6 @@
             border: 2px solid gold;
             border-radius: 20px;
             padding: 25px;
-            position: relative;
-            overflow: hidden;
         }
         
         .preview-title {
@@ -265,17 +262,15 @@
         }
         
         .preview-stage {
-            background: #ffffff;  /* ← ИЗМЕНИЛ НА БЕЛЫЙ */
+            background: #ffffff;
             border-radius: 20px;
             padding: 20px;
-            position: relative;
             min-height: 500px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-end;
             border: 1px solid #b8860b;
-            overflow: hidden;
         }
         
         .character-image-container {
@@ -284,7 +279,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
         }
         
         .character-image {
@@ -292,7 +286,6 @@
             max-height: 100%;
             object-fit: contain;
             filter: drop-shadow(0 0 20px gold);
-            transition: opacity 0.3s, transform 0.3s;
             animation: float 3s infinite;
         }
         
@@ -347,12 +340,6 @@
             color: gold;
             font-size: 1.2rem;
             text-align: center;
-        }
-        
-        .error-text {
-            color: #ff6b6b;
-            font-size: 1rem;
-            margin-top: 10px;
         }
     </style>
 </head>
@@ -444,7 +431,7 @@
                     <div class="preview-desc" id="previewDesc">-</div>
                 </div>
                 
-                <button class="btn" id="continueBtn" onclick="continueToGame()" disabled>НАЧАТЬ ПУТЕШЕСТВИЕ</button>
+                <button class="btn" id="continueBtn" onclick="continueToThroneRoom()" disabled>НАЧАТЬ ПУТЕШЕСТВИЕ</button>
             </div>
         </div>
     </div>
@@ -453,10 +440,11 @@
         // СОСТОЯНИЕ ИГРОКА
         const player = {
             gender: null,
-            style: 'royal'
+            style: 'royal',
+            imageUrl: null
         };
         
-        // ✅ ССЫЛКА НА ТВОИ КАРТИНКИ
+        // ССЫЛКА НА КАРТИНКИ
         const baseUrl = 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/';
         
         const imageUrls = {
@@ -554,18 +542,12 @@
             imgElement.onload = function() {
                 imgElement.style.display = 'block';
                 loadingText.style.display = 'none';
-                
-                imgElement.style.opacity = '0';
-                imgElement.style.transform = 'scale(0.9)';
-                
-                setTimeout(() => {
-                    imgElement.style.opacity = '1';
-                    imgElement.style.transform = 'scale(1)';
-                }, 50);
+                player.imageUrl = imageUrl;
             };
             
             imgElement.onerror = function() {
                 loadingText.innerHTML = '🖼️ ' + emojiMap[player.gender][player.style];
+                player.imageUrl = null;
             };
             
             document.getElementById('previewName').innerHTML = desc.name;
@@ -578,17 +560,18 @@
             }
         }
         
-        function continueToGame() {
-            const desc = descriptions[player.gender][player.style];
+        function continueToThroneRoom() {
+            // Сохраняем данные персонажа
+            const playerData = {
+                gender: player.gender,
+                style: player.style,
+                imageUrl: player.imageUrl,
+                emoji: player.imageUrl ? null : emojiMap[player.gender][player.style]
+            };
+            localStorage.setItem('player', JSON.stringify(playerData));
             
-            alert(`✅ ПЕРСОНАЖ СОЗДАН!\n\n` +
-                  `👤 Имя: ${desc.name}\n` +
-                  `🎭 Описание: ${desc.desc}\n\n` +
-                  `⚔️ Начальные статы:\n` +
-                  `💰 Экономика: 50\n` +
-                  `📚 Наука: 50\n` +
-                  `⚔️ Армия: 50\n\n` +
-                  `✨ Тронный зал ждет тебя, Правитель!`);
+            // Переходим в тронный зал
+            window.location.href = 'throne-room.html';
         }
     </script>
 </body>
