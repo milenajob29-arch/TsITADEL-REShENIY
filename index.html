@@ -1,151 +1,90 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>ЦИТАДЕЛЬ РЕШЕНИЙ - 3D</title>
+    <title>ЦИТАДЕЛЬ РЕШЕНИЙ</title>
     <style>
-        body { 
-            margin: 0; 
-            overflow: hidden; 
-            font-family: 'Segoe UI', Arial, sans-serif; 
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial; }
+        body { background: #1a2a3a; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .game { width: 1000px; background: #2a3a4a; padding: 20px; border-radius: 30px; border: 5px solid gold; }
         
-        #ui {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            pointer-events: none;
-            z-index: 100;
+        .panel {
+            display: flex;
+            justify-content: space-between;
+            background: #1a2a3a;
+            padding: 15px;
+            border-radius: 50px;
+            border: 2px solid gold;
+            margin-bottom: 20px;
             color: white;
         }
         
-        #resources {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.8);
-            border: 2px solid gold;
-            border-radius: 30px;
-            padding: 15px 25px;
-            display: flex;
-            gap: 30px;
-            backdrop-filter: blur(5px);
-            pointer-events: none;
+        .resources { display: flex; gap: 20px; }
+        .resource { display: flex; align-items: center; gap: 5px; }
+        .gold { color: gold; }
+        .blue { color: cyan; }
+        .red { color: #ff6b6b; }
+        
+        .map {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
         }
         
-        .resource {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1.2rem;
+        .location {
+            background: #1a2a3a;
+            border: 2px solid #b8860b;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            color: white;
+            transition: 0.3s;
         }
         
-        .gold { color: #ffd700; }
-        .blue { color: #00ffff; }
-        .red { color: #ff4444; }
+        .location:hover { border-color: gold; transform: scale(1.02); }
+        .location.active { border-color: gold; background: #2a3a4a; }
+        .location.completed { border-color: #00ff00; }
         
-        #quest-progress {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(0,0,0,0.8);
-            border: 2px solid gold;
-            border-radius: 20px;
-            padding: 10px 20px;
-            backdrop-filter: blur(5px);
-            pointer-events: none;
-        }
+        .location-icon { font-size: 3rem; margin-bottom: 10px; }
         
-        #controls-hint {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid gold;
-            border-radius: 10px;
-            padding: 8px 15px;
-            color: #aaa;
-            font-size: 0.9rem;
-            pointer-events: none;
-        }
-        
-        #dialog {
-            position: absolute;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 600px;
-            max-width: 90%;
-            background: rgba(0,0,0,0.9);
+        .scene {
+            background: #1a2a3a;
             border: 3px solid gold;
             border-radius: 20px;
-            padding: 25px;
-            color: white;
-            z-index: 200;
-            backdrop-filter: blur(10px);
-            display: none;
-            pointer-events: auto;
-        }
-        
-        #dialog-npc {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            padding: 30px;
+            min-height: 300px;
             margin-bottom: 20px;
-            border-bottom: 2px solid gold;
-            padding-bottom: 15px;
+            color: white;
         }
         
-        #npc-avatar {
-            font-size: 3rem;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #2a3a4a;
-            border-radius: 50%;
-            border: 2px solid gold;
-        }
+        .npc { font-size: 4rem; text-align: center; margin-bottom: 20px; }
         
-        #npc-name {
-            color: gold;
-            font-size: 1.3rem;
-            font-weight: bold;
-        }
-        
-        #npc-title {
-            color: #b8a07c;
-        }
-        
-        #dialog-text {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            background: #1a2a3a;
+        .dialog {
+            background: #0a1a2a;
+            border-left: 5px solid gold;
             padding: 20px;
             border-radius: 10px;
-            border-left: 5px solid gold;
+            margin: 20px 0;
+            font-size: 1.2rem;
+            line-height: 1.6;
         }
         
-        #dialog-choices {
+        .choices {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 15px;
+            margin-top: 20px;
         }
         
         .choice-btn {
             background: #2a3a4a;
             border: 2px solid gold;
             border-radius: 10px;
-            padding: 15px 10px;
-            cursor: pointer;
+            padding: 15px;
             text-align: center;
+            cursor: pointer;
             transition: 0.3s;
-            font-size: 1rem;
-            color: white;
-            pointer-events: auto;
         }
         
         .choice-btn:hover {
@@ -154,39 +93,20 @@
             transform: scale(1.05);
         }
         
-        #start-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(145deg, #1a2a3a, #0a1a2a);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            color: white;
+        .start-screen {
+            text-align: center;
+            padding: 50px;
         }
         
-        #start-screen h1 {
+        .start-screen h1 {
             color: gold;
             font-size: 4rem;
-            margin-bottom: 20px;
-            text-shadow: 0 0 30px gold;
-        }
-        
-        #start-screen p {
-            font-size: 1.2rem;
-            max-width: 600px;
-            text-align: center;
-            margin-bottom: 40px;
-            line-height: 1.8;
+            margin-bottom: 30px;
         }
         
         .btn {
             background: gold;
-            color: #1a1a2e;
+            color: black;
             border: none;
             padding: 15px 40px;
             font-size: 1.3rem;
@@ -194,124 +114,32 @@
             cursor: pointer;
             font-weight: bold;
             border: 2px solid white;
-            transition: 0.3s;
-            pointer-events: auto;
+            margin: 10px;
         }
         
-        .btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 30px gold;
-        }
-        
-        #ending-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            color: white;
-        }
-        
-        #ending-screen h2 {
-            color: gold;
-            font-size: 3rem;
-            margin-bottom: 30px;
-        }
-        
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-    <!-- СТАРТОВЫЙ ЭКРАН -->
-    <div id="start-screen">
-        <h1>🏰 ЦИТАДЕЛЬ РЕШЕНИЙ</h1>
-        <p>Ты - последний наследник древнего рода. Город в руинах.<br>
-        Три ресурса решают всё: Экономика, Наука и Армия.<br>
-        Подойди к жителям города и помоги им решить проблемы.<br>
-        Каждый выбор меняет твою судьбу.</p>
-        <button class="btn" onclick="startGame()">СТАТЬ ПРАВИТЕЛЕМ</button>
-    </div>
-    
-    <!-- ИНТЕРФЕЙС -->
-    <div id="ui">
-        <div id="resources">
-            <div class="resource"><span class="gold">💰</span> <span id="ecoVal">50</span></div>
-            <div class="resource"><span class="blue">📚</span> <span id="sciVal">50</span></div>
-            <div class="resource"><span class="red">⚔️</span> <span id="armVal">50</span></div>
-        </div>
-        
-        <div id="quest-progress">
-            📜 Заданий: <span id="completedCount">0/6</span>
-        </div>
-        
-        <div id="controls-hint">
-            WASD - движение | Подойди к NPC чтобы поговорить
-        </div>
-    </div>
-    
-    <!-- ДИАЛОГОВОЕ ОКНО -->
-    <div id="dialog">
-        <div id="dialog-npc">
-            <div id="npc-avatar">🧙</div>
-            <div>
-                <div id="npc-name">Старейшина</div>
-                <div id="npc-title">Хранитель знаний</div>
-            </div>
-        </div>
-        <div id="dialog-text"></div>
-        <div id="dialog-choices"></div>
-    </div>
-    
-    <!-- ФИНАЛЬНЫЙ ЭКРАН -->
-    <div id="ending-screen">
-        <h2 id="ending-title">💰 ЭКОНОМИСТ</h2>
-        <p id="ending-text" style="font-size: 1.3rem; max-width: 600px; text-align: center; margin-bottom: 30px;"></p>
-        <div style="display: flex; gap: 40px; margin-bottom: 40px;">
-            <span style="color: gold; font-size: 2rem;">💰 <span id="finalEco">50</span></span>
-            <span style="color: cyan; font-size: 2rem;">📚 <span id="finalSci">50</span></span>
-            <span style="color: red; font-size: 2rem;">⚔️ <span id="finalArm">50</span></span>
-        </div>
-        <button class="btn" onclick="restartGame()">СЫГРАТЬ ЗАНОВО</button>
-    </div>
+    <div class="game" id="game"></div>
 
-    <!-- Подключение Three.js -->
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
-            }
-        }
-    </script>
-
-    <script type="module">
-        import * as THREE from 'three';
-        
-        // ============ СОСТОЯНИЕ ИГРЫ ============
+    <script>
         const gameState = {
+            stage: 'start',
             economy: 50,
             science: 50,
             army: 50,
-            completedQuests: [],
             currentLocation: 0,
-            inDialog: false,
-            currentNPC: null,
-            gameStarted: false,
+            completedQuests: [],
+            inQuest: false,
             
             locations: [
-                { name: 'Тронный зал', color: 0xaa8c5e, pos: { x: 0, z: 0 }, npc: '🧙', npcName: 'Старейшина', npcTitle: 'Хранитель знаний', quest: 0 },
-                { name: 'Городские ворота', color: 0x8b7355, pos: { x: 10, z: 10 }, npc: '🛡️', npcName: 'Капитан', npcTitle: 'Начальник стражи', quest: 1 },
-                { name: 'Порт', color: 0x4a6c8f, pos: { x: -10, z: 10 }, npc: '🧳', npcName: 'Купец', npcTitle: 'Глава гильдии', quest: 2 },
-                { name: 'Библиотека', color: 0x5d6d7e, pos: { x: 10, z: -10 }, npc: '📖', npcName: 'Библиотекарь', npcTitle: 'Хранитель книг', quest: 3 },
-                { name: 'Казармы', color: 0x8b4c39, pos: { x: -10, z: -10 }, npc: '🪖', npcName: 'Командир', npcTitle: 'Генерал', quest: 4 },
-                { name: 'Храм', color: 0x6a5d7a, pos: { x: 0, z: 15 }, npc: '🙏', npcName: 'Жрец', npcTitle: 'Верховный жрец', quest: 5 }
+                { id: 0, name: 'Тронный зал', icon: '👑', npc: '🧙', npcName: 'Старейшина' },
+                { id: 1, name: 'Ворота', icon: '🏰', npc: '🛡️', npcName: 'Капитан' },
+                { id: 2, name: 'Порт', icon: '⚓', npc: '🧳', npcName: 'Купец' },
+                { id: 3, name: 'Библиотека', icon: '📚', npc: '📖', npcName: 'Библиотекарь' },
+                { id: 4, name: 'Казармы', icon: '⚔️', npc: '🪖', npcName: 'Командир' },
+                { id: 5, name: 'Храм', icon: '⛪', npc: '🙏', npcName: 'Жрец' }
             ],
             
             quests: [
@@ -319,24 +147,24 @@
                     text: 'Писарь написал указ: "Жители города! Завтра собрание на центральнай площади."',
                     choices: [
                         { text: 'Исправить ошибку', eco: 5, sci: 10, army: -5 },
-                        { text: 'Оставить как есть', eco: -5, sci: -5, army: 10 },
-                        { text: 'Казнить писаря', eco: -10, sci: 5, army: 15 }
+                        { text: 'Оставить', eco: -5, sci: -5, army: 10 },
+                        { text: 'Казнить', eco: -10, sci: 5, army: 15 }
                     ]
                 },
                 {
-                    text: 'Письмо королю: "Уважаемый король! Предлогаем мир. Наши армии могуг стать союзниками."',
+                    text: 'Письмо: "Уважаемый король! Предлогаем мир. Наши армии могуг стать союзниками."',
                     choices: [
                         { text: 'Исправить "предлогаем"', eco: -10, sci: 20, army: 0 },
                         { text: 'Исправить "могуг"', eco: -5, sci: 15, army: -5 },
-                        { text: 'Отправить как есть', eco: 10, sci: -15, army: -5 }
+                        { text: 'Отправить', eco: 10, sci: -15, army: -5 }
                     ]
                 },
                 {
                     text: 'Договор: "Оплата в течении трех дней."',
                     choices: [
-                        { text: 'Исправить предлог', eco: -5, sci: 15, army: 0 },
+                        { text: 'Исправить', eco: -5, sci: 15, army: 0 },
                         { text: 'Подписать', eco: 20, sci: -15, army: -5 },
-                        { text: 'Проверить всё', eco: -15, sci: 20, army: 5 }
+                        { text: 'Проверить', eco: -15, sci: 20, army: 5 }
                     ]
                 },
                 {
@@ -350,394 +178,178 @@
                 {
                     text: 'Донесение: "Враг собираеться напасть. Тысяча салдат."',
                     choices: [
-                        { text: 'Исправить "собираеться"', eco: -5, sci: 10, army: 5 },
-                        { text: 'Исправить "салдат"', eco: -10, sci: 5, army: 15 },
-                        { text: 'Исправить оба', eco: -20, sci: 20, army: 10 }
+                        { text: 'Собирается', eco: -5, sci: 10, army: 5 },
+                        { text: 'Солдат', eco: -10, sci: 5, army: 15 },
+                        { text: 'Оба', eco: -20, sci: 20, army: 10 }
                     ]
                 },
                 {
-                    text: 'Пророчество: "Кто с мечем придет, тот от меча погибнет."',
+                    text: 'Пророчество: "Кто с мечем придет..."',
                     choices: [
-                        { text: 'Исправить "мечем"', eco: -5, sci: 15, army: 10 },
+                        { text: 'Исправить', eco: -5, sci: 15, army: 10 },
                         { text: 'Оставить', eco: 10, sci: -10, army: 15 },
-                        { text: 'Своё пророчество', eco: 10, sci: 20, army: -5 }
+                        { text: 'Своё', eco: 10, sci: 20, army: -5 }
                     ]
                 }
             ]
         };
         
-        // ============ ИНИЦИАЛИЗАЦИЯ THREE.JS ============
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x87CEEB);
-        
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(5, 8, 15);
-        
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMap.enabled = true;
-        document.body.appendChild(renderer.domElement);
-        
-        // Освещение
-        const ambientLight = new THREE.AmbientLight(0x404060);
-        scene.add(ambientLight);
-        
-        const sunLight = new THREE.DirectionalLight(0xffeedd, 1);
-        sunLight.position.set(10, 20, 5);
-        sunLight.castShadow = true;
-        sunLight.shadow.mapSize.width = 1024;
-        sunLight.shadow.mapSize.height = 1024;
-        scene.add(sunLight);
-        
-        // Земля
-        const groundGeometry = new THREE.CircleGeometry(30, 32);
-        const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x3a5a3a });
-        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-        ground.rotation.x = -Math.PI / 2;
-        ground.receiveShadow = true;
-        scene.add(ground);
-        
-        // Дорожная сетка
-        const gridHelper = new THREE.GridHelper(60, 20, 0xffaa00, 0x886622);
-        scene.add(gridHelper);
-        
-        // ============ ПЕРСОНАЖ ИГРОКА ============
-        const playerGroup = new THREE.Group();
-        
-        // Тело
-        const bodyGeo = new THREE.CylinderGeometry(0.5, 0.5, 1.5, 8);
-        const bodyMat = new THREE.MeshStandardMaterial({ color: 0xffaa00, emissive: 0x331100 });
-        const body = new THREE.Mesh(bodyGeo, bodyMat);
-        body.position.y = 0.75;
-        body.castShadow = true;
-        playerGroup.add(body);
-        
-        // Голова
-        const headGeo = new THREE.SphereGeometry(0.3);
-        const headMat = new THREE.MeshStandardMaterial({ color: 0xffccaa });
-        const head = new THREE.Mesh(headGeo, headMat);
-        head.position.y = 1.6;
-        head.castShadow = true;
-        playerGroup.add(head);
-        
-        // Корона
-        const crownGeo = new THREE.ConeGeometry(0.35, 0.3, 6);
-        const crownMat = new THREE.MeshStandardMaterial({ color: 0xffd700 });
-        const crown = new THREE.Mesh(crownGeo, crownMat);
-        crown.position.y = 1.9;
-        playerGroup.add(crown);
-        
-        scene.add(playerGroup);
-        
-        // ============ ЛОКАЦИИ И NPC ============
-        const npcMeshes = [];
-        
-        gameState.locations.forEach((loc, index) => {
-            // Платформа
-            const platformGeo = new THREE.CylinderGeometry(1.8, 1.8, 0.2, 16);
-            const platformMat = new THREE.MeshStandardMaterial({ color: loc.color });
-            const platform = new THREE.Mesh(platformGeo, platformMat);
-            platform.position.set(loc.pos.x, 0.1, loc.pos.z);
-            platform.receiveShadow = true;
-            scene.add(platform);
+        function render() {
+            const game = document.getElementById('game');
             
-            // Столб
-            const pillarGeo = new THREE.CylinderGeometry(0.2, 0.3, 2.5, 8);
-            const pillarMat = new THREE.MeshStandardMaterial({ color: 0xaa8c5e });
-            const pillar = new THREE.Mesh(pillarGeo, pillarMat);
-            pillar.position.set(loc.pos.x, 1.35, loc.pos.z);
-            pillar.castShadow = true;
-            scene.add(pillar);
-            
-            // Огонек
-            const lightGeo = new THREE.SphereGeometry(0.25);
-            const lightMat = new THREE.MeshStandardMaterial({ color: 0xffaa00, emissive: 0x442200 });
-            const light = new THREE.Mesh(lightGeo, lightMat);
-            light.position.set(loc.pos.x, 2.7, loc.pos.z);
-            scene.add(light);
-            
-            // NPC группа
-            const npcGroup = new THREE.Group();
-            npcGroup.position.set(loc.pos.x + 0.8, 0.5, loc.pos.z);
-            
-            // Тело NPC
-            const npcBodyGeo = new THREE.BoxGeometry(0.6, 1.2, 0.6);
-            const npcBodyMat = new THREE.MeshStandardMaterial({ color: 0x8a6d4b });
-            const npcBody = new THREE.Mesh(npcBodyGeo, npcBodyMat);
-            npcBody.position.y = 0.6;
-            npcBody.castShadow = true;
-            npcGroup.add(npcBody);
-            
-            // Голова NPC
-            const npcHeadGeo = new THREE.SphereGeometry(0.25);
-            const npcHeadMat = new THREE.MeshStandardMaterial({ color: 0xffccaa });
-            const npcHead = new THREE.Mesh(npcHeadGeo, npcHeadMat);
-            npcHead.position.y = 1.3;
-            npcHead.castShadow = true;
-            npcGroup.add(npcHead);
-            
-            // Индикатор задания
-            const indicatorGeo = new THREE.SphereGeometry(0.15);
-            const indicatorMat = new THREE.MeshStandardMaterial({ color: 0xffaa00, emissive: 0x331100 });
-            const indicator = new THREE.Mesh(indicatorGeo, indicatorMat);
-            indicator.position.y = 1.7;
-            npcGroup.add(indicator);
-            
-            npcGroup.userData = { 
-                type: 'npc', 
-                locIndex: index,
-                indicator: indicator
-            };
-            
-            scene.add(npcGroup);
-            npcMeshes.push(npcGroup);
-        });
-        
-        // Деревья
-        for (let i = 0; i < 15; i++) {
-            const x = (Math.random() - 0.5) * 25;
-            const z = (Math.random() - 0.5) * 25;
-            
-            // Проверка, не слишком близко к локациям
-            let tooClose = false;
-            gameState.locations.forEach(loc => {
-                const dx = x - loc.pos.x;
-                const dz = z - loc.pos.z;
-                if (dx*dx + dz*dz < 9) tooClose = true;
-            });
-            
-            if (!tooClose) {
-                const treeGroup = new THREE.Group();
-                treeGroup.position.set(x, 0, z);
-                
-                const trunkGeo = new THREE.CylinderGeometry(0.2, 0.3, 1.5, 6);
-                const trunkMat = new THREE.MeshStandardMaterial({ color: 0x8b4513 });
-                const trunk = new THREE.Mesh(trunkGeo, trunkMat);
-                trunk.position.y = 0.75;
-                trunk.castShadow = true;
-                treeGroup.add(trunk);
-                
-                const foliageGeo = new THREE.ConeGeometry(0.7, 1.2, 6);
-                const foliageMat = new THREE.MeshStandardMaterial({ color: 0x2d5a2d });
-                const foliage = new THREE.Mesh(foliageGeo, foliageMat);
-                foliage.position.y = 1.6;
-                foliage.castShadow = true;
-                treeGroup.add(foliage);
-                
-                scene.add(treeGroup);
-            }
-        }
-        
-        // ============ УПРАВЛЕНИЕ ============
-        const keys = {};
-        
-        window.addEventListener('keydown', (e) => {
-            keys[e.code] = true;
-            // Предотвращаем скролл страницы при нажатии WASD
-            if (['KeyW','KeyA','KeyS','KeyD'].includes(e.code)) {
-                e.preventDefault();
-            }
-        });
-        
-        window.addEventListener('keyup', (e) => {
-            keys[e.code] = false;
-        });
-        
-        function updatePlayer() {
-            if (!gameState.gameStarted || gameState.inDialog) return;
-            
-            const speed = 0.15;
-            let moveX = 0, moveZ = 0;
-            
-            if (keys['KeyW']) moveZ -= speed;
-            if (keys['KeyS']) moveZ += speed;
-            if (keys['KeyA']) moveX -= speed;
-            if (keys['KeyD']) moveX += speed;
-            
-            // Движение по диагонали не должно быть быстрее
-            if (moveX !== 0 && moveZ !== 0) {
-                moveX *= 0.7;
-                moveZ *= 0.7;
-            }
-            
-            playerGroup.position.x += moveX;
-            playerGroup.position.z += moveZ;
-            
-            // Ограничение движения
-            playerGroup.position.x = Math.max(-22, Math.min(22, playerGroup.position.x));
-            playerGroup.position.z = Math.max(-22, Math.min(22, playerGroup.position.z));
-            
-            // Поворот персонажа в сторону движения
-            if (moveX !== 0 || moveZ !== 0) {
-                const angle = Math.atan2(moveX, moveZ);
-                playerGroup.rotation.y = angle;
-            }
-            
-            // Камера следует за игроком
-            camera.position.x = playerGroup.position.x;
-            camera.position.z = playerGroup.position.z + 12;
-            camera.position.y = 8;
-            camera.lookAt(playerGroup.position);
-            
-            // Проверка столкновения с NPC
-            npcMeshes.forEach(npc => {
-                const dist = playerGroup.position.distanceTo(npc.position);
-                if (dist < 2.0 && !gameState.inDialog) {
-                    const locIndex = npc.userData.locIndex;
-                    if (!gameState.completedQuests.includes(locIndex)) {
-                        showDialog(locIndex);
-                    }
-                }
-            });
-        }
-        
-        // ============ ДИАЛОГИ ============
-        window.showDialog = function(locIndex) {
-            const loc = gameState.locations[locIndex];
-            const quest = gameState.quests[loc.quest];
-            
-            gameState.inDialog = true;
-            gameState.currentNPC = locIndex;
-            
-            document.getElementById('npc-avatar').innerHTML = loc.npc;
-            document.getElementById('npc-name').innerHTML = loc.npcName;
-            document.getElementById('npc-title').innerHTML = loc.npcTitle;
-            document.getElementById('dialog-text').innerHTML = quest.text;
-            
-            let choicesHtml = '';
-            quest.choices.forEach((choice, index) => {
-                choicesHtml += `
-                    <div class="choice-btn" onclick="makeChoice(${locIndex}, ${index})">
-                        ${choice.text}
+            if (gameState.stage === 'start') {
+                game.innerHTML = `
+                    <div class="start-screen">
+                        <h1>🏰 ЦИТАДЕЛЬ РЕШЕНИЙ</h1>
+                        <p style="color: white; font-size: 1.2rem; margin-bottom: 40px;">
+                            Ты - последний наследник. Город в руинах.<br>
+                            Посети 6 мест и помоги жителям.<br>
+                            Каждый выбор влияет на ресурсы.
+                        </p>
+                        <button class="btn" onclick="startGame()">СТАТЬ ПРАВИТЕЛЕМ</button>
                     </div>
                 `;
-            });
-            
-            document.getElementById('dialog-choices').innerHTML = choicesHtml;
-            document.getElementById('dialog').style.display = 'block';
+            } 
+            else if (gameState.stage === 'playing') {
+                let mapHtml = '';
+                for (let i = 0; i < gameState.locations.length; i++) {
+                    const loc = gameState.locations[i];
+                    const completed = gameState.completedQuests.includes(i);
+                    mapHtml += `
+                        <div class="location ${gameState.currentLocation === i ? 'active' : ''} ${completed ? 'completed' : ''}"
+                             onclick="selectLocation(${i})">
+                            <div class="location-icon">${loc.icon}</div>
+                            <div>${loc.name}</div>
+                            ${completed ? '<div style="color: #00ff00;">✓</div>' : ''}
+                        </div>
+                    `;
+                }
+                
+                let sceneHtml = '';
+                const currentLoc = gameState.locations[gameState.currentLocation];
+                const isCompleted = gameState.completedQuests.includes(gameState.currentLocation);
+                
+                if (gameState.inQuest) {
+                    const quest = gameState.quests[gameState.currentLocation];
+                    let choicesHtml = '';
+                    quest.choices.forEach((c, i) => {
+                        choicesHtml += `<div class="choice-btn" onclick="makeChoice(${i})">${c.text}</div>`;
+                    });
+                    
+                    sceneHtml = `
+                        <div class="npc">${currentLoc.npc}</div>
+                        <div class="dialog">${quest.text}</div>
+                        <div class="choices">${choicesHtml}</div>
+                    `;
+                } else {
+                    sceneHtml = `
+                        <div class="npc">${currentLoc.npc}</div>
+                        <div style="text-align: center; font-size: 1.3rem; margin: 30px;">${currentLoc.npcName}</div>
+                        ${!isCompleted ? 
+                            '<button class="btn" style="display: block; margin: 0 auto;" onclick="startQuest()">НАЧАТЬ ЗАДАНИЕ</button>' : 
+                            '<div style="text-align: center; color: #00ff00;">✓ Задание выполнено</div>'}
+                    `;
+                }
+                
+                game.innerHTML = `
+                    <div class="panel">
+                        <div style="color: gold; font-size: 1.5rem;">🏰 ЦИТАДЕЛЬ</div>
+                        <div class="resources">
+                            <div class="resource"><span class="gold">💰</span> ${gameState.economy}</div>
+                            <div class="resource"><span class="blue">📚</span> ${gameState.science}</div>
+                            <div class="resource"><span class="red">⚔️</span> ${gameState.army}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="map">${mapHtml}</div>
+                    
+                    <div class="scene">${sceneHtml}</div>
+                    
+                    <div style="display: flex; justify-content: space-between; color: white;">
+                        <span>📜 Заданий: ${gameState.completedQuests.length}/6</span>
+                        <span style="color: #b8a07c;">Кликни на карту чтобы переместиться</span>
+                    </div>
+                `;
+            }
+            else if (gameState.stage === 'ending') {
+                let title, text;
+                if (gameState.economy >= gameState.science && gameState.economy >= gameState.army) {
+                    title = '💰 ЭКОНОМИСТ';
+                    text = 'Ты построил торговую империю! Город процветает.';
+                } else if (gameState.science > gameState.economy && gameState.science >= gameState.army) {
+                    title = '📚 УЧЕНЫЙ';
+                    text = 'Академия магии открыта! Знания правят миром.';
+                } else {
+                    title = '⚔️ ВОИН';
+                    text = 'Враг разбит! Твоя армия непобедима.';
+                }
+                
+                game.innerHTML = `
+                    <div class="start-screen">
+                        <h1>${title}</h1>
+                        <p style="color: white; font-size: 1.3rem; margin: 30px;">${text}</p>
+                        <div style="display: flex; gap: 40px; justify-content: center; margin: 30px;">
+                            <span class="gold">💰 ${gameState.economy}</span>
+                            <span class="blue">📚 ${gameState.science}</span>
+                            <span class="red">⚔️ ${gameState.army}</span>
+                        </div>
+                        <button class="btn" onclick="restartGame()">СЫГРАТЬ ЗАНОВО</button>
+                    </div>
+                `;
+            }
+        }
+        
+        window.startGame = function() {
+            gameState.stage = 'playing';
+            render();
         };
         
-        window.makeChoice = function(locIndex, choiceIndex) {
-            const quest = gameState.quests[gameState.locations[locIndex].quest];
+        window.selectLocation = function(id) {
+            gameState.currentLocation = id;
+            gameState.inQuest = false;
+            render();
+        };
+        
+        window.startQuest = function() {
+            if (!gameState.completedQuests.includes(gameState.currentLocation)) {
+                gameState.inQuest = true;
+                render();
+            }
+        };
+        
+        window.makeChoice = function(choiceIndex) {
+            const quest = gameState.quests[gameState.currentLocation];
             const choice = quest.choices[choiceIndex];
             
-            // Изменяем ресурсы
             gameState.economy = Math.min(100, Math.max(0, gameState.economy + choice.eco));
             gameState.science = Math.min(100, Math.max(0, gameState.science + choice.sci));
             gameState.army = Math.min(100, Math.max(0, gameState.army + choice.army));
             
-            // Отмечаем задание выполненным
-            if (!gameState.completedQuests.includes(locIndex)) {
-                gameState.completedQuests.push(locIndex);
+            if (!gameState.completedQuests.includes(gameState.currentLocation)) {
+                gameState.completedQuests.push(gameState.currentLocation);
             }
             
-            // Обновляем индикатор NPC
-            npcMeshes.forEach(npc => {
-                if (npc.userData.locIndex === locIndex) {
-                    npc.userData.indicator.material.color.setHex(0x00ff00);
-                    npc.userData.indicator.material.emissive.setHex(0x003300);
-                }
-            });
+            gameState.inQuest = false;
             
-            // Обновляем интерфейс
-            updateUI();
-            
-            // Закрываем диалог
-            gameState.inDialog = false;
-            document.getElementById('dialog').style.display = 'none';
-            
-            // Проверяем финал
             if (gameState.completedQuests.length >= 6) {
-                showEnding();
-            }
-        };
-        
-        function updateUI() {
-            document.getElementById('ecoVal').innerHTML = gameState.economy;
-            document.getElementById('sciVal').innerHTML = gameState.science;
-            document.getElementById('armVal').innerHTML = gameState.army;
-            document.getElementById('completedCount').innerHTML = `${gameState.completedQuests.length}/6`;
-        }
-        
-        function showEnding() {
-            let title, text;
-            
-            if (gameState.economy >= gameState.science && gameState.economy >= gameState.army) {
-                title = '💰 ЭКОНОМИСТ';
-                text = 'Ты построил великую торговую империю! Корабли со всего мира прибывают в твой порт. Город утопает в золоте и роскоши.';
-            } else if (gameState.science > gameState.economy && gameState.science >= gameState.army) {
-                title = '📚 УЧЕНЫЙ';
-                text = 'Великая академия магии открыта! Ученые со всего света едут к тебе. Знания стали главной силой города.';
-            } else {
-                title = '⚔️ ВОИН';
-                text = 'Враг разбит! Твоя армия непобедима. Никто не посмеет угрожать Цитадели. Слава Императору!';
+                gameState.stage = 'ending';
             }
             
-            document.getElementById('ending-title').innerHTML = title;
-            document.getElementById('ending-text').innerHTML = text;
-            document.getElementById('finalEco').innerHTML = gameState.economy;
-            document.getElementById('finalSci').innerHTML = gameState.science;
-            document.getElementById('finalArm').innerHTML = gameState.army;
-            document.getElementById('ending-screen').style.display = 'flex';
-        }
-        
-        // ============ ГЛОБАЛЬНЫЕ ФУНКЦИИ ============
-        window.startGame = function() {
-            gameState.gameStarted = true;
-            document.getElementById('start-screen').style.display = 'none';
-            
-            // Стартовый диалог со старейшиной
-            setTimeout(() => {
-                if (!gameState.completedQuests.includes(0)) {
-                    showDialog(0);
-                }
-            }, 1000);
+            render();
         };
         
         window.restartGame = function() {
+            gameState.stage = 'start';
             gameState.economy = 50;
             gameState.science = 50;
             gameState.army = 50;
             gameState.completedQuests = [];
             gameState.currentLocation = 0;
-            gameState.inDialog = false;
-            
-            // Сбрасываем индикаторы NPC
-            npcMeshes.forEach(npc => {
-                npc.userData.indicator.material.color.setHex(0xffaa00);
-                npc.userData.indicator.material.emissive.setHex(0x331100);
-            });
-            
-            updateUI();
-            document.getElementById('ending-screen').style.display = 'none';
-            document.getElementById('start-screen').style.display = 'flex';
+            gameState.inQuest = false;
+            render();
         };
         
-        // ============ АНИМАЦИЯ ============
-        function animate() {
-            requestAnimationFrame(animate);
-            
-            updatePlayer();
-            
-            // Вращаем огоньки
-            npcMeshes.forEach(npc => {
-                npc.rotation.y += 0.01;
-            });
-            
-            renderer.render(scene, camera);
-        }
-        
-        animate();
-        
-        // ============ ОБРАБОТКА РАЗМЕРА ОКНА ============
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-        
-        // Начальное обновление UI
-        updateUI();
+        render();
     </script>
 </body>
 </html>
