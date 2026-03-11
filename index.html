@@ -265,7 +265,7 @@
         }
         
         .preview-stage {
-            background: linear-gradient(145deg, #2a3a4a, #1a2a3a);
+            background: #ffffff;  /* ← ИЗМЕНИЛ НА БЕЛЫЙ */
             border-radius: 20px;
             padding: 20px;
             position: relative;
@@ -456,7 +456,7 @@
             style: 'royal'
         };
         
-        // ✅ ИСПРАВЛЕННАЯ ССЫЛКА - ТОЧНОЕ НАЗВАНИЕ РЕПОЗИТОРИЯ
+        // ✅ ССЫЛКА НА ТВОИ КАРТИНКИ
         const baseUrl = 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/';
         
         const imageUrls = {
@@ -474,7 +474,7 @@
             }
         };
         
-        // Запасные эмодзи на случай ошибки
+        // Запасные эмодзи
         const emojiMap = {
             male: {
                 royal: '⚔️👑',
@@ -549,12 +549,9 @@
             loadingText.style.display = 'block';
             loadingText.innerHTML = '✨ Загрузка...';
             
-            console.log('Загружаю картинку:', imageUrl);
-            
             imgElement.src = imageUrl;
             
             imgElement.onload = function() {
-                console.log('Картинка успешно загружена!');
                 imgElement.style.display = 'block';
                 loadingText.style.display = 'none';
                 
@@ -568,8 +565,6 @@
             };
             
             imgElement.onerror = function() {
-                console.error('Ошибка загрузки картинки:', imageUrl);
-                // Показываем эмодзи как запасной вариант
                 loadingText.innerHTML = '🖼️ ' + emojiMap[player.gender][player.style];
             };
             
