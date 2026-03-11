@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ЦИТАДЕЛЬ РЕШЕНИЙ</title>
+    <title>ЦИТАДЕЛЬ РЕШЕНИЙ - СОЗДАНИЕ ПЕРСОНАЖА</title>
     <style>
         * {
             margin: 0;
@@ -84,20 +84,9 @@
             box-shadow: 0 0 30px gold;
         }
         
-        .map-outline {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(0,0,0,0.8) 100%);
-            pointer-events: none;
-            z-index: -1;
-        }
-        
         /* ОСНОВНОЙ ЭКРАН */
         .game-container {
-            width: 1200px;
+            width: 1400px;
             max-width: 100%;
             background: linear-gradient(145deg, #1e2a3a, #0f1a24);
             border-radius: 30px;
@@ -115,100 +104,193 @@
             text-shadow: 0 0 20px gold;
         }
         
-        .character-creation {
-            display: flex;
-            gap: 40px;
-            justify-content: center;
-            margin: 40px 0;
+        .creation-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
         }
         
-        .character-card {
-            background: #1a2a3a;
-            border: 2px solid #b8860b;
-            border-radius: 20px;
-            padding: 30px;
-            cursor: pointer;
-            transition: 0.3s;
-            width: 250px;
-            text-align: center;
-        }
-        
-        .character-card:hover {
-            border-color: gold;
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px gold;
-        }
-        
-        .character-card.selected {
-            border-color: gold;
-            background: #2a3a4a;
-            box-shadow: 0 0 30px gold;
-        }
-        
-        .character-avatar {
-            font-size: 8rem;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 0 20px gold);
-        }
-        
-        .character-name {
-            color: gold;
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .character-desc {
-            color: #b8a07c;
-            font-size: 1rem;
-        }
-        
-        .customization {
+        /* ЛЕВАЯ ЧАСТЬ - НАСТРОЙКИ */
+        .left-panel {
             background: #1a2a3a;
             border: 2px solid gold;
             border-radius: 20px;
-            padding: 30px;
-            margin: 30px 0;
+            padding: 25px;
         }
         
-        .customization h2 {
+        .section-title {
             color: gold;
-            font-size: 2rem;
+            font-size: 1.8rem;
             margin-bottom: 20px;
+            border-bottom: 2px solid gold;
+            padding-bottom: 10px;
+        }
+        
+        .character-options {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .gender-card {
+            flex: 1;
+            background: #2a3a4a;
+            border: 2px solid #b8860b;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: 0.3s;
             text-align: center;
+        }
+        
+        .gender-card:hover {
+            border-color: gold;
+            transform: translateY(-5px);
+        }
+        
+        .gender-card.selected {
+            border-color: gold;
+            background: #3a4a5a;
+            box-shadow: 0 0 20px gold;
+        }
+        
+        .gender-icon {
+            font-size: 4rem;
+            margin-bottom: 10px;
+        }
+        
+        .gender-name {
+            color: gold;
+            font-size: 1.5rem;
+            font-weight: bold;
         }
         
         .style-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            margin-top: 20px;
+            margin-bottom: 30px;
         }
         
-        .style-item {
+        .style-card {
             background: #2a3a4a;
             border: 2px solid #b8860b;
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 15px;
             cursor: pointer;
             transition: 0.3s;
             text-align: center;
-            color: white;
         }
         
-        .style-item:hover {
+        .style-card:hover {
             border-color: gold;
             transform: scale(1.05);
         }
         
-        .style-item.selected {
+        .style-card.selected {
             border-color: gold;
             background: #3a4a5a;
+            box-shadow: 0 0 15px gold;
         }
         
         .style-icon {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+        
+        .style-name {
+            color: white;
+            font-size: 1.1rem;
+        }
+        
+        .stats-preview {
+            background: #2a3a4a;
+            border: 2px solid gold;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            color: white;
+            font-size: 1.1rem;
+        }
+        
+        .stat-bar {
+            width: 200px;
+            height: 10px;
+            background: #1a2a3a;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .stat-fill {
+            height: 100%;
+            width: 50%;
+            background: gold;
+        }
+        
+        /* ПРАВАЯ ЧАСТЬ - ПРЕВЬЮ */
+        .preview-panel {
+            background: #1a2a3a;
+            border: 2px solid gold;
+            border-radius: 20px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .preview-title {
+            color: gold;
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .preview-stage {
+            background: linear-gradient(145deg, #2a3a4a, #1a2a3a);
+            border-radius: 20px;
+            padding: 40px 20px;
+            position: relative;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            border: 1px solid #b8860b;
+        }
+        
+        .character-preview {
+            font-size: 12rem;
+            line-height: 1;
+            filter: drop-shadow(0 0 30px gold);
+            transition: all 0.3s;
+            animation: float 3s infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .preview-name {
+            color: gold;
             font-size: 2rem;
-            margin-bottom: 5px;
+            font-weight: bold;
+            text-shadow: 0 0 10px gold;
+            background: rgba(0,0,0,0.5);
+            padding: 10px 30px;
+            border-radius: 50px;
+            border: 1px solid gold;
+        }
+        
+        .preview-desc {
+            color: #b8a07c;
+            margin-top: 10px;
         }
         
         .btn {
@@ -222,12 +304,12 @@
             font-weight: bold;
             border: 2px solid white;
             transition: 0.3s;
-            display: block;
-            margin: 30px auto 0;
+            width: 100%;
+            margin-top: 20px;
         }
         
         .btn:hover {
-            transform: scale(1.1);
+            transform: scale(1.02);
             box-shadow: 0 0 30px gold;
         }
         
@@ -236,15 +318,16 @@
             cursor: not-allowed;
         }
         
-        .hidden {
-            display: none;
+        /* АНИМАЦИИ */
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 20px gold); }
+            50% { filter: drop-shadow(0 0 40px gold); }
         }
     </style>
 </head>
 <body>
     <!-- ЗАСТАВКА -->
     <div class="splash-screen" id="splashScreen">
-        <div class="map-outline"></div>
         <div class="splash-text">
             Город умирает.<br>
             Его жители потеряли надежду.<br>
@@ -255,53 +338,81 @@
 
     <!-- ОСНОВНАЯ ИГРА -->
     <div class="game-container" id="gameContainer">
-        <h1>🏰 ЦИТАДЕЛЬ РЕШЕНИЙ</h1>
+        <h1>🏰 СОЗДАНИЕ ПРАВИТЕЛЯ 🏰</h1>
         
-        <div class="character-creation">
-            <!-- Мужской персонаж -->
-            <div class="character-card" id="charMale" onclick="selectGender('male')">
-                <div class="character-avatar" id="maleAvatar">⚔️👑</div>
-                <div class="character-name">Воин</div>
-                <div class="character-desc">Сильный и решительный</div>
+        <div class="creation-layout">
+            <!-- ЛЕВАЯ ПАНЕЛЬ - НАСТРОЙКИ -->
+            <div class="left-panel">
+                <div class="section-title">⚔️ ВЫБЕРИ ГЕРОЯ</div>
+                
+                <div class="character-options">
+                    <div class="gender-card" id="genderMale" onclick="selectGender('male')">
+                        <div class="gender-icon">⚔️</div>
+                        <div class="gender-name">Воин</div>
+                        <div style="color: #b8a07c;">Сильный и решительный</div>
+                    </div>
+                    
+                    <div class="gender-card" id="genderFemale" onclick="selectGender('female')">
+                        <div class="gender-icon">👸</div>
+                        <div class="gender-name">Правительница</div>
+                        <div style="color: #b8a07c;">Мудрая и волевая</div>
+                    </div>
+                </div>
+                
+                <div class="section-title">✨ ВЫБЕРИ СТИЛЬ</div>
+                
+                <div class="style-grid">
+                    <div class="style-card" onclick="selectStyle('royal')">
+                        <div class="style-icon">👑</div>
+                        <div class="style-name">Королевский</div>
+                    </div>
+                    <div class="style-card" onclick="selectStyle('warrior')">
+                        <div class="style-icon">⚔️</div>
+                        <div class="style-name">Боевой</div>
+                    </div>
+                    <div class="style-card" onclick="selectStyle('mage')">
+                        <div class="style-icon">🔮</div>
+                        <div class="style-name">Магический</div>
+                    </div>
+                    <div class="style-card" onclick="selectStyle('hunter')">
+                        <div class="style-icon">🏹</div>
+                        <div class="style-name">Охотничий</div>
+                    </div>
+                </div>
+                
+                <div class="stats-preview">
+                    <div class="section-title">📊 НАЧАЛЬНЫЕ СТАТЫ</div>
+                    <div class="stat-row">
+                        <span>💰 Экономика</span>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 50%"></div></div>
+                        <span>50</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>📚 Наука</span>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 50%"></div></div>
+                        <span>50</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>⚔️ Армия</span>
+                        <div class="stat-bar"><div class="stat-fill" style="width: 50%"></div></div>
+                        <span>50</span>
+                    </div>
+                </div>
             </div>
             
-            <!-- Женский персонаж -->
-            <div class="character-card" id="charFemale" onclick="selectGender('female')">
-                <div class="character-avatar" id="femaleAvatar">⚔️👸</div>
-                <div class="character-name">Правительница</div>
-                <div class="character-desc">Мудрая и волевая</div>
+            <!-- ПРАВАЯ ПАНЕЛЬ - ПРЕВЬЮ -->
+            <div class="preview-panel">
+                <div class="preview-title">🔍 ПРЕДПРОСМОТР</div>
+                
+                <div class="preview-stage">
+                    <div class="character-preview" id="characterPreview">⚔️👑</div>
+                    <div class="preview-name" id="previewName">Воин</div>
+                    <div class="preview-desc" id="previewDesc">Королевский стиль</div>
+                </div>
+                
+                <button class="btn" id="continueBtn" onclick="continueToGame()" disabled>НАЧАТЬ ПУТЕШЕСТВИЕ</button>
             </div>
         </div>
-        
-        <!-- КАСТОМИЗАЦИЯ -->
-        <div class="customization" id="customization">
-            <h2>✨ ВЫБЕРИ СТИЛЬ ✨</h2>
-            
-            <div style="color: gold; text-align: center; margin-bottom: 20px;" id="selectedChar">Выбери персонажа</div>
-            
-            <div class="style-grid">
-                <!-- Наряды -->
-                <div class="style-item" onclick="selectStyle('royal')">
-                    <div class="style-icon">👑</div>
-                    <div>Королевский</div>
-                </div>
-                <div class="style-item" onclick="selectStyle('warrior')">
-                    <div class="style-icon">⚔️</div>
-                    <div>Боевой</div>
-                </div>
-                <div class="style-item" onclick="selectStyle('mage')">
-                    <div class="style-icon">🔮</div>
-                    <div>Магический</div>
-                </div>
-                <div class="style-item" onclick="selectStyle('hunter')">
-                    <div class="style-icon">🏹</div>
-                    <div>Охотничий</div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- КНОПКА ПРОДОЛЖИТЬ -->
-        <button class="btn" id="continueBtn" onclick="continueToGame()" disabled>НАЧАТЬ ПУТЕШЕСТВИЕ</button>
     </div>
 
     <script>
@@ -311,7 +422,22 @@
             style: 'royal'
         };
         
-        // ФУНКЦИИ
+        // КОМБИНАЦИИ ДЛЯ ПРЕВЬЮ
+        const previews = {
+            male: {
+                royal: { avatar: '⚔️👑', name: 'Воин', desc: 'Королевский воин' },
+                warrior: { avatar: '🛡️⚔️', name: 'Воин', desc: 'Боевой командир' },
+                mage: { avatar: '🔮⚔️', name: 'Маг', desc: 'Воитель-маг' },
+                hunter: { avatar: '🏹⚔️', name: 'Охотник', desc: 'Лесной страж' }
+            },
+            female: {
+                royal: { avatar: '👸👑', name: 'Правительница', desc: 'Королевский двор' },
+                warrior: { avatar: '🛡️👸', name: 'Воительница', desc: 'Боевая леди' },
+                mage: { avatar: '🔮👸', name: 'Чародейка', desc: 'Магическая сила' },
+                hunter: { avatar: '🏹👸', name: 'Охотница', desc: 'Лесная защитница' }
+            }
+        };
+        
         function showCreation() {
             document.getElementById('splashScreen').style.opacity = '0';
             setTimeout(() => {
@@ -324,56 +450,50 @@
             player.gender = gender;
             
             // Снимаем выделение
-            document.getElementById('charMale').classList.remove('selected');
-            document.getElementById('charFemale').classList.remove('selected');
+            document.getElementById('genderMale').classList.remove('selected');
+            document.getElementById('genderFemale').classList.remove('selected');
             
             // Выделяем выбранный
-            if (gender === 'male') {
-                document.getElementById('charMale').classList.add('selected');
-                document.getElementById('selectedChar').innerHTML = 'Выбран: Воин ⚔️';
-            } else {
-                document.getElementById('charFemale').classList.add('selected');
-                document.getElementById('selectedChar').innerHTML = 'Выбрана: Правительница 👸';
-            }
+            document.getElementById('gender' + gender.charAt(0).toUpperCase() + gender.slice(1)).classList.add('selected');
             
+            // Обновляем превью
+            updatePreview();
             checkSelection();
         }
         
         function selectStyle(style) {
             player.style = style;
             
-            // Подсвечиваем выбранный стиль
-            document.querySelectorAll('.style-item').forEach(item => {
-                item.classList.remove('selected');
+            // Снимаем выделение со всех стилей
+            document.querySelectorAll('.style-card').forEach(card => {
+                card.classList.remove('selected');
             });
+            
+            // Выделяем выбранный
             event.currentTarget.classList.add('selected');
             
-            // Меняем аватар в зависимости от стиля
-            updateAvatar();
+            // Обновляем превью
+            updatePreview();
         }
         
-        function updateAvatar() {
+        function updatePreview() {
             if (!player.gender) return;
             
-            let avatar = '';
+            const preview = previews[player.gender][player.style];
             
-            if (player.gender === 'male') {
-                switch(player.style) {
-                    case 'royal': avatar = '👑⚔️'; break;
-                    case 'warrior': avatar = '🛡️⚔️'; break;
-                    case 'mage': avatar = '🔮⚔️'; break;
-                    case 'hunter': avatar = '🏹⚔️'; break;
-                }
-                document.getElementById('maleAvatar').innerHTML = avatar;
-            } else {
-                switch(player.style) {
-                    case 'royal': avatar = '👑👸'; break;
-                    case 'warrior': avatar = '🛡️👸'; break;
-                    case 'mage': avatar = '🔮👸'; break;
-                    case 'hunter': avatar = '🏹👸'; break;
-                }
-                document.getElementById('femaleAvatar').innerHTML = avatar;
-            }
+            // Анимация смены
+            const previewElement = document.getElementById('characterPreview');
+            previewElement.style.opacity = '0';
+            previewElement.style.transform = 'scale(0.9)';
+            
+            setTimeout(() => {
+                previewElement.innerHTML = preview.avatar;
+                document.getElementById('previewName').innerHTML = preview.name;
+                document.getElementById('previewDesc').innerHTML = preview.desc;
+                
+                previewElement.style.opacity = '1';
+                previewElement.style.transform = 'scale(1)';
+            }, 200);
         }
         
         function checkSelection() {
@@ -383,10 +503,16 @@
         }
         
         function continueToGame() {
-            alert('✅ Персонаж создан!\n\n' +
-                  'Пол: ' + (player.gender === 'male' ? 'Воин' : 'Правительница') + '\n' +
-                  'Стиль: ' + player.style + '\n\n' +
-                  'Следующий этап: Тронный зал и встреча с советником');
+            const preview = previews[player.gender][player.style];
+            
+            alert(`✅ ПЕРСОНАЖ СОЗДАН!\n\n` +
+                  `👤 Имя: ${preview.name}\n` +
+                  `🎭 Стиль: ${preview.desc}\n\n` +
+                  `⚔️ Начальные статы:\n` +
+                  `💰 Экономика: 50\n` +
+                  `📚 Наука: 50\n` +
+                  `⚔️ Армия: 50\n\n` +
+                  `✨ Тронный зал ждет тебя, Правитель!`);
             
             // Здесь будет переход к следующему этапу
         }
