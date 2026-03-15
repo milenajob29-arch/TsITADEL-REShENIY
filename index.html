@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ЦИТАДЕЛЬ РЕШЕНИЙ - СОЗДАНИЕ ПЕРСОНАЖА</title>
     <style>
+        /* Твои стили остаются без изменений */
         * {
             margin: 0;
             padding: 0;
@@ -481,7 +482,7 @@
             imageUrl: null
         };
         
-        // ССЫЛКА НА КАРТИНКИ
+        // ССЫЛКА НА КАРТИНКИ (ПРОВЕРЬ, ЧТО ВСЕ ФАЙЛЫ ЕСТЬ)
         const baseUrl = 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/';
         
         const imageUrls = {
@@ -536,10 +537,9 @@
         const bgmCreation = document.getElementById('bgmCreation');
         let soundEnabled = true;
         
-        // Запускаем музыку на заставке
         window.addEventListener('load', function() {
             bgmMenu.volume = 0.3;
-            bgmMenu.play().catch(e => console.log('Автовоспроизведение заблокировано браузером'));
+            bgmMenu.play().catch(e => console.log('Автовоспроизведение заблокировано'));
         });
         
         function toggleSound() {
@@ -562,7 +562,6 @@
         function showCreation() {
             document.getElementById('splashScreen').style.opacity = '0';
             
-            // Переключаем музыку
             bgmMenu.pause();
             bgmCreation.volume = 0.3;
             bgmCreation.play().catch(e => console.log('Не удалось воспроизвести'));
@@ -632,7 +631,6 @@
         }
         
         function continueToThroneRoom() {
-            // Сохраняем данные персонажа
             const playerData = {
                 gender: player.gender,
                 style: player.style,
@@ -641,7 +639,6 @@
             };
             localStorage.setItem('player', JSON.stringify(playerData));
             
-            // Переходим в тронный зал
             window.location.href = 'throne-room.html';
         }
     </script>
