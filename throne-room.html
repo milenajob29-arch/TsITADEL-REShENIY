@@ -32,116 +32,171 @@
         }
         
         .throne-room {
-            background: linear-gradient(145deg, #2a3a4a, #1a2a3a);
+            background-image: url('https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/bg_throne.jpg');
+            background-size: cover;
+            background-position: center;
             border: 3px solid gold;
             border-radius: 20px;
-            padding: 30px;
-            min-height: 600px;
+            padding: 40px;
+            min-height: 700px;
             position: relative;
-            background-image: radial-gradient(circle at 20% 30%, #b8860b 1px, transparent 1px), 
-                              radial-gradient(circle at 80% 70%, #b8860b 1px, transparent 1px);
-            background-size: 50px 50px;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
         }
         
-        .throne-decoration {
+        .throne-room::before {
+            content: '';
             position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
-            height: 100px;
-            background: linear-gradient(90deg, transparent, gold, transparent);
-            opacity: 0.3;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            pointer-events: none;
         }
         
-        .character-show {
+        /* СЦЕНА С ПЕРСОНАЖАМИ */
+        .character-scene {
             display: flex;
-            align-items: center;
-            gap: 40px;
-            margin: 50px 0;
+            justify-content: space-between;
+            align-items: flex-end;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            margin-bottom: 30px;
         }
         
-        .hero-preview {
-            width: 200px;
-            height: 200px;
-            background: #ffffff;
-            border-radius: 50%;
-            border: 4px solid gold;
+        /* Левый персонаж (Аристарх) */
+        .character-left {
+            width: 300px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            overflow: hidden;
-            box-shadow: 0 0 50px gold;
+            transform: translateX(-20px);
         }
         
-        .hero-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+        .character-left .character-image {
+            width: 280px;
+            height: auto;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+            animation: floatNpc 3s infinite;
+        }
+        
+        .character-left .character-name {
+            color: gold;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: rgba(0,0,0,0.7);
+            padding: 8px 20px;
+            border-radius: 30px;
+            border: 1px solid gold;
+            margin-top: 15px;
+        }
+        
+        .character-left .character-title {
+            color: #b8a07c;
+            font-size: 1rem;
+            background: rgba(0,0,0,0.5);
+            padding: 4px 15px;
+            border-radius: 20px;
+            margin-top: 5px;
+        }
+        
+        /* Правый персонаж (игрок) */
+        .character-right {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: translateX(20px);
+        }
+        
+        .character-right .character-image {
+            width: 280px;
+            height: auto;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+            animation: floatHero 3s infinite;
+        }
+        
+        .character-right .character-name {
+            color: gold;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: rgba(0,0,0,0.7);
+            padding: 8px 20px;
+            border-radius: 30px;
+            border: 1px solid gold;
+            margin-top: 15px;
+        }
+        
+        @keyframes floatNpc {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes floatHero {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        /* ДИАЛОГОВОЕ ОКНО */
+        .dialog-container {
+            position: relative;
+            z-index: 3;
+            margin-top: 20px;
         }
         
         .dialog-box {
-            flex: 1;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
             border: 3px solid gold;
-            border-radius: 20px;
-            padding: 25px;
+            border-radius: 30px;
+            padding: 30px;
             color: white;
-            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.3);
         }
         
-        .npc-info {
+        .dialog-speaker {
             display: flex;
             align-items: center;
             gap: 15px;
             margin-bottom: 20px;
-            border-bottom: 1px solid gold;
+            border-bottom: 2px solid gold;
             padding-bottom: 15px;
         }
         
-        .npc-avatar {
-            font-size: 3rem;
-            background: #2a3a4a;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            border: 2px solid gold;
-        }
-        
-        .npc-name {
+        .speaker-name {
             color: gold;
             font-size: 1.5rem;
             font-weight: bold;
         }
         
-        .npc-title {
+        .speaker-title {
             color: #b8a07c;
         }
         
         .dialog-text {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             line-height: 1.8;
             margin-bottom: 30px;
             min-height: 100px;
+            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid gold;
+            font-style: italic;
         }
         
-        .dialog-text p {
-            margin-bottom: 15px;
+        .message {
             opacity: 0;
-            animation: fadeInText 0.5s forwards;
+            animation: fadeInMessage 0.5s forwards;
         }
         
-        .dialog-text p:nth-child(1) { animation-delay: 0.5s; }
-        .dialog-text p:nth-child(2) { animation-delay: 2s; }
-        .dialog-text p:nth-child(3) { animation-delay: 3.5s; }
-        .dialog-text p:nth-child(4) { animation-delay: 5s; }
-        .dialog-text p:nth-child(5) { animation-delay: 6.5s; }
-        
-        @keyframes fadeInText {
-            0% { opacity: 0; transform: translateY(10px); }
-            100% { opacity: 1; transform: translateY(0); }
+        @keyframes fadeInMessage {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .btn {
@@ -163,6 +218,10 @@
             box-shadow: 0 0 30px gold;
         }
         
+        .btn.hidden {
+            display: none;
+        }
+        
         .text-center {
             text-align: center;
         }
@@ -178,70 +237,197 @@
             padding: 8px 15px;
             border-radius: 30px;
             transition: 0.3s;
+            z-index: 10;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
         }
         
         .back-link:hover {
             background: gold;
             color: black;
         }
+        
+        .sound-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            border: 2px solid gold;
+            color: gold;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 2000;
+            transition: 0.3s;
+        }
+        
+        .sound-toggle:hover {
+            background: gold;
+            color: black;
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
+    <div class="sound-toggle" id="soundToggle" onclick="toggleSound()">🔊</div>
+    
     <div class="game-container">
         <a href="index.html" class="back-link">← Назад</a>
         
         <div class="throne-room">
-            <div class="throne-decoration"></div>
-            
-            <div class="character-show">
-                <div class="hero-preview" id="heroPreview">
-                    <img src="" alt="Герой" id="heroImage" style="display: none;">
-                    <div id="heroEmoji" style="font-size: 5rem;">⚔️👑</div>
+            <!-- СЦЕНА С ПЕРСОНАЖАМИ -->
+            <div class="character-scene">
+                <!-- Аристарх (слева) -->
+                <div class="character-left">
+                    <img class="character-image" src="https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/npc_elder.png" alt="Аристарх">
+                    <div class="character-name">Старейшина Аристарх</div>
+                    <div class="character-title">Хранитель знаний</div>
                 </div>
                 
+                <!-- Игрок (справа) -->
+                <div class="character-right" id="playerCharacter">
+                    <img class="character-image" id="playerImage" src="" alt="Герой" style="display: none;">
+                    <div id="playerEmoji" style="font-size: 5rem; display: none;"></div>
+                    <div class="character-name" id="playerName">Правитель</div>
+                    <div class="character-title" id="playerTitle">Молодой правитель</div>
+                </div>
+            </div>
+            
+            <!-- ДИАЛОГОВОЕ ОКНО -->
+            <div class="dialog-container">
                 <div class="dialog-box">
-                    <div class="npc-info">
-                        <div class="npc-avatar">🧙</div>
-                        <div>
-                            <div class="npc-name">Старейшина Аристарх</div>
-                            <div class="npc-title">Хранитель знаний</div>
-                        </div>
+                    <div class="dialog-speaker">
+                        <span class="speaker-name">Старейшина Аристарх</span>
+                        <span class="speaker-title">(обращается к тебе)</span>
                     </div>
                     
                     <div class="dialog-text" id="dialogText">
-                        <p>Приветствую тебя, Правитель!</p>
-                        <p>Я - старейшина Аристарх, хранитель знаний этого города.</p>
-                        <p>Наш город на грани гибели. Три ресурса решают всё: Экономика, Наука и Армия.</p>
-                        <p>Тебе предстоит посетить 6 мест в городе и помочь жителям. Каждый выбор влияет на ресурсы.</p>
-                        <p>Готов ли ты принять вызов и спасти Цитадель?</p>
+                        <!-- Сюда будут подставляться сообщения -->
                     </div>
                     
                     <div class="text-center">
-                        <button class="btn" onclick="goToMap()">НАЧАТЬ ПУТЬ</button>
+                        <button class="btn" id="nextBtn" onclick="nextMessage()">ДАЛЕЕ →</button>
+                        <button class="btn hidden" id="startBtn" onclick="goToMap()">НАЧАТЬ ПУТЬ</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- АУДИО -->
+    <audio id="bgmThrone" loop preload="auto">
+        <source src="https://milenajob29-arch.github.io/TsITADEL-REShENIY/sounds/bgm_throne.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfxDialog" preload="auto">
+        <source src="https://milenajob29-arch.github.io/TsITADEL-REShENIY/sounds/sfx_dialog.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
         // Получаем данные персонажа из localStorage
         const playerData = JSON.parse(localStorage.getItem('player') || '{}');
         
-        // Загружаем картинку персонажа
-        const heroImage = document.getElementById('heroImage');
-        const heroEmoji = document.getElementById('heroEmoji');
+        // Загружаем персонажа игрока
+        const playerImage = document.getElementById('playerImage');
+        const playerEmoji = document.getElementById('playerEmoji');
+        const playerName = document.getElementById('playerName');
+        const playerTitle = document.getElementById('playerTitle');
         
+        // Устанавливаем изображение игрока
         if (playerData.imageUrl) {
-            heroImage.src = playerData.imageUrl;
-            heroImage.style.display = 'block';
-            heroEmoji.style.display = 'none';
+            playerImage.src = playerData.imageUrl;
+            playerImage.style.display = 'block';
+            playerEmoji.style.display = 'none';
         } else {
-            heroEmoji.innerHTML = playerData.emoji || '⚔️👑';
+            playerEmoji.style.display = 'block';
+            playerEmoji.innerHTML = playerData.emoji || '⚔️👑';
+        }
+        
+        // Устанавливаем имя и титул в зависимости от пола
+        if (playerData.gender === 'male') {
+            playerName.textContent = playerData.style === 'royal' ? 'Король Артур' :
+                                     playerData.style === 'warrior' ? 'Генерал' :
+                                     playerData.style === 'mage' ? 'Архимаг' : 'Лесной страж';
+        } else {
+            playerName.textContent = playerData.style === 'royal' ? 'Королева Элеонора' :
+                                     playerData.style === 'warrior' ? 'Амазонка' :
+                                     playerData.style === 'mage' ? 'Волшебница' : 'Лучница';
+        }
+        
+        playerTitle.textContent = 'Молодой правитель';
+        
+        // Массив сообщений советника
+        const messages = [
+            "Приветствую тебя, Правитель! Наконец-то ты вернулся...",
+            "Я ждал этого дня 10 лет. Твои родители были убиты не случайно.",
+            "В этом зале спрятаны 6 древних артефактов. Они укажут путь к правде.",
+            "Найди их все — и ты узнаешь имена заговорщиков.",
+            "Но будь осторожен: в городе есть те, кто хочет помешать тебе.",
+            "Готов ли ты принять вызов и спасти Цитадель?"
+        ];
+        
+        let currentIndex = 0;
+        const dialogText = document.getElementById('dialogText');
+        const nextBtn = document.getElementById('nextBtn');
+        const startBtn = document.getElementById('startBtn');
+        
+        // Показываем первое сообщение
+        showMessage(messages[0]);
+        
+        function showMessage(text) {
+            dialogText.innerHTML = `<div class="message">${text}</div>`;
+        }
+        
+        function nextMessage() {
+            // Звук появления диалога
+            if (soundEnabled) {
+                sfxDialog.currentTime = 0;
+                sfxDialog.play().catch(e => console.log('Не удалось воспроизвести звук'));
+            }
+            
+            currentIndex++;
+            
+            if (currentIndex < messages.length) {
+                showMessage(messages[currentIndex]);
+            } else {
+                // Все сообщения показаны
+                nextBtn.classList.add('hidden');
+                startBtn.classList.remove('hidden');
+                showMessage("Твой путь начинается, Правитель! Да пребудет с тобой мудрость!");
+            }
         }
         
         function goToMap() {
             window.location.href = 'city-map.html';
+        }
+        
+        // АУДИО
+        const bgmThrone = document.getElementById('bgmThrone');
+        const sfxDialog = document.getElementById('sfxDialog');
+        let soundEnabled = true;
+        
+        window.addEventListener('load', function() {
+            bgmThrone.volume = 0.3;
+            bgmThrone.play().catch(e => console.log('Автовоспроизведение заблокировано'));
+        });
+        
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const toggle = document.getElementById('soundToggle');
+            
+            if (soundEnabled) {
+                bgmThrone.volume = 0.3;
+                toggle.innerHTML = '🔊';
+                toggle.style.background = 'rgba(0,0,0,0.7)';
+            } else {
+                bgmThrone.volume = 0;
+                toggle.innerHTML = '🔇';
+                toggle.style.background = 'rgba(255,0,0,0.3)';
+            }
         }
     </script>
 </body>
