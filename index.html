@@ -341,9 +341,38 @@
             font-size: 1.2rem;
             text-align: center;
         }
+        
+        /* КНОПКА ОТКЛЮЧЕНИЯ ЗВУКА */
+        .sound-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            border: 2px solid gold;
+            color: gold;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 2000;
+            transition: 0.3s;
+        }
+        
+        .sound-toggle:hover {
+            background: gold;
+            color: black;
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
+    <!-- КНОПКА ОТКЛЮЧЕНИЯ ЗВУКА -->
+    <div class="sound-toggle" id="soundToggle" onclick="toggleSound()">🔊</div>
+
     <!-- ЗАСТАВКА -->
     <div class="splash-screen" id="splashScreen">
         <div class="splash-text">
@@ -436,6 +465,14 @@
         </div>
     </div>
 
+    <!-- АУДИОЭЛЕМЕНТЫ -->
+    <audio id="bgmMenu" loop preload="auto">
+        <source src="https://milenajob29-arch.github.io/TsITADEL-REShENIY/sounds/bgm_menu.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="bgmCreation" loop preload="auto">
+        <source src="https://milenajob29-arch.github.io/TsITADEL-REShENIY/sounds/bgm_throne.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
         // СОСТОЯНИЕ ИГРОКА
         const player = {
@@ -494,8 +531,42 @@
             }
         };
         
+        // АУДИО
+        const bgmMenu = document.getElementById('bgmMenu');
+        const bgmCreation = document.getElementById('bgmCreation');
+        let soundEnabled = true;
+        
+        // Запускаем музыку на заставке
+        window.addEventListener('load', function() {
+            bgmMenu.volume = 0.3;
+            bgmMenu.play().catch(e => console.log('Автовоспроизведение заблокировано браузером'));
+        });
+        
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const toggle = document.getElementById('soundToggle');
+            
+            if (soundEnabled) {
+                bgmMenu.volume = 0.3;
+                bgmCreation.volume = 0.3;
+                toggle.innerHTML = '🔊';
+                toggle.style.background = 'rgba(0,0,0,0.7)';
+            } else {
+                bgmMenu.volume = 0;
+                bgmCreation.volume = 0;
+                toggle.innerHTML = '🔇';
+                toggle.style.background = 'rgba(255,0,0,0.3)';
+            }
+        }
+        
         function showCreation() {
             document.getElementById('splashScreen').style.opacity = '0';
+            
+            // Переключаем музыку
+            bgmMenu.pause();
+            bgmCreation.volume = 0.3;
+            bgmCreation.play().catch(e => console.log('Не удалось воспроизвести'));
+            
             setTimeout(() => {
                 document.getElementById('splashScreen').style.display = 'none';
                 document.getElementById('gameContainer').style.display = 'block';
