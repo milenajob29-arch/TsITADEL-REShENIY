@@ -68,7 +68,6 @@
             margin-bottom: 30px;
         }
         
-        /* Левый персонаж (Аристарх) */
         .character-left {
             width: 300px;
             display: flex;
@@ -104,7 +103,6 @@
             margin-top: 5px;
         }
         
-        /* Правый персонаж (игрок) */
         .character-right {
             width: 300px;
             display: flex;
@@ -129,6 +127,15 @@
             border-radius: 30px;
             border: 1px solid gold;
             margin-top: 15px;
+        }
+        
+        .character-right .character-title {
+            color: #b8a07c;
+            font-size: 1rem;
+            background: rgba(0,0,0,0.5);
+            padding: 4px 15px;
+            border-radius: 20px;
+            margin-top: 5px;
         }
         
         @keyframes floatNpc {
@@ -280,16 +287,15 @@
         <a href="index.html" class="back-link">← Назад</a>
         
         <div class="throne-room">
-            <!-- СЦЕНА С ПЕРСОНАЖАМИ -->
             <div class="character-scene">
-                <!-- Аристарх (слева) -->
+                <!-- Аристарх -->
                 <div class="character-left">
                     <img class="character-image" src="https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/npc_elder.png" alt="Аристарх">
                     <div class="character-name">Старейшина Аристарх</div>
                     <div class="character-title">Хранитель знаний</div>
                 </div>
                 
-                <!-- Игрок (справа) -->
+                <!-- Игрок (загружается из localStorage) -->
                 <div class="character-right" id="playerCharacter">
                     <img class="character-image" id="playerImage" src="" alt="Герой" style="display: none;">
                     <div id="playerEmoji" style="font-size: 5rem; display: none;"></div>
@@ -298,7 +304,6 @@
                 </div>
             </div>
             
-            <!-- ДИАЛОГОВОЕ ОКНО -->
             <div class="dialog-container">
                 <div class="dialog-box">
                     <div class="dialog-speaker">
@@ -306,9 +311,7 @@
                         <span class="speaker-title">(обращается к тебе)</span>
                     </div>
                     
-                    <div class="dialog-text" id="dialogText">
-                        <!-- Сюда будут подставляться сообщения -->
-                    </div>
+                    <div class="dialog-text" id="dialogText"></div>
                     
                     <div class="text-center">
                         <button class="btn" id="nextBtn" onclick="nextMessage()">ДАЛЕЕ →</button>
@@ -319,7 +322,6 @@
         </div>
     </div>
 
-    <!-- АУДИО -->
     <audio id="bgmThrone" loop preload="auto">
         <source src="https://milenajob29-arch.github.io/TsITADEL-REShENIY/sounds/bgm_throne.mp3" type="audio/mpeg">
     </audio>
@@ -328,16 +330,15 @@
     </audio>
 
     <script>
-        // Получаем данные персонажа из localStorage
+        // ПОЛУЧАЕМ ДАННЫЕ ИГРОКА
         const playerData = JSON.parse(localStorage.getItem('player') || '{}');
         
-        // Загружаем персонажа игрока
+        // Загружаем персонажа
         const playerImage = document.getElementById('playerImage');
         const playerEmoji = document.getElementById('playerEmoji');
         const playerName = document.getElementById('playerName');
         const playerTitle = document.getElementById('playerTitle');
         
-        // Устанавливаем изображение игрока
         if (playerData.imageUrl) {
             playerImage.src = playerData.imageUrl;
             playerImage.style.display = 'block';
@@ -347,7 +348,7 @@
             playerEmoji.innerHTML = playerData.emoji || '⚔️👑';
         }
         
-        // Устанавливаем имя и титул в зависимости от пола
+        // Имя и титул
         if (playerData.gender === 'male') {
             playerName.textContent = playerData.style === 'royal' ? 'Король Артур' :
                                      playerData.style === 'warrior' ? 'Генерал' :
@@ -360,75 +361,5 @@
         
         playerTitle.textContent = 'Молодой правитель';
         
-        // Массив сообщений советника
-        const messages = [
-            "Приветствую тебя, Правитель! Наконец-то ты вернулся...",
-            "Я ждал этого дня 10 лет. Твои родители были убиты не случайно.",
-            "В этом зале спрятаны 6 древних артефактов. Они укажут путь к правде.",
-            "Найди их все — и ты узнаешь имена заговорщиков.",
-            "Но будь осторожен: в городе есть те, кто хочет помешать тебе.",
-            "Готов ли ты принять вызов и спасти Цитадель?"
-        ];
-        
-        let currentIndex = 0;
-        const dialogText = document.getElementById('dialogText');
-        const nextBtn = document.getElementById('nextBtn');
-        const startBtn = document.getElementById('startBtn');
-        
-        // Показываем первое сообщение
-        showMessage(messages[0]);
-        
-        function showMessage(text) {
-            dialogText.innerHTML = `<div class="message">${text}</div>`;
-        }
-        
-        function nextMessage() {
-            // Звук появления диалога
-            if (soundEnabled) {
-                sfxDialog.currentTime = 0;
-                sfxDialog.play().catch(e => console.log('Не удалось воспроизвести звук'));
-            }
-            
-            currentIndex++;
-            
-            if (currentIndex < messages.length) {
-                showMessage(messages[currentIndex]);
-            } else {
-                // Все сообщения показаны
-                nextBtn.classList.add('hidden');
-                startBtn.classList.remove('hidden');
-                showMessage("Твой путь начинается, Правитель! Да пребудет с тобой мудрость!");
-            }
-        }
-        
-        function goToMap() {
-            window.location.href = 'city-map.html';
-        }
-        
-        // АУДИО
-        const bgmThrone = document.getElementById('bgmThrone');
-        const sfxDialog = document.getElementById('sfxDialog');
-        let soundEnabled = true;
-        
-        window.addEventListener('load', function() {
-            bgmThrone.volume = 0.3;
-            bgmThrone.play().catch(e => console.log('Автовоспроизведение заблокировано'));
-        });
-        
-        function toggleSound() {
-            soundEnabled = !soundEnabled;
-            const toggle = document.getElementById('soundToggle');
-            
-            if (soundEnabled) {
-                bgmThrone.volume = 0.3;
-                toggle.innerHTML = '🔊';
-                toggle.style.background = 'rgba(0,0,0,0.7)';
-            } else {
-                bgmThrone.volume = 0;
-                toggle.innerHTML = '🔇';
-                toggle.style.background = 'rgba(255,0,0,0.3)';
-            }
-        }
-    </script>
-</body>
-</html>
+        // Диалог
+        const messages
