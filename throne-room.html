@@ -57,6 +57,82 @@
             z-index: 1;
         }
         
+        /* ЗОЛОТАЯ РАМКА ДЛЯ СЮЖЕТА */
+        .story-frame {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            background: rgba(0,0,0,0.85);
+            border: 4px solid gold;
+            border-radius: 40px;
+            padding: 40px;
+            color: white;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 50px gold;
+            text-align: center;
+        }
+        
+        .story-frame p {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .story-frame .story-btn {
+            background: gold;
+            color: black;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            border: 2px solid white;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+        
+        .story-frame .story-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px gold;
+        }
+        
+        /* ПАНЕЛЬ СТАТОВ */
+        .stats-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            border: 2px solid gold;
+            border-radius: 20px;
+            padding: 15px 25px;
+            color: white;
+            z-index: 50;
+            display: flex;
+            gap: 30px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.2rem;
+        }
+        
+        .stat-icon {
+            font-size: 1.5rem;
+        }
+        
+        .economy { color: #ffd700; }
+        .science { color: #00ffff; }
+        .army { color: #ff4444; }
+        .authority { color: gold; }
+        
         /* СЦЕНА С ПЕРСОНАЖАМИ */
         .character-scene {
             position: relative;
@@ -65,7 +141,7 @@
             z-index: 2;
         }
         
-        /* Аристарх (статичен) */
+        /* Аристарх */
         .character-left {
             position: absolute;
             left: 50px;
@@ -82,7 +158,7 @@
             width: 200px;
             height: auto;
             filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
-            animation: floatNpc 3s infinite;
+            animation: float 3s infinite;
         }
         
         .character-left .character-name {
@@ -105,7 +181,7 @@
             margin-top: 5px;
         }
         
-        /* Игрок (двигается) */
+        /* Игрок (ходит по полу) */
         .character-right {
             position: absolute;
             width: 160px;
@@ -121,7 +197,6 @@
             width: 140px;
             height: auto;
             filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
-            animation: floatHero 3s infinite;
         }
         
         .character-right .character-name {
@@ -136,14 +211,9 @@
             white-space: nowrap;
         }
         
-        @keyframes floatNpc {
+        @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-8px); }
-        }
-        
-        @keyframes floatHero {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
         }
         
         /* ПРЕДМЕТЫ ДЛЯ СБОРА */
@@ -163,6 +233,13 @@
             transition: 0.3s;
             box-shadow: 0 0 20px gold;
             animation: pulse 2s infinite;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .item.visible {
+            opacity: 1;
+            pointer-events: all;
         }
         
         .item:hover {
@@ -210,7 +287,109 @@
             display: none;
         }
         
-        /* КОНТЕЙНЕР ЗАДАНИЙ */
+        /* КОНТЕЙНЕР ДИАЛОГА */
+        .dialog-container {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 900px;
+            z-index: 40;
+        }
+        
+        .dialog-box {
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            border: 3px solid gold;
+            border-radius: 30px;
+            padding: 25px;
+            color: white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.3);
+        }
+        
+        .dialog-speaker {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid gold;
+            padding-bottom: 10px;
+        }
+        
+        .speaker-name {
+            color: gold;
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+        
+        .speaker-title {
+            color: #b8a07c;
+        }
+        
+        .dialog-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            min-height: 80px;
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid gold;
+            font-style: italic;
+        }
+        
+        .dialog-choices {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .dialog-choice {
+            background: #2a3a4a;
+            border: 2px solid #b8860b;
+            border-radius: 15px;
+            padding: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+            color: white;
+        }
+        
+        .dialog-choice:hover {
+            border-color: gold;
+            transform: scale(1.02);
+            background: #3a4a5a;
+        }
+        
+        .btn {
+            background: gold;
+            color: black;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            border: 2px solid white;
+            transition: 0.3s;
+            margin-top: 15px;
+        }
+        
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px gold;
+        }
+        
+        .btn.hidden {
+            display: none;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        /* ПАНЕЛЬ ЗАДАНИЙ */
         .quest-panel {
             position: absolute;
             top: 50%;
@@ -273,11 +452,6 @@
             background: #3a4a5a;
         }
         
-        .quest-option.selected {
-            border-color: gold;
-            background: #4a5a6a;
-        }
-        
         .quest-feedback {
             text-align: center;
             font-size: 1.2rem;
@@ -303,94 +477,6 @@
         .quest-close-btn:hover {
             transform: scale(1.05);
             box-shadow: 0 0 30px gold;
-        }
-        
-        /* ДИАЛОГОВОЕ ОКНО */
-        .dialog-container {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            max-width: 900px;
-            z-index: 30;
-        }
-        
-        .dialog-box {
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(10px);
-            border: 3px solid gold;
-            border-radius: 30px;
-            padding: 25px;
-            color: white;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.3);
-        }
-        
-        .dialog-speaker {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-            border-bottom: 2px solid gold;
-            padding-bottom: 10px;
-        }
-        
-        .speaker-name {
-            color: gold;
-            font-size: 1.4rem;
-            font-weight: bold;
-        }
-        
-        .speaker-title {
-            color: #b8a07c;
-        }
-        
-        .dialog-text {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            min-height: 80px;
-            background: rgba(255,255,255,0.05);
-            padding: 20px;
-            border-radius: 15px;
-            border-left: 5px solid gold;
-            font-style: italic;
-        }
-        
-        .message {
-            opacity: 0;
-            animation: fadeInMessage 0.5s forwards;
-        }
-        
-        @keyframes fadeInMessage {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .btn {
-            background: gold;
-            color: black;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            border: 2px solid white;
-            transition: 0.3s;
-            margin-top: 15px;
-        }
-        
-        .btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 30px gold;
-        }
-        
-        .btn.hidden {
-            display: none;
-        }
-        
-        .text-center {
-            text-align: center;
         }
         
         .back-link {
@@ -451,37 +537,6 @@
             z-index: 100;
         }
         
-        .stats-panel {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.7);
-            border: 2px solid gold;
-            border-radius: 20px;
-            padding: 15px 25px;
-            color: white;
-            z-index: 50;
-            display: flex;
-            gap: 30px;
-            backdrop-filter: blur(5px);
-        }
-        
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1.2rem;
-        }
-        
-        .stat-icon {
-            font-size: 1.5rem;
-        }
-        
-        .economy { color: #ffd700; }
-        .science { color: #00ffff; }
-        .army { color: #ff4444; }
-        .authority { color: gold; }
-        
         .items-counter {
             position: absolute;
             top: 20px;
@@ -511,26 +566,34 @@
                 <div class="stat-item"><span class="stat-icon authority">👑</span> <span id="statAuthority">50</span></div>
             </div>
             
-            <!-- Счётчик предметов -->
-            <div class="items-counter" id="itemsCounter">📦 Предметов: 0/6</div>
+            <!-- Счётчик предметов (пока скрыт) -->
+            <div class="items-counter" id="itemsCounter" style="display: none;">📦 Предметов: 0/6</div>
             
             <!-- Подсказка управления -->
             <div class="controls-hint">WASD / Стрелки — движение</div>
 
-            <!-- Аристарх -->
-            <div class="character-left">
+            <!-- ЗОЛОТАЯ РАМКА (СЮЖЕТ) -->
+            <div class="story-frame" id="storyFrame">
+                <p>Толстая дубовая дверь со скрипом открывается. Внутри — тишина. Такой тишины не бывает в живых местах. Она давит на уши, заставляет сердце биться чаще.</p>
+                <p>Тронный зал встречает тебя холодом и запахом пыли. Высокие витражи разбиты, и ветер свободно гуляет по каменным плитам.</p>
+                <p>Ты делаешь шаг. Под ногой хрустит стекло. Звук разносится эхом, будто кто-то идёт следом.</p>
+                <button class="story-btn" onclick="startExploration()">Войти в зал</button>
+            </div>
+
+            <!-- Аристарх (изначально скрыт) -->
+            <div class="character-left" id="aristarkh" style="display: none;">
                 <img class="character-image" src="https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/npc_elder.png" alt="Аристарх">
                 <div class="character-name">Старейшина Аристарх</div>
                 <div class="character-title">Хранитель знаний</div>
             </div>
             
             <!-- Игрок (двигается) -->
-            <div class="character-right" id="playerCharacter">
+            <div class="character-right" id="playerCharacter" style="display: none;">
                 <img class="character-image" id="playerImage" src="" alt="Герой">
                 <div class="character-name" id="playerName">Правитель</div>
             </div>
 
-            <!-- Предметы для сбора -->
+            <!-- Предметы для сбора (изначально скрыты) -->
             <div class="item" id="item1" style="left: 300px; bottom: 200px;" onclick="collectItem(0)">📜</div>
             <div class="item" id="item2" style="left: 500px; bottom: 150px;" onclick="collectItem(1)">⚔️</div>
             <div class="item" id="item3" style="left: 700px; bottom: 250px;" onclick="collectItem(2)">🔮</div>
@@ -539,18 +602,9 @@
             <div class="item" id="item6" style="left: 800px; bottom: 200px;" onclick="collectItem(5)">📦</div>
 
             <!-- Кнопка начала диалога -->
-            <button class="dialog-start-btn hidden" id="startDialogBtn" onclick="startInitialDialog()">💬 Поговорить с Аристархом</button>
+            <button class="dialog-start-btn hidden" id="startDialogBtn" onclick="startDialog()">💬 Поговорить с Аристархом</button>
             
-            <!-- Панель заданий -->
-            <div class="quest-panel" id="questPanel">
-                <div class="quest-title" id="questTitle">Задание</div>
-                <div class="quest-text" id="questText"></div>
-                <div class="quest-options" id="questOptions"></div>
-                <div class="quest-feedback" id="questFeedback"></div>
-                <button class="quest-close-btn" id="questCloseBtn" onclick="closeQuest()">Закрыть</button>
-            </div>
-            
-            <!-- Диалоговое окно (изначально скрыто) -->
+            <!-- Контейнер диалога -->
             <div class="dialog-container" id="dialogContainer" style="display: none;">
                 <div class="dialog-box">
                     <div class="dialog-speaker">
@@ -560,11 +614,21 @@
                     
                     <div class="dialog-text" id="dialogText"></div>
                     
+                    <div class="dialog-choices" id="dialogChoices"></div>
+                    
                     <div class="text-center">
-                        <button class="btn" id="nextBtn" onclick="nextMessage()">ДАЛЕЕ →</button>
-                        <button class="btn hidden" id="startBtn" onclick="goToMap()">НАЧАТЬ ПУТЬ</button>
+                        <button class="btn hidden" id="continueBtn" onclick="continueAfterChoice()">Продолжить</button>
                     </div>
                 </div>
+            </div>
+            
+            <!-- Панель заданий -->
+            <div class="quest-panel" id="questPanel">
+                <div class="quest-title" id="questTitle">Задание</div>
+                <div class="quest-text" id="questText"></div>
+                <div class="quest-options" id="questOptions"></div>
+                <div class="quest-feedback" id="questFeedback"></div>
+                <button class="quest-close-btn" id="questCloseBtn" onclick="closeQuest()">Закрыть</button>
             </div>
         </div>
     </div>
@@ -591,6 +655,8 @@
         
         const playerImage = document.getElementById('playerImage');
         const playerName = document.getElementById('playerName');
+        const playerChar = document.getElementById('playerCharacter');
+        const aristarkh = document.getElementById('aristarkh');
         
         if (playerData.imageUrl) {
             playerImage.src = playerData.imageUrl;
@@ -623,6 +689,159 @@
             statArmy.textContent = army;
             statAuthority.textContent = authority;
         }
+        
+        // ========== СЮЖЕТНАЯ ЗАСТАВКА ==========
+        window.startExploration = function() {
+            document.getElementById('storyFrame').style.display = 'none';
+            playerChar.style.display = 'flex';
+            aristarkh.style.display = 'flex';
+            startMovement();
+        };
+        
+        // ========== УПРАВЛЕНИЕ ==========
+        const player = document.getElementById('playerCharacter');
+        const startDialogBtn = document.getElementById('startDialogBtn');
+        const dialogContainer = document.getElementById('dialogContainer');
+        
+        let posX = 800, posY = 200; // Фиксированная высота (по полу)
+        const speed = 5;
+        const keys = {};
+        
+        const minX = 400, maxX = 1100;
+        const minY = 180, maxY = 220; // Ограничение по Y, чтобы персонаж ходил по полу
+        
+        const aristarkhX = 200, aristarkhY = 220;
+        const talkDistance = 150;
+        
+        let dialogStarted = false;
+        let movementEnabled = false;
+        
+        function startMovement() {
+            movementEnabled = true;
+            updatePosition();
+        }
+        
+        function updatePosition() {
+            if (!movementEnabled || dialogStarted) return;
+            
+            let newX = posX, newY = posY;
+            
+            if (keys['KeyW'] || keys['ArrowUp']) newY -= speed;
+            if (keys['KeyS'] || keys['ArrowDown']) newY += speed;
+            if (keys['KeyA'] || keys['ArrowLeft']) newX -= speed;
+            if (keys['KeyD'] || keys['ArrowRight']) newX += speed;
+            
+            posX = Math.min(maxX, Math.max(minX, newX));
+            posY = Math.min(maxY, Math.max(minY, newY));
+            
+            player.style.left = posX + 'px';
+            player.style.bottom = posY + 'px';
+            
+            const dist = Math.hypot(posX - aristarkhX, posY - aristarkhY);
+            
+            if (dist < talkDistance && !dialogStarted) {
+                startDialogBtn.classList.remove('hidden');
+            } else {
+                startDialogBtn.classList.add('hidden');
+            }
+            
+            requestAnimationFrame(updatePosition);
+        }
+        
+        window.addEventListener('keydown', (e) => {
+            keys[e.code] = true;
+            e.preventDefault();
+        });
+        
+        window.addEventListener('keyup', (e) => {
+            keys[e.code] = false;
+            e.preventDefault();
+        });
+        
+        // ========== ДИАЛОГ С ВЫБОРОМ ==========
+        let dialogStep = 0;
+        
+        window.startDialog = function() {
+            dialogStarted = true;
+            startDialogBtn.classList.add('hidden');
+            dialogContainer.style.display = 'block';
+            dialogStep = 0;
+            showDialogStep();
+            
+            if (soundEnabled) {
+                sfxDialog.currentTime = 0;
+                sfxDialog.play().catch(e => console.log('Звук диалога не воспроизведён'));
+            }
+        };
+        
+        function showDialogStep() {
+            const dialogText = document.getElementById('dialogText');
+            const dialogChoices = document.getElementById('dialogChoices');
+            const continueBtn = document.getElementById('continueBtn');
+            
+            if (dialogStep === 0) {
+                dialogText.innerHTML = '<div class="message">«Десять лет... Я каждый день приходил сюда. Ждал. Молился, чтобы ты был жив. И ты здесь. Стоишь.»</div>';
+                dialogChoices.innerHTML = '';
+                continueBtn.classList.remove('hidden');
+                continueBtn.textContent = 'Далее';
+            } else if (dialogStep === 1) {
+                dialogText.innerHTML = '<div class="message">«Твои родители... они не просто умерли. Их убили. И не разбойники, как писали в хрониках. Это были свои. Те, кому они доверяли.»</div>';
+                dialogChoices.innerHTML = '';
+                continueBtn.classList.remove('hidden');
+            } else if (dialogStep === 2) {
+                dialogText.innerHTML = '<div class="message">Как ты ответишь?</div>';
+                dialogChoices.innerHTML = `
+                    <div class="dialog-choice" onclick="makeChoice(1)">«Я клянусь восстановить честь семьи и спасти город. Расскажи всё.»</div>
+                    <div class="dialog-choice" onclick="makeChoice(2)">«Посмотрим. Я сделаю, что смогу. Но ничего не обещаю.»</div>
+                    <div class="dialog-choice" onclick="makeChoice(3)">«Мне плевать на город. Я ищу убийц. Только это важно.»</div>
+                `;
+                continueBtn.classList.add('hidden');
+            }
+        }
+        
+        window.makeChoice = function(choice) {
+            const dialogText = document.getElementById('dialogText');
+            const dialogChoices = document.getElementById('dialogChoices');
+            const continueBtn = document.getElementById('continueBtn');
+            
+            if (choice === 1) {
+                dialogText.innerHTML = '<div class="message">Аристарх: «В тебе есть сила отца. Я знал, что не ошибся.»</div>';
+                authority += 5;
+            } else if (choice === 2) {
+                dialogText.innerHTML = '<div class="message">Аристарх: «Понимаю. Времена тяжёлые. Просто не отступай.»</div>';
+                authority -= 2;
+            } else if (choice === 3) {
+                dialogText.innerHTML = '<div class="message">Аристарх: «Твоя мать думала иначе. Она умерла, защищая этих людей. Помни об этом.»</div>';
+                authority -= 10;
+            }
+            
+            updateStats();
+            dialogChoices.innerHTML = '';
+            continueBtn.classList.remove('hidden');
+            continueBtn.textContent = 'Продолжить';
+        };
+        
+        window.continueAfterChoice = function() {
+            dialogStep++;
+            
+            if (dialogStep === 3) {
+                dialogContainer.style.display = 'none';
+                dialogStarted = false;
+                
+                // Показываем предметы и счётчик
+                document.querySelectorAll('.item').forEach(item => {
+                    item.classList.add('visible');
+                });
+                document.getElementById('itemsCounter').style.display = 'block';
+                
+                // Финальная речь Аристарха
+                setTimeout(() => {
+                    alert('Аристарх: «В этом зале спрятаны шесть древних артефактов. Собери их — и узнаешь имена заговорщиков.»');
+                }, 500);
+            } else {
+                showDialogStep();
+            }
+        };
         
         // ========== ПРЕДМЕТЫ ==========
         let collectedItems = 0;
@@ -661,103 +880,9 @@
             
             if (collectedItems === 6) {
                 setTimeout(() => {
-                    alert('Ты собрал все артефакты! Теперь поговори с Аристархом.');
+                    alert('Ты собрал все артефакты! Теперь выполни задания.');
+                    showQuests();
                 }, 500);
-            }
-        };
-        
-        // ========== УПРАВЛЕНИЕ ==========
-        const player = document.getElementById('playerCharacter');
-        const startDialogBtn = document.getElementById('startDialogBtn');
-        const dialogContainer = document.getElementById('dialogContainer');
-        
-        let posX = 800, posY = 250;
-        const speed = 5;
-        const keys = {};
-        
-        const minX = 400, maxX = 1100;
-        const minY = 150, maxY = 400;
-        
-        const aristarkhX = 200, aristarkhY = 250;
-        const talkDistance = 150;
-        
-        let dialogStarted = false;
-        
-        function updatePosition() {
-            if (dialogStarted) return;
-            
-            let newX = posX, newY = posY;
-            
-            if (keys['KeyW'] || keys['ArrowUp']) newY -= speed;
-            if (keys['KeyS'] || keys['ArrowDown']) newY += speed;
-            if (keys['KeyA'] || keys['ArrowLeft']) newX -= speed;
-            if (keys['KeyD'] || keys['ArrowRight']) newX += speed;
-            
-            posX = Math.min(maxX, Math.max(minX, newX));
-            posY = Math.min(maxY, Math.max(minY, newY));
-            
-            player.style.left = posX + 'px';
-            player.style.bottom = posY + 'px';
-            
-            const dist = Math.hypot(posX - aristarkhX, posY - aristarkhY);
-            
-            if (dist < talkDistance && !dialogStarted && collectedItems === 6) {
-                startDialogBtn.classList.remove('hidden');
-            } else {
-                startDialogBtn.classList.add('hidden');
-            }
-            
-            requestAnimationFrame(updatePosition);
-        }
-        
-        window.addEventListener('keydown', (e) => {
-            keys[e.code] = true;
-            e.preventDefault();
-        });
-        
-        window.addEventListener('keyup', (e) => {
-            keys[e.code] = false;
-            e.preventDefault();
-        });
-        
-        updatePosition();
-        
-        // ========== НАЧАЛЬНЫЙ ДИАЛОГ ==========
-        const initialMessages = [
-            "Десять лет... Я каждый день приходил сюда. Ждал. Молился, чтобы ты был жив.",
-            "Твои родители... они не просто умерли. Их убили. Это были свои. Те, кому они доверяли.",
-            "В этом зале спрятаны шесть древних артефактов. Собери их — и узнаешь имена заговорщиков.",
-            "Но будь осторожен: в городе есть те, кто почувствует твои поиски.",
-            "Собери все предметы, а потом приходи ко мне."
-        ];
-        
-        let initialMessageIndex = 0;
-        
-        window.startInitialDialog = function() {
-            dialogStarted = true;
-            startDialogBtn.classList.add('hidden');
-            dialogContainer.style.display = 'block';
-            showInitialMessage(initialMessages[0]);
-            
-            if (soundEnabled) {
-                sfxDialog.currentTime = 0;
-                sfxDialog.play().catch(e => console.log('Звук диалога не воспроизведён'));
-            }
-        };
-        
-        function showInitialMessage(text) {
-            document.getElementById('dialogText').innerHTML = `<div class="message">${text}</div>`;
-        }
-        
-        window.nextMessage = function() {
-            initialMessageIndex++;
-            
-            if (initialMessageIndex < initialMessages.length) {
-                showInitialMessage(initialMessages[initialMessageIndex]);
-            } else {
-                document.getElementById('nextBtn').classList.add('hidden');
-                document.getElementById('startBtn').classList.remove('hidden');
-                showInitialMessage("Ты собрал все артефакты. Теперь открой их и выполни задания. А потом приходи — я расскажу, куда идти.");
             }
         };
         
@@ -800,7 +925,7 @@
                 title: 'Свиток 4',
                 text: '«В них автор текста показывает нам Алеся Ивановича Мороза, учителя, который проявляет заботу к своим ученикам, даже в мелочах: спасает щенков, которых родители наказали утопить, покупает обувь девочкам из бедной семьи, провожает их через лес в холодные дни.»',
                 options: [
-                    'Одна грамматическая («проявлять заботу по отношению к») и одна пунктуационная (лишняя запятая перед «даже»)',
+                    'Одна грамматическая («проявлять заботу по отношению к») и одна пунктуационная (лишняя запятая перед «даве»)',
                     'Одна грамматическая ошибка',
                     'Одна пунктуационная'
                 ],
@@ -839,6 +964,11 @@
         const questText = document.getElementById('questText');
         const questOptions = document.getElementById('questOptions');
         const questFeedback = document.getElementById('questFeedback');
+        
+        function showQuests() {
+            alert('Теперь открой каждый свиток и выполни задание.');
+            // Здесь можно добавить логику появления свитков в инвентаре
+        }
         
         window.openQuest = function(index) {
             if (questCompleted[index]) {
@@ -896,6 +1026,14 @@
                 opt.style.pointerEvents = 'none';
                 opt.style.opacity = '0.7';
             });
+            
+            // Проверка, все ли задания выполнены
+            if (questCompleted.every(v => v === true)) {
+                setTimeout(() => {
+                    alert('Все задания выполнены! Теперь ты можешь отправиться в город.');
+                    document.getElementById('startBtn')?.classList.remove('hidden');
+                }, 1000);
+            }
         };
         
         window.closeQuest = function() {
