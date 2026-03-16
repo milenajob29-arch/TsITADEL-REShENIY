@@ -114,6 +114,7 @@
             font-size: 0.7rem;
             white-space: nowrap;
             display: none;
+            z-index: 60;
         }
         
         .item-icon:hover .tooltip {
@@ -264,8 +265,8 @@
             transform: scale(1.02);
         }
         
-        /* МОДАЛЬНОЕ ОКНО ЗАДАНИЯ */
-        .quest-modal {
+        /* МОДАЛЬНОЕ ОКНО ПРЕДМЕТА */
+        .modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -276,7 +277,99 @@
             display: none;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            max-width: 600px;
+            background: rgba(0,0,0,0.8);
+            border: 4px solid gold;
+            border-radius: 30px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 40px;
+            height: 40px;
+            background: gold;
+            color: black;
+            border: 2px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 1100;
+        }
+        
+        .modal-close:hover {
+            transform: scale(1.1);
+            background: #ffd700;
+        }
+        
+        .modal-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            color: gold;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        
+        .modal-desc {
+            color: white;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid gold;
+        }
+        
+        .modal-btn {
+            background: gold;
+            color: black;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+        
+        .modal-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px gold;
+        }
+        
+        /* МОДАЛЬНОЕ ОКНО ЗАДАНИЯ */
+        .quest-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1100;
+            display: none;
+            justify-content: center;
+            align-items: center;
         }
         
         .quest-modal.active {
@@ -290,19 +383,13 @@
             border-radius: 30px;
             padding: 30px;
             text-align: center;
-        }
-        
-        .quest-content img {
-            max-width: 100%;
-            max-height: 300px;
-            border-radius: 20px;
-            margin-bottom: 20px;
+            position: relative;
         }
         
         .quest-title {
             color: gold;
             font-size: 2rem;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         .quest-text {
@@ -344,19 +431,6 @@
             color: gold;
             font-size: 1.1rem;
             min-height: 30px;
-            margin: 10px 0;
-        }
-        
-        .quest-close {
-            background: gold;
-            color: black;
-            border: none;
-            padding: 10px 25px;
-            font-size: 1rem;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: bold;
-            border: 2px solid white;
         }
         
         /* КНОПКА ПЕРЕХОДА */
@@ -424,8 +498,10 @@
             color: black;
         }
         
-        .hidden {
-            display: none;
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px gold; }
+            50% { box-shadow: 0 0 30px gold; }
+            100% { box-shadow: 0 0 10px gold; }
         }
     </style>
 </head>
@@ -507,25 +583,24 @@
     </div>
     
     <!-- Модальное окно предмета -->
-    <div class="quest-modal" id="itemModal">
-        <div class="close-btn" onclick="closeItemModal()">✖</div>
-        <div class="quest-content">
-            <img id="itemModalImage" src="" alt="">
-            <div class="quest-title" id="itemModalTitle"></div>
-            <div class="quest-text" id="itemModalDesc"></div>
-            <button class="quest-close" id="startQuestBtn" onclick="startQuest()">📜 Начать задание</button>
+    <div class="modal" id="itemModal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeItemModal()">✖</div>
+            <img class="modal-image" id="itemImage" src="" alt="">
+            <div class="modal-title" id="itemTitle"></div>
+            <div class="modal-desc" id="itemDesc"></div>
+            <button class="modal-btn" id="itemAction" onclick="startQuest()">📜 Начать задание</button>
         </div>
     </div>
     
     <!-- Модальное окно задания -->
     <div class="quest-modal" id="questModal">
-        <div class="close-btn" onclick="closeQuestModal()">✖</div>
         <div class="quest-content">
-            <div class="quest-title" id="questTitle">Задание</div>
+            <div class="modal-close" onclick="closeQuestModal()">✖</div>
+            <div class="quest-title" id="questTitle"></div>
             <div class="quest-text" id="questText"></div>
             <div class="quest-options" id="questOptions"></div>
             <div class="quest-feedback" id="questFeedback"></div>
-            <button class="quest-close" id="finishQuestBtn" onclick="finishQuest()">Завершить</button>
         </div>
     </div>
 
@@ -577,7 +652,7 @@
             dialogueStep: 0
         };
         
-        // ========== ДИАЛОГ С РАЗВИЛКАМИ ==========
+        // ========== БОЛЬШОЙ СЮЖЕТНЫЙ ДИАЛОГ ==========
         const dialogues = [
             // Шаг 0 - Вступление
             {
@@ -597,95 +672,144 @@
                     { 
                         text: '«Помню его тёплые руки, когда он сажал меня на трон.»',
                         effect: () => { gameState.authority += 5; gameState.economy += 2; },
-                        response: 'Он любил тебя больше жизни.'
+                        response: 'Он любил тебя больше жизни. Каждое утро он носил тебя на плечах по этому залу.'
                     },
                     { 
                         text: '«Помню его строгий взгляд. Он редко хвалил.»',
                         effect: () => { gameState.army += 5; gameState.authority += 2; },
-                        response: 'Он готовил тебя к суровой жизни правителя.'
+                        response: 'Он говорил: "Правителя должны бояться враги, а не дети". Но по ночам он плакал, думая о тебе.'
                     },
                     { 
                         text: '«Я почти не помню его. Только запах старой книги и дыма.»',
                         effect: () => { gameState.science += 5; gameState.authority += 2; },
-                        response: 'Он всегда работал в библиотеке по ночам.'
+                        response: 'Он всегда работал в библиотеке по ночам. Искал способ защитить город от заговора.'
                     }
                 ]
             },
             // Шаг 3 - О матери
             {
                 speaker: 'Аристарх',
-                text: 'А мать? Она часто пела тебе колыбельные в этом зале.',
+                text: 'А мать? Она часто пела тебе колыбельные в этом зале. Голос её разносился под сводами...',
                 choices: [
                     { 
                         text: '«Помню её голос. Он был как свет.»',
                         effect: () => { gameState.authority += 5; gameState.science += 3; },
-                        response: 'Она звала тебя "мой маленький свет".'
+                        response: 'Она звала тебя "мой маленький свет". В последний вечер она спела тебе и ушла... навсегда.'
                     },
                     { 
-                        text: '«Она учила меня доброте.»',
+                        text: '«Она учила меня доброте. Раздавала монеты нищим.»',
                         effect: () => { gameState.economy += 5; gameState.authority += 3; },
-                        response: 'Она раздавала золото бедным, за что знать её ненавидела.'
+                        response: 'Она раздавала золото бедным, за что знать её ненавидела. Они считали её слабой. Но она была сильнее всех.'
                     },
                     { 
-                        text: '«Я почти не помню её лица.»',
+                        text: '«Я почти не помню её лица. Только тёплые руки.»',
                         effect: () => { gameState.army += 5; gameState.authority -= 2; },
-                        response: 'Ты был слишком мал... Прости.'
+                        response: 'Ты был слишком мал... Прости. Она держала тебя, пока стражники ломились в дверь.'
                     }
                 ]
             },
-            // Шаг 4 - Кто враг?
+            // Шаг 4 - Кто мог стоять за убийством?
             {
                 speaker: 'Аристарх',
-                text: 'Знаешь, кто мог стоять за убийством? Советник Мортемир, купцы, военные?',
+                text: 'Знаешь, кто мог стоять за убийством? Советник Мортемир всегда завидовал твоему отцу. Купцы из гильдии хотели захватить власть. Военные роптали.',
                 choices: [
                     { 
                         text: '«Советник. Он всегда смотрел на отца с ненавистью.»',
                         effect: () => { gameState.science += 5; gameState.authority += 3; },
-                        response: 'Ты прав. Он был главным.'
+                        response: 'Ты прав. Мортемир был главным заговорщиком. Он собирал тайные встречи в подземелье.'
                     },
                     { 
-                        text: '«Купцы. Они хотели захватить рынки.»',
+                        text: '«Купцы. Они думают только о золоте.»',
                         effect: () => { gameState.economy += 5; gameState.authority += 2; },
-                        response: 'Они дали золото на убийство.'
+                        response: 'Они дали золото на убийство. Но кто-то ещё был выше них.'
                     },
                     { 
                         text: '«Военные. Отец хотел мира, а они — войны.»',
                         effect: () => { gameState.army += 5; gameState.authority -= 2; },
-                        response: 'Среди них были предатели.'
+                        response: 'Среди них были предатели. Но они лишь исполнители, не заказчики.'
                     }
                 ]
             },
-            // Шаг 5 - Как поступишь?
+            // Шаг 5 - Тайна в тронном зале
             {
                 speaker: 'Аристарх',
-                text: 'Теперь ты должен решить, что для тебя важнее — город или месть.',
+                text: 'В этом зале спрятаны шесть древних предметов. Твой отец оставил их для тебя. Они хранят части правды.',
                 choices: [
                     { 
-                        text: '«Я спасу город. Это мой долг.»',
-                        effect: () => { gameState.authority += 10; gameState.economy += 5; },
-                        response: 'Благородный ответ. Твой отец гордился бы тобой.'
+                        text: '«Где они? Я обыщу каждый угол.»',
+                        effect: () => { gameState.army += 3; },
+                        response: 'Ищи. Корона на троне, меч за колонной, кристалл в нише, карта на столе, сундук в углу, кубок за шторой.'
                     },
                     { 
-                        text: '«Мне нужна месть. Город подождёт.»',
-                        effect: () => { gameState.authority -= 5; gameState.army += 10; },
-                        response: 'Гнев ведёт тебя... Но помни, он может ослепить.'
+                        text: '«Почему ты сам не нашёл их за 10 лет?»',
+                        effect: () => { gameState.authority -= 2; },
+                        response: 'Я пытался. Но они открываются только наследнику крови. Ты — единственный.'
                     },
                     { 
-                        text: '«Я хочу узнать правду. Остальное неважно.»',
-                        effect: () => { gameState.science += 10; gameState.authority += 5; },
-                        response: 'Мудрое решение. Правда — ключ ко всему.'
+                        text: '«Что в них такого важного?»',
+                        effect: () => { gameState.science += 3; },
+                        response: 'Имена заговорщиков. Места встреч. Доказательства. И кое-что ещё... тайна твоего рождения.'
                     }
                 ]
             },
-            // Шаг 6 - Напутствие
+            // Шаг 6 - Тайна рождения
             {
                 speaker: 'Аристарх',
-                text: 'В этом зале спрятаны шесть древних предметов. Они хранят части правды. Найди их, изучи — и узнаешь имена заговорщиков.'
+                text: 'Твой отец не был твоим родным отцом. Он взял тебя из приюта, когда ты был младенцем. Твои настоящие родители погибли в тот же день, что и король с королевой. Заговор был против всех.'
             },
-            // Шаг 7 - Последний совет
+            // Шаг 7 - Реакция игрока
             {
                 speaker: 'Аристарх',
-                text: 'Ищи по всему залу. Трон, колонны, стол, шкаф, сундук, штору. Будь осторожен — некоторые предметы охраняются магией.'
+                text: 'Теперь ты знаешь правду. Как ты к этому относишься?',
+                choices: [
+                    { 
+                        text: '«Он вырастил меня. Он мой отец. Кровь не важна.»',
+                        effect: () => { gameState.authority += 10; },
+                        response: 'Благородные слова. Он был бы счастлив слышать это.'
+                    },
+                    { 
+                        text: '«Почему ты скрывал это 10 лет?»',
+                        effect: () => { gameState.authority -= 5; },
+                        response: 'Я боялся, что ты отвернешься от трона. Но теперь ты должен знать.'
+                    },
+                    { 
+                        text: '«Кто мои настоящие родители?»',
+                        effect: () => { gameState.science += 5; },
+                        response: 'Они были простыми людьми. Слугами во дворце. Они отдали жизнь, спасая тебя.'
+                    }
+                ]
+            },
+            // Шаг 8 - Месть или прощение
+            {
+                speaker: 'Аристарх',
+                text: 'Теперь ты должен решить. Что для тебя важнее — месть или правда?',
+                choices: [
+                    { 
+                        text: '«Я хочу, чтобы они заплатили. Каждый.»',
+                        effect: () => { gameState.army += 10; gameState.authority -= 5; },
+                        response: 'Гнев поведёт тебя по кровавому пути. Но выберешь ли ты его?'
+                    },
+                    { 
+                        text: '«Я хочу знать всё. А потом решу.»',
+                        effect: () => { gameState.science += 10; gameState.authority += 5; },
+                        response: 'Мудрое решение. Правда освобождает.'
+                    },
+                    { 
+                        text: '«Я хочу восстановить город. Месть подождёт.»',
+                        effect: () => { gameState.economy += 10; gameState.authority += 5; },
+                        response: 'Достойно истинного правителя.'
+                    }
+                ]
+            },
+            // Шаг 9 - Предупреждение
+            {
+                speaker: 'Аристарх',
+                text: 'Но помни: в городе есть те, кто хочет тебя остановить. Капитан Эдвин что-то скрывает. Купец Бертран впустил убийц. Библиотекарь Мира знает больше, чем говорит. Командир Грегор был другом отца, но... можно ли ему верить? Жрица Серена связана обетом. И повсюду шпионы Мортемира.'
+            },
+            // Шаг 10 - Предметы
+            {
+                speaker: 'Аристарх',
+                text: 'Ищи по всему залу. Трон, колонны, стол, шкаф, сундук, штору. Там ты найдёшь ответы. И помни: некоторые предметы охраняются магией. Будь осторожен.'
             }
         ];
         
@@ -750,60 +874,66 @@
                 name: 'Корона',
                 icon: '👑',
                 image: baseUrl + 'item_crown.png',
-                desc: 'Старинная корона с рубинами. Внутри выгравировано имя.',
+                desc: 'Старинная корона с рубинами. Внутри выгравировано имя: "Эдгар". Это имя твоего дяди.',
                 pos: 'На троне'
             },
             {
                 name: 'Меч',
                 icon: '⚔️',
                 image: baseUrl + 'item_sword.png',
-                desc: 'Древний меч с рунами. Лезвие всё ещё остро.',
+                desc: 'Древний меч с рунами. Руны гласят: "Кровь за кровь". На лезвии засохшая кровь.',
                 pos: 'За колонной'
             },
             {
                 name: 'Кристалл',
                 icon: '🔮',
                 image: baseUrl + 'предмет_кристалл.png',
-                desc: 'Магический кристалл, пульсирует тёплым светом.',
+                desc: 'Магический кристалл. Внутри видно лицо... Это Мортемир, теневой советник.',
                 pos: 'В нише стены'
             },
             {
                 name: 'Карта',
                 icon: '🗺️',
                 image: baseUrl + 'item_map.jpg',
-                desc: 'Старая карта города. Некоторые места отмечены.',
+                desc: 'Старая карта города. Красным отмечены: порт, библиотека, казармы, храм.',
                 pos: 'На столе'
             },
             {
                 name: 'Сундук',
                 icon: '📦',
                 image: baseUrl + 'item_chest.png',
-                desc: 'Небольшой сундук с монетами и свитками.',
+                desc: 'Сундук с монетами. На дне свиток с именами: Кассий, Морвуд, Эдгар.',
                 pos: 'В углу'
             },
             {
                 name: 'Кубок',
                 icon: '🏆',
                 image: baseUrl + 'item_crown.png',
-                desc: 'Золотой кубок с гербом рода. Внутри послание.',
+                desc: 'Золотой кубок с гербом. Внутри послание: "Они придут с моря. Верь только Аристарху".',
                 pos: 'За шторой'
             }
         ];
         
         const itemModal = document.getElementById('itemModal');
-        const itemModalImage = document.getElementById('itemModalImage');
-        const itemModalTitle = document.getElementById('itemModalTitle');
-        const itemModalDesc = document.getElementById('itemModalDesc');
+        const itemImage = document.getElementById('itemImage');
+        const itemTitle = document.getElementById('itemTitle');
+        const itemDesc = document.getElementById('itemDesc');
+        const itemAction = document.getElementById('itemAction');
         
         window.zoomItem = function(index) {
             gameState.currentItem = index;
             const item = items[index];
             
-            itemModalImage.src = item.image;
-            itemModalTitle.textContent = item.name;
-            itemModalDesc.innerHTML = `<strong>${item.name}</strong> (${item.pos})<br>${item.desc}`;
+            itemImage.src = item.image;
+            itemTitle.textContent = item.name;
+            itemDesc.innerHTML = `<strong>${item.name}</strong> (${item.pos})<br>${item.desc}`;
             
-            document.getElementById('startQuestBtn').style.display = gameState.questCompleted[index] ? 'none' : 'block';
+            if (gameState.questCompleted[index]) {
+                itemAction.style.display = 'none';
+            } else {
+                itemAction.style.display = 'block';
+            }
+            
             itemModal.classList.add('active');
         };
         
@@ -811,7 +941,7 @@
             itemModal.classList.remove('active');
         };
         
-        // ========== ЗАДАНИЯ ПО РУССКОМУ ЯЗЫКУ ==========
+        // ========== ЗАДАНИЯ ==========
         const quests = [
             {
                 text: '«Именно над этим вопросом задумывается Ю. Алешковский... различные обстоятельства оказывают сильное влияние на эмоциональное состояние человека.»',
@@ -940,14 +1070,11 @@
                 btn.style.opacity = '0.5';
             });
             
-            // Проверяем, все ли задания выполнены
-            if (gameState.questCompleted.every(v => v === true)) {
+            // Проверяем, собрано ли 3 предмета (для кнопки перехода)
+            const foundCount = gameState.foundItems.filter(v => v).length;
+            if (foundCount >= 3) {
                 cityBtn.classList.add('visible');
             }
-        };
-        
-        window.finishQuest = function() {
-            questModal.classList.remove('active');
         };
         
         window.closeQuestModal = function() {
