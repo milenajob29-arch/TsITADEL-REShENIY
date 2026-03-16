@@ -29,6 +29,7 @@
             padding: 30px;
             border: 3px solid gold;
             box-shadow: 0 0 50px rgba(255,215,0,0.2);
+            position: relative;
         }
         
         .throne-room {
@@ -60,26 +61,22 @@
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             border: 2px solid gold;
             border-radius: 20px;
             padding: 15px 25px;
             color: white;
-            z-index: 50;
+            z-index: 100;
+            backdrop-filter: blur(5px);
             display: flex;
             gap: 30px;
-            backdrop-filter: blur(5px);
+            font-size: 1.2rem;
         }
         
         .stat-item {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 1.2rem;
-        }
-        
-        .stat-icon {
-            font-size: 1.5rem;
         }
         
         .economy { color: #ffd700; }
@@ -87,19 +84,139 @@
         .army { color: #ff4444; }
         .authority { color: gold; }
         
+        /* ПЕРСОНАЖИ */
+        .characters {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            margin-top: 50px;
+            z-index: 10;
+        }
+        
+        .character-left {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 300px;
+            text-align: center;
+            animation: float 3s infinite;
+        }
+        
+        .character-right {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 300px;
+            text-align: center;
+            animation: float 3s infinite;
+        }
+        
+        .character-left img, .character-right img {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+        }
+        
+        .character-name {
+            color: gold;
+            font-size: 1.3rem;
+            background: rgba(0,0,0,0.7);
+            padding: 5px 15px;
+            border-radius: 30px;
+            border: 1px solid gold;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* ОБЛАСТЬ ДИАЛОГА */
+        .dialogue-area {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 700px;
+            z-index: 200;
+        }
+        
+        .dialogue-box {
+            background: rgba(0,0,0,0.85);
+            border: 3px solid gold;
+            border-radius: 30px;
+            padding: 20px;
+            color: white;
+            backdrop-filter: blur(10px);
+            margin-bottom: 15px;
+        }
+        
+        .dialogue-speaker {
+            color: gold;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            border-bottom: 2px solid gold;
+            padding-bottom: 5px;
+        }
+        
+        .dialogue-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            min-height: 60px;
+        }
+        
+        .dialogue-choices {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .choice-btn {
+            background: #2a3a4a;
+            border: 2px solid gold;
+            border-radius: 15px;
+            padding: 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.3s;
+            color: white;
+        }
+        
+        .choice-btn:hover {
+            background: gold;
+            color: black;
+            transform: scale(1.02);
+        }
+        
+        .next-btn {
+            background: gold;
+            color: black;
+            border: none;
+            padding: 10px 25px;
+            font-size: 1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            border: 2px solid white;
+            margin-top: 10px;
+        }
+        
         /* ИНВЕНТАРЬ */
         .inventory {
             position: absolute;
-            top: 20px;
+            top: 100px;
             left: 20px;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             border: 2px solid gold;
             border-radius: 20px;
             padding: 15px;
             color: white;
-            z-index: 50;
+            z-index: 100;
             backdrop-filter: blur(5px);
-            width: 300px;
+            width: 250px;
         }
         
         .inventory h3 {
@@ -110,7 +227,7 @@
         
         .inventory-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 10px;
         }
         
@@ -122,11 +239,7 @@
             text-align: center;
             cursor: pointer;
             transition: 0.3s;
-            min-height: 60px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            min-height: 70px;
         }
         
         .inventory-slot:hover {
@@ -139,197 +252,137 @@
             background: rgba(0,255,0,0.1);
         }
         
-        .inventory-slot .icon {
-            font-size: 2rem;
-        }
-        
-        .inventory-slot .name {
-            font-size: 0.8rem;
-            color: #b8a07c;
-        }
-        
-        /* ЗОНА ДЛЯ ОСМОТРА */
-        .examine-area {
+        /* ТОЧКИ ОСМОТРА */
+        .examine-point {
             position: absolute;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            max-width: 600px;
-            background: rgba(0,0,0,0.8);
-            border: 3px solid gold;
-            border-radius: 30px;
-            padding: 20px;
-            color: white;
-            z-index: 200;
-            backdrop-filter: blur(10px);
-            display: none;
-        }
-        
-        .examine-area.active {
-            display: block;
-        }
-        
-        .examine-title {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255,215,0,0.3);
+            border: 2px solid gold;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: gold;
             font-size: 1.5rem;
-            margin-bottom: 15px;
-            border-bottom: 2px solid gold;
-            padding-bottom: 10px;
         }
         
-        .examine-desc {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 20px;
+        .examine-point:hover {
+            background: rgba(255,215,0,0.7);
+            transform: scale(1.1);
         }
         
-        .examine-btn {
-            background: gold;
-            color: black;
-            border: none;
-            padding: 12px 25px;
-            font-size: 1.1rem;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: bold;
-            border: 2px solid white;
-            transition: 0.3s;
-            margin-right: 10px;
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px gold; }
+            50% { box-shadow: 0 0 30px gold; }
+            100% { box-shadow: 0 0 10px gold; }
         }
         
-        .examine-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px gold;
-        }
-        
-        /* ПАНЕЛЬ ЗАДАНИЙ */
-        .quest-panel {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 700px;
-            background: rgba(0,0,0,0.95);
-            border: 4px solid gold;
-            border-radius: 40px;
-            padding: 30px;
-            color: white;
-            z-index: 300;
-            backdrop-filter: blur(10px);
+        /* МОДАЛЬНОЕ ОКНО ПРИБЛИЖЕНИЯ */
+        .zoom-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
             display: none;
-        }
-        
-        .quest-panel.active {
-            display: block;
-        }
-        
-        .quest-title {
-            color: gold;
-            font-size: 2rem;
-            margin-bottom: 20px;
-            border-bottom: 2px solid gold;
-            padding-bottom: 10px;
-        }
-        
-        .quest-text {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            margin-bottom: 30px;
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 15px;
-            border-left: 5px solid gold;
-        }
-        
-        .quest-options {
-            display: flex;
+            justify-content: center;
+            align-items: center;
             flex-direction: column;
-            gap: 15px;
-            margin-bottom: 30px;
         }
         
-        .quest-option {
-            background: #2a3a4a;
-            border: 2px solid gold;
-            border-radius: 15px;
-            padding: 15px;
-            cursor: pointer;
-            transition: 0.3s;
-            text-align: center;
-            color: white;
+        .zoom-modal.active {
+            display: flex;
         }
         
-        .quest-option:hover {
-            background: gold;
-            color: black;
-            transform: scale(1.02);
-        }
-        
-        .quest-feedback {
-            text-align: center;
-            font-size: 1.2rem;
-            min-height: 40px;
-            color: gold;
-        }
-        
-        /* СТАРТОВЫЙ ЭКРАН */
-        .story-frame {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 700px;
-            background: rgba(0,0,0,0.95);
+        .zoom-content {
+            max-width: 800px;
+            max-height: 80vh;
             border: 4px solid gold;
-            border-radius: 40px;
-            padding: 40px;
-            color: white;
-            z-index: 400;
-            text-align: center;
-            font-size: 1.3rem;
-            line-height: 1.8;
-            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
         }
         
-        .story-frame button {
+        .zoom-content img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .zoom-desc {
+            background: rgba(0,0,0,0.8);
+            border: 2px solid gold;
+            border-radius: 20px;
+            padding: 20px;
+            color: white;
+            max-width: 600px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .zoom-btn {
             background: gold;
             color: black;
             border: none;
-            padding: 15px 40px;
-            font-size: 1.3rem;
+            padding: 12px 30px;
+            font-size: 1.1rem;
             border-radius: 50px;
             cursor: pointer;
-            margin-top: 30px;
             font-weight: bold;
             border: 2px solid white;
+            margin-top: 15px;
         }
         
-        .story-frame button:hover {
+        .zoom-btn:hover {
             transform: scale(1.05);
             box-shadow: 0 0 30px gold;
         }
         
-        /* ПОДСКАЗКА */
-        .hint-box {
+        .close-btn {
             position: absolute;
-            top: 120px;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 20px;
+            right: 20px;
             background: rgba(0,0,0,0.7);
+            color: gold;
             border: 2px solid gold;
-            border-radius: 30px;
-            padding: 10px 25px;
-            color: white;
-            z-index: 100;
-            font-size: 1rem;
-            animation: pulse 2s infinite;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 1100;
         }
         
-        @keyframes pulse {
-            0% { opacity: 0.7; }
-            50% { opacity: 1; transform: translateX(-50%) scale(1.05); }
-            100% { opacity: 0.7; }
+        .close-btn:hover {
+            background: gold;
+            color: black;
+        }
+        
+        /* КНОПКА ЗВУКА */
+        .sound-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(0,0,0,0.8);
+            border: 2px solid gold;
+            color: gold;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1000;
         }
         
         .back-link {
@@ -345,122 +398,115 @@
             z-index: 100;
             background: rgba(0,0,0,0.5);
         }
-        
-        .city-btn {
-            position: absolute;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: gold;
-            color: black;
-            border: 2px solid white;
-            padding: 15px 40px;
-            font-size: 1.3rem;
-            border-radius: 50px;
-            font-weight: bold;
-            z-index: 100;
-            display: none;
-            cursor: pointer;
-            box-shadow: 0 0 30px gold;
-        }
-        
-        .city-btn.visible {
-            display: block;
-        }
     </style>
 </head>
 <body>
+    <div class="sound-toggle" id="soundToggle" onclick="toggleSound()">🔊</div>
+    
     <div class="game-container">
         <a href="index.html" class="back-link">← Назад</a>
         
         <div class="throne-room">
-            <!-- Статистика -->
+            <!-- Статы -->
             <div class="stats-panel">
-                <div class="stat-item"><span class="stat-icon economy">💰</span> <span id="statEconomy">50</span></div>
-                <div class="stat-item"><span class="stat-icon science">📚</span> <span id="statScience">50</span></div>
-                <div class="stat-item"><span class="stat-icon army">⚔️</span> <span id="statArmy">50</span></div>
-                <div class="stat-item"><span class="stat-icon authority">👑</span> <span id="statAuthority">50</span></div>
+                <div class="stat-item"><span class="economy">💰</span> <span id="statEconomy">50</span></div>
+                <div class="stat-item"><span class="science">📚</span> <span id="statScience">50</span></div>
+                <div class="stat-item"><span class="army">⚔️</span> <span id="statArmy">50</span></div>
+                <div class="stat-item"><span class="authority">👑</span> <span id="statAuthority">50</span></div>
             </div>
             
             <!-- Инвентарь -->
             <div class="inventory">
-                <h3>📦 НАЙДЕННЫЕ СВИТКИ</h3>
+                <h3>📦 СВИТКИ</h3>
                 <div class="inventory-grid" id="inventoryGrid">
-                    <div class="inventory-slot" id="slot0" onclick="openQuest(0)">
-                        <span class="icon">❓</span>
-                        <span class="name">Не найдено</span>
-                    </div>
-                    <div class="inventory-slot" id="slot1" onclick="openQuest(1)">
-                        <span class="icon">❓</span>
-                        <span class="name">Не найдено</span>
-                    </div>
-                    <div class="inventory-slot" id="slot2" onclick="openQuest(2)">
-                        <span class="icon">❓</span>
-                        <span class="name">Не найдено</span>
-                    </div>
-                    <div class="inventory-slot" id="slot3" onclick="openQuest(3)">
-                        <span class="icon">❓</span>
-                        <span class="name">Не найдено</span>
-                    </div>
-                    <div class="inventory-slot" id="slot4" onclick="openQuest(4)">
-                        <span class="icon">❓</span>
-                        <span class="name">Не найдено</span>
-                    </div>
-                    <div class="inventory-slot" id="slot5" onclick="openQuest(5)">
-                        <span class="icon">❓</span>
-                        <span class="name">Не найдено</span>
-                    </div>
+                    <div class="inventory-slot" id="slot0" onclick="openQuest(0)">❓</div>
+                    <div class="inventory-slot" id="slot1" onclick="openQuest(1)">❓</div>
+                    <div class="inventory-slot" id="slot2" onclick="openQuest(2)">❓</div>
+                    <div class="inventory-slot" id="slot3" onclick="openQuest(3)">❓</div>
+                    <div class="inventory-slot" id="slot4" onclick="openQuest(4)">❓</div>
+                    <div class="inventory-slot" id="slot5" onclick="openQuest(5)">❓</div>
                 </div>
             </div>
             
-            <!-- Подсказка -->
-            <div class="hint-box" id="hintBox">
-                🔍 Осмотри зал — найди 6 свитков
-            </div>
-            
-            <!-- Кнопка выхода в город -->
-            <div class="city-btn" id="cityBtn" onclick="goToCity()">🏰 ОТПРАВИТЬСЯ В ГОРОД</div>
-            
-            <!-- СТАРТОВЫЙ СЮЖЕТ -->
-            <div class="story-frame" id="storyFrame">
-                <p>Толстая дубовая дверь со скрипом открывается. Внутри — тишина. Такой тишины не бывает в живых местах.</p>
-                <p>Тронный зал встречает тебя холодом и запахом пыли. Высокие витражи разбиты, и ветер свободно гуляет по каменным плитам.</p>
-                <p>Ты делаешь шаг. Под ногой хрустит стекло. Звук разносится эхом, будто кто-то идёт следом.</p>
-                <p>Из тени выходит старик в синей мантии.</p>
-                <p><strong>Аристарх:</strong> «Десять лет... Я ждал тебя. В этом зале спрятаны древние свитки. Найди их — они укажут путь к правде.»</p>
-                <button onclick="startGame()">НАЧАТЬ ПОИСК</button>
-            </div>
-            
-            <!-- Зона осмотра -->
-            <div class="examine-area" id="examineArea">
-                <div class="examine-title" id="examineTitle"></div>
-                <div class="examine-desc" id="examineDesc"></div>
-                <div>
-                    <button class="examine-btn" id="examineBtn" onclick="examineItem()">🔍 Осмотреть</button>
-                    <button class="examine-btn" onclick="closeExamine()">✖ Закрыть</button>
+            <!-- Персонажи -->
+            <div class="characters">
+                <!-- Аристарх слева -->
+                <div class="character-left">
+                    <img src="https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/npc_elder.png" alt="Аристарх">
+                    <div class="character-name">Старейшина Аристарх</div>
+                </div>
+                
+                <!-- Игрок справа (загрузится из выбора) -->
+                <div class="character-right" id="playerCharacter">
+                    <img id="playerImage" src="" alt="Герой">
+                    <div class="character-name" id="playerName">Правитель</div>
                 </div>
             </div>
             
-            <!-- Панель заданий -->
-            <div class="quest-panel" id="questPanel">
-                <div class="quest-title" id="questTitle">Задание</div>
-                <div class="quest-text" id="questText"></div>
-                <div class="quest-options" id="questOptions"></div>
-                <div class="quest-feedback" id="questFeedback"></div>
-                <button class="examine-btn" onclick="closeQuest()">Закрыть</button>
+            <!-- Точки осмотра (предметы) -->
+            <div class="examine-point" style="left: 300px; top: 300px;" onclick="zoomItem('throne')">👑</div>
+            <div class="examine-point" style="left: 500px; top: 200px;" onclick="zoomItem('column')">🏛️</div>
+            <div class="examine-point" style="left: 700px; top: 350px;" onclick="zoomItem('table')">📜</div>
+            <div class="examine-point" style="left: 400px; top: 450px;" onclick="zoomItem('bookshelf')">📚</div>
+            <div class="examine-point" style="left: 600px; top: 400px;" onclick="zoomItem('chest')">📦</div>
+            <div class="examine-point" style="left: 800px; top: 250px;" onclick="zoomItem('curtain')">🎭</div>
+            
+            <!-- Диалоговая область -->
+            <div class="dialogue-area" id="dialogueArea">
+                <div class="dialogue-box" id="dialogueBox">
+                    <div class="dialogue-speaker" id="dialogueSpeaker">Аристарх</div>
+                    <div class="dialogue-text" id="dialogueText"></div>
+                    <div class="dialogue-choices" id="dialogueChoices"></div>
+                    <button class="next-btn" id="nextBtn" onclick="nextDialogue()" style="display: none;">Далее →</button>
+                </div>
             </div>
             
-            <!-- ИНТЕРАКТИВНЫЕ ТОЧКИ (мебель) -->
-            <div style="position: absolute; left: 200px; top: 300px; width: 50px; height: 50px; cursor: pointer;" onclick="showExamine('throne')"></div>
-            <div style="position: absolute; left: 400px; top: 200px; width: 50px; height: 50px; cursor: pointer;" onclick="showExamine('column')"></div>
-            <div style="position: absolute; left: 600px; top: 400px; width: 50px; height: 50px; cursor: pointer;" onclick="showExamine('table')"></div>
-            <div style="position: absolute; left: 800px; top: 250px; width: 50px; height: 50px; cursor: pointer;" onclick="showExamine('bookshelf')"></div>
-            <div style="position: absolute; left: 300px; top: 500px; width: 50px; height: 50px; cursor: pointer;" onclick="showExamine('chest')"></div>
-            <div style="position: absolute; left: 700px; top: 500px; width: 50px; height: 50px; cursor: pointer;" onclick="showExamine('curtain')"></div>
+            <!-- Модальное окно для приближения -->
+            <div class="zoom-modal" id="zoomModal">
+                <div class="close-btn" onclick="closeZoom()">✖</div>
+                <div class="zoom-content" id="zoomContent"></div>
+                <div class="zoom-desc" id="zoomDesc"></div>
+                <button class="zoom-btn" id="zoomBtn" onclick="takeItem()">📜 Взять свиток</button>
+            </div>
         </div>
     </div>
 
+    <!-- АУДИО -->
+    <audio id="bgmThrone" loop preload="auto">
+        <source src="https://milenajob29-arch.github.io/TsITADEL-REShENIY/sounds/bgm_throne.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfxDialog" preload="auto">
+        <source src="https://milenajob29-arch.github.io/TsITADEL-REShENIY/sounds/sfx_dialog.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
+        // ========== ЗАГРУЗКА ПЕРСОНАЖА ==========
+        const playerData = JSON.parse(localStorage.getItem('player') || '{}');
+        
+        const playerImage = document.getElementById('playerImage');
+        const playerName = document.getElementById('playerName');
+        
+        // Определяем картинку игрока
+        if (playerData.gender === 'male') {
+            if (playerData.style === 'royal') playerImage.src = 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/мужской король.png';
+            else if (playerData.style === 'warrior') playerImage.src = 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/male_warrior.png';
+            else if (playerData.style === 'mage') playerImage.src = 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/мужское изображение.png';
+            else playerImage.src = 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/охотник на самцов.png';
+            
+            playerName.textContent = playerData.style === 'royal' ? 'Король Артур' :
+                                     playerData.style === 'warrior' ? 'Генерал' :
+                                     playerData.style === 'mage' ? 'Архимаг' : 'Лесной страж';
+        } else {
+            if (playerData.style === 'royal') playerImage.src = 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/female_royal.png';
+            else if (playerData.style === 'warrior') playerImage.src = 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/female_warrior.png';
+            else if (playerData.style === 'mage') playerImage.src = 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/female_mage.png';
+            else playerImage.src = 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/female_hunter.png';
+            
+            playerName.textContent = playerData.style === 'royal' ? 'Королева Элеонора' :
+                                     playerData.style === 'warrior' ? 'Амазонка' :
+                                     playerData.style === 'mage' ? 'Волшебница' : 'Лучница';
+        }
+        
         // ========== СОСТОЯНИЕ ==========
         const gameState = {
             economy: 50,
@@ -468,204 +514,210 @@
             army: 50,
             authority: 50,
             foundItems: [false, false, false, false, false, false],
-            currentExamine: null,
             questCompleted: [false, false, false, false, false, false],
-            currentQuest: 0
+            currentItem: null,
+            dialogueStep: 0,
+            dialogueActive: true
         };
         
-        // ========== ТОЧКИ ОСМОТРА ==========
-        const examinePoints = {
+        // ========== ДИАЛОГИ ==========
+        const dialogues = [
+            { speaker: 'Аристарх', text: 'Десять лет... Я каждый день приходил сюда. Ждал. Молился, чтобы ты был жив.' },
+            { speaker: 'Аристарх', text: 'Твои родители... они не просто умерли. Их убили. Это были свои. Те, кому они доверяли.' },
+            { speaker: 'Аристарх', text: 'В этом зале спрятаны шесть древних свитков. Найди их — они укажут путь к правде.' },
+            { speaker: 'Аристарх', text: 'Осмотри каждую часть зала. Трон, колонны, стол, шкаф, сундук, штору. Там ты найдёшь ответы.' },
+            { speaker: 'Игрок', text: 'Я найду их. И узнаю, кто убил мою семью.' },
+            { speaker: 'Аристарх', text: 'Да пребудет с тобой мудрость, Правитель.' }
+        ];
+        
+        const dialogueDiv = document.getElementById('dialogueText');
+        const speakerDiv = document.getElementById('dialogueSpeaker');
+        const choicesDiv = document.getElementById('dialogueChoices');
+        const nextBtn = document.getElementById('nextBtn');
+        
+        function showDialogue() {
+            const step = gameState.dialogueStep;
+            if (step < dialogues.length) {
+                speakerDiv.textContent = dialogues[step].speaker;
+                dialogueDiv.textContent = dialogues[step].text;
+                choicesDiv.innerHTML = '';
+                nextBtn.style.display = 'block';
+            } else {
+                // Диалог окончен
+                dialogueDiv.textContent = 'Ищи свитки по всему залу. Они отмечены золотыми точками.';
+                speakerDiv.textContent = 'Аристарх';
+                nextBtn.style.display = 'none';
+                gameState.dialogueActive = false;
+            }
+        }
+        
+        window.nextDialogue = function() {
+            gameState.dialogueStep++;
+            showDialogue();
+            if (soundEnabled) {
+                sfxDialog.currentTime = 0;
+                sfxDialog.play().catch(e => {});
+            }
+        };
+        
+        // ========== ПРЕДМЕТЫ ==========
+        const items = {
             throne: {
-                title: '👑 Трон',
-                desc: 'Массивный дубовый трон с резными подлокотниками. На сиденье что-то блестит.',
-                item: 0 // свиток 1
+                name: 'Трон',
+                image: 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/item_crown.png',
+                desc: 'На троне лежит старинная корона. Под ней что-то блестит...',
+                itemIndex: 0
             },
             column: {
-                title: '🏛️ Колонна',
-                desc: 'Огромная каменная колонна с трещиной. Внутри что-то зажато.',
-                item: 1 // свиток 2
+                name: 'Колонна',
+                image: 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/item_crystal.png',
+                desc: 'В трещине колонны зажат магический кристалл. Внутри него виден свиток.',
+                itemIndex: 1
             },
             table: {
-                title: '📜 Стол',
-                desc: 'Дубовый стол, покрытый пылью. На столе старая карта и стопка бумаг.',
-                item: 2 // свиток 3
+                name: 'Стол',
+                image: 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/item_map.jpg',
+                desc: 'На столе разложена старая карта. Под ней лежит свиток.',
+                itemIndex: 2
             },
             bookshelf: {
-                title: '📚 Книжный шкаф',
-                desc: 'Старый шкаф с книгами. Некоторые книги выпадают.',
-                item: 3 // свиток 4
+                name: 'Книжный шкаф',
+                image: 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/item_scroll.png',
+                desc: 'Между книг торчит край древнего свитка.',
+                itemIndex: 3
             },
             chest: {
-                title: '📦 Сундук',
-                desc: 'Огромный железный сундук с ржавым замком. Крышка приоткрыта.',
-                item: 4 // свиток 5
+                name: 'Сундук',
+                image: 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/item_chest.png',
+                desc: 'Сундук приоткрыт. Внутри что-то шевелится... нет, это свиток.',
+                itemIndex: 4
             },
             curtain: {
-                title: '🎭 Штора',
-                desc: 'Тяжёлая бархатная штора. За ней кто-то оставил свёрток.',
-                item: 5 // свиток 6
+                name: 'Штора',
+                image: 'https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/item_crown.png',
+                desc: 'За тяжёлой бархатной шторой кто-то спрятал свёрток.',
+                itemIndex: 5
+            }
+        };
+        
+        const zoomModal = document.getElementById('zoomModal');
+        const zoomContent = document.getElementById('zoomContent');
+        const zoomDesc = document.getElementById('zoomDesc');
+        const zoomBtn = document.getElementById('zoomBtn');
+        
+        window.zoomItem = function(itemKey) {
+            gameState.currentItem = itemKey;
+            const item = items[itemKey];
+            
+            zoomContent.innerHTML = `<img src="${item.image}" alt="${item.name}" style="width: 100%;">`;
+            zoomDesc.innerHTML = `<strong>${item.name}</strong><br>${item.desc}`;
+            
+            // Если предмет уже найден
+            if (gameState.foundItems[item.itemIndex]) {
+                zoomBtn.style.display = 'none';
+            } else {
+                zoomBtn.style.display = 'block';
+            }
+            
+            zoomModal.classList.add('active');
+        };
+        
+        window.closeZoom = function() {
+            zoomModal.classList.remove('active');
+        };
+        
+        window.takeItem = function() {
+            if (!gameState.currentItem) return;
+            
+            const item = items[gameState.currentItem];
+            const index = item.itemIndex;
+            
+            if (!gameState.foundItems[index]) {
+                gameState.foundItems[index] = true;
+                
+                // Обновляем инвентарь
+                const slot = document.getElementById(`slot${index}`);
+                slot.innerHTML = '📜';
+                slot.classList.add('found');
+                
+                // Сообщение
+                zoomDesc.innerHTML = `<strong>${item.name}</strong><br>✅ Ты нашёл свиток ${index+1}! Он появился в инвентаре.`;
+                zoomBtn.style.display = 'none';
+                
+                // Проверка, все ли найдены
+                if (gameState.foundItems.every(v => v === true)) {
+                    setTimeout(() => {
+                        alert('Все свитки найдены! Открой их в инвентаре и выполни задания.');
+                    }, 500);
+                }
             }
         };
         
         // ========== ЗАДАНИЯ ==========
         const quests = [
             {
-                title: 'Свиток 1',
-                text: '«Именно над этим вопросом задумывается Ю. Алешковский, автор текста, предложенного для анализа. Его позиция такова: различные обстоятельства оказывают сильное влияние на эмоциональное состояние человека.»',
+                text: '«Именно над этим вопросом задумывается Ю. Алешковский... Его позиция такова: различные обстоятельства оказывают сильное влияние на эмоциональное состояние человека.»',
                 options: [
                     'Речевая (лексическая несочетаемость)',
-                    'Грамматическая (ошибка в употреблении причастного оборота)',
+                    'Грамматическая (ошибка в причастном обороте)',
                     'Речевая (неудачное употребление местоимений)'
                 ],
                 correct: 2,
                 result: { sci: 10, auth: 5 }
             },
             {
-                title: 'Свиток 2',
                 text: '«В заключение можно сделать вывод, что в детстве чувства ребёнка к отцу нельзя назвать осмысленными.»',
                 options: [
                     'Речевая (лексическая несочетаемость)',
                     'Речевая избыточность',
-                    'Орфографическая (ошибка в окончании производного предлога)'
+                    'Орфографическая (ошибка в предлоге)'
                 ],
                 correct: 1,
                 result: { sci: 10, auth: 5 }
             },
             {
-                title: 'Свиток 3',
-                text: '«Множество важных вещей могут связывать человека с родиной, таких как семья, друзья и даже обычные рассказы, которые заставят восхищаться отчизной.»',
+                text: '«Множество важных вещей могут связывать человека с родиной, таких как семья, друзья и даже обычные рассказы...»',
                 options: [
-                    'Логическая (семья, друзья, рассказы в качестве однородных) и орфографическая',
-                    'Этическая (семья и друзья = вещи) и логическая (семья, друзья, рассказы как ОЧП)',
-                    'Грамматическая (нарушение в построении предложения с ОЧП)'
+                    'Логическая + орфографическая',
+                    'Этическая + логическая',
+                    'Грамматическая (ОЧП)'
                 ],
                 correct: 1,
                 result: { sci: 10, auth: 5 }
             },
             {
-                title: 'Свиток 4',
-                text: '«В них автор текста показывает нам Алеся Ивановича Мороза, учителя, который проявляет заботу к своим ученикам, даже в мелочах: спасает щенков, которых родители наказали утопить, покупает обувь девочкам из бедной семьи, провожает их через лес в холодные дни.»',
+                text: '«...проявляет заботу к своим ученикам, даже в мелочах: спасает щенков, которых родители наказали утопить...»',
                 options: [
-                    'Одна грамматическая («проявлять заботу по отношению к») и одна пунктуационная (лишняя запятая перед «даже»)',
-                    'Одна грамматическая ошибка',
+                    'Грамматическая + пунктуационная',
+                    'Одна грамматическая',
                     'Одна пунктуационная'
                 ],
                 correct: 0,
                 result: { sci: 10, auth: 5 }
             },
             {
-                title: 'Свиток 5',
-                text: '«Чтобы подтвердить эту мысль, приведу в пример историю Антона Макаренко, который смог перевоспитать сотни беспризорников, став для них не только учителем, но и другом.»',
+                text: '«Чтобы подтвердить эту мысль, приведу в пример историю Антона Макаренко...»',
                 options: [
-                    'Грамматическая ошибка (нарушение в построении предложения с однородными членами)',
-                    'Речевая ошибка (приведу в пример)',
-                    'Грамматическая ошибка (нарушение построения предложения с деепричастным оборотом)'
+                    'Грамматическая (однородные члены)',
+                    'Речевая (приведу в пример)',
+                    'Грамматическая (деепричастный оборот)'
                 ],
                 correct: 1,
                 result: { sci: 10, auth: 5 }
             },
             {
-                title: 'Свиток 6',
                 text: '«Герои защищают свою родину и честь, а их поступки достойно уважения и признательности.»',
                 options: [
-                    'Речевая ошибка (паронимы)',
-                    'Грамматическая ошибка (нарушение согласования между подлежащим и сказуемым)',
-                    'Логическая (несопоставимые понятия в ряду однородных членов предложения) и грамматическая ошибка (нарушение согласования)'
+                    'Речевая (паронимы)',
+                    'Грамматическая (согласование)',
+                    'Логическая + грамматическая'
                 ],
                 correct: 2,
                 result: { sci: 10, auth: 5 }
             }
         ];
         
-        // ========== UI ЭЛЕМЕНТЫ ==========
-        const statEconomy = document.getElementById('statEconomy');
-        const statScience = document.getElementById('statScience');
-        const statArmy = document.getElementById('statArmy');
-        const statAuthority = document.getElementById('statAuthority');
-        const examineArea = document.getElementById('examineArea');
-        const examineTitle = document.getElementById('examineTitle');
-        const examineDesc = document.getElementById('examineDesc');
-        const examineBtn = document.getElementById('examineBtn');
-        const questPanel = document.getElementById('questPanel');
-        const questTitle = document.getElementById('questTitle');
-        const questText = document.getElementById('questText');
-        const questOptions = document.getElementById('questOptions');
-        const questFeedback = document.getElementById('questFeedback');
-        const cityBtn = document.getElementById('cityBtn');
-        const hintBox = document.getElementById('hintBox');
-        
-        function updateStats() {
-            statEconomy.textContent = gameState.economy;
-            statScience.textContent = gameState.science;
-            statArmy.textContent = gameState.army;
-            statAuthority.textContent = gameState.authority;
-        }
-        
-        function updateInventory() {
-            for (let i = 0; i < 6; i++) {
-                const slot = document.getElementById(`slot${i}`);
-                if (gameState.foundItems[i]) {
-                    slot.innerHTML = `<span class="icon">📜</span><span class="name">Свиток ${i+1}</span>`;
-                    slot.classList.add('found');
-                }
-            }
-            
-            // Проверка, все ли найдены
-            if (gameState.foundItems.every(v => v === true)) {
-                hintBox.innerHTML = '✅ Все свитки найдены! Открой их и выполни задания.';
-                if (gameState.questCompleted.every(v => v === true)) {
-                    cityBtn.classList.add('visible');
-                }
-            }
-        }
-        
-        window.showExamine = function(point) {
-            gameState.currentExamine = point;
-            const data = examinePoints[point];
-            examineTitle.innerHTML = data.title;
-            examineDesc.innerHTML = data.desc;
-            examineArea.classList.add('active');
-            
-            // Если предмет уже найден, меняем кнопку
-            const itemIndex = data.item;
-            if (gameState.foundItems[itemIndex]) {
-                examineBtn.innerHTML = '🔍 Уже найдено';
-                examineBtn.disabled = true;
-                examineBtn.style.opacity = '0.5';
-            } else {
-                examineBtn.innerHTML = '🔍 Осмотреть';
-                examineBtn.disabled = false;
-                examineBtn.style.opacity = '1';
-            }
-        };
-        
-        window.closeExamine = function() {
-            examineArea.classList.remove('active');
-        };
-        
-        window.examineItem = function() {
-            if (!gameState.currentExamine) return;
-            
-            const point = gameState.currentExamine;
-            const data = examinePoints[point];
-            const itemIndex = data.item;
-            
-            if (!gameState.foundItems[itemIndex]) {
-                gameState.foundItems[itemIndex] = true;
-                updateInventory();
-                
-                examineDesc.innerHTML = data.desc + '<br><br>✅ Ты нашёл свиток! Он появился в инвентаре.';
-                examineBtn.innerHTML = '✅ Найдено';
-                examineBtn.disabled = true;
-                
-                // Сообщение
-                if (gameState.foundItems.every(v => v === true)) {
-                    setTimeout(() => {
-                        alert('Все свитки найдены! Открой их в инвентаре.');
-                    }, 500);
-                }
-            }
-        };
+        let currentQuest = 0;
         
         window.openQuest = function(index) {
             if (!gameState.foundItems[index]) {
@@ -678,61 +730,98 @@
                 return;
             }
             
-            gameState.currentQuest = index;
+            currentQuest = index;
             const quest = quests[index];
             
-            questTitle.innerHTML = quest.title;
-            questText.innerHTML = quest.text;
+            // Создаём модальное окно задания
+            const questModal = document.createElement('div');
+            questModal.className = 'zoom-modal active';
+            questModal.id = 'questModal';
             
             let optionsHtml = '';
             quest.options.forEach((opt, i) => {
-                optionsHtml += `<div class="quest-option" onclick="selectQuestOption(${i})">${opt}</div>`;
+                optionsHtml += `<div class="choice-btn" onclick="answerQuest(${i})">${opt}</div>`;
             });
             
-            questOptions.innerHTML = optionsHtml;
-            questFeedback.innerHTML = '';
-            questPanel.classList.add('active');
+            questModal.innerHTML = `
+                <div class="close-btn" onclick="closeQuestModal()">✖</div>
+                <div class="zoom-content" style="background: rgba(0,0,0,0.9); padding: 30px; max-width: 600px;">
+                    <h2 style="color: gold; margin-bottom: 20px;">Свиток ${index+1}</h2>
+                    <p style="color: white; font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px;">${quest.text}</p>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">${optionsHtml}</div>
+                    <div id="questFeedback" style="color: gold; margin-top: 20px; text-align: center;"></div>
+                </div>
+            `;
+            
+            document.body.appendChild(questModal);
         };
         
-        window.selectQuestOption = function(optionIndex) {
-            const quest = quests[gameState.currentQuest];
+        window.answerQuest = function(optionIndex) {
+            const quest = quests[currentQuest];
+            const feedback = document.getElementById('questFeedback');
             
             if (optionIndex === quest.correct) {
                 gameState.science += quest.result.sci;
                 gameState.authority += quest.result.auth;
-                questFeedback.innerHTML = '✅ Верно! +10 Наука, +5 Авторитет';
+                feedback.innerHTML = '✅ Верно! +10 Наука, +5 Авторитет';
             } else {
                 gameState.science -= 5;
                 gameState.authority -= 2;
-                questFeedback.innerHTML = '❌ Неверно. Наука −5, Авторитет −2';
+                feedback.innerHTML = '❌ Неверно. Наука −5, Авторитет −2';
             }
             
-            gameState.questCompleted[gameState.currentQuest] = true;
+            gameState.questCompleted[currentQuest] = true;
             updateStats();
             
-            document.querySelectorAll('.quest-option').forEach(opt => {
-                opt.style.pointerEvents = 'none';
-                opt.style.opacity = '0.7';
+            // Блокируем кнопки
+            document.querySelectorAll('#questModal .choice-btn').forEach(btn => {
+                btn.style.pointerEvents = 'none';
+                btn.style.opacity = '0.5';
             });
             
+            // Проверка, все ли задания выполнены
             if (gameState.questCompleted.every(v => v === true)) {
                 setTimeout(() => {
-                    cityBtn.classList.add('visible');
+                    alert('Все задания выполнены! Теперь ты можешь отправиться в город.');
                 }, 1000);
             }
         };
         
-        window.closeQuest = function() {
-            questPanel.classList.remove('active');
+        window.closeQuestModal = function() {
+            const modal = document.getElementById('questModal');
+            if (modal) modal.remove();
         };
         
-        window.startGame = function() {
-            document.getElementById('storyFrame').style.display = 'none';
-            hintBox.style.display = 'block';
-        };
+        // ========== UI ==========
+        function updateStats() {
+            document.getElementById('statEconomy').textContent = gameState.economy;
+            document.getElementById('statScience').textContent = gameState.science;
+            document.getElementById('statArmy').textContent = gameState.army;
+            document.getElementById('statAuthority').textContent = gameState.authority;
+        }
         
-        window.goToCity = function() {
-            window.location.href = 'city-map.html';
+        // ========== ЗВУК ==========
+        const bgmThrone = document.getElementById('bgmThrone');
+        const sfxDialog = document.getElementById('sfxDialog');
+        let soundEnabled = true;
+        
+        window.addEventListener('load', function() {
+            bgmThrone.volume = 0.3;
+            bgmThrone.play().catch(e => console.log('Автовоспроизведение заблокировано'));
+            showDialogue();
+        });
+        
+        window.toggleSound = function() {
+            soundEnabled = !soundEnabled;
+            const toggle = document.getElementById('soundToggle');
+            
+            if (soundEnabled) {
+                bgmThrone.volume = 0.3;
+                toggle.innerHTML = '🔊';
+            } else {
+                bgmThrone.volume = 0;
+                toggle.innerHTML = '🔇';
+            }
         };
         
         updateStats();
