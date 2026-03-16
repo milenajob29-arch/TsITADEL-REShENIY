@@ -62,7 +62,7 @@
             left: 50%;
             transform: translateX(-50%);
             width: 600px;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.9);
             border: 3px solid gold;
             border-radius: 30px;
             padding: 25px;
@@ -70,6 +70,15 @@
             z-index: 200;
             backdrop-filter: blur(10px);
             display: none;
+        }
+        
+        #dialog-speaker {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid gold;
+            padding-bottom: 10px;
         }
         
         #dialog-choices {
@@ -87,6 +96,7 @@
             cursor: pointer;
             text-align: center;
             transition: 0.3s;
+            color: white;
         }
         
         .choice-btn:hover {
@@ -101,7 +111,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             width: 700px;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             border: 4px solid gold;
             border-radius: 40px;
             padding: 40px;
@@ -156,6 +166,24 @@
             z-index: 1000;
         }
         
+        #city-btn {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: gold;
+            color: black;
+            border: 2px solid white;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            font-weight: bold;
+            z-index: 100;
+            display: none;
+            cursor: pointer;
+            box-shadow: 0 0 30px gold;
+        }
+        
         @keyframes pulse {
             0% { box-shadow: 0 0 10px gold; }
             50% { box-shadow: 0 0 30px gold; }
@@ -177,6 +205,13 @@
     <div id="interaction" onclick="interact()">💬 Поговорить</div>
     
     <div id="dialog">
+        <div id="dialog-speaker">
+            <span style="font-size: 2rem;">🧙</span>
+            <div>
+                <div style="color: gold; font-size: 1.3rem;">Старейшина Аристарх</div>
+                <div style="color: #b8a07c;">Хранитель знаний</div>
+            </div>
+        </div>
         <div id="dialog-text"></div>
         <div id="dialog-choices"></div>
     </div>
@@ -187,6 +222,8 @@
         <p>Ты делаешь шаг. Под ногой хрустит стекло. Звук разносится эхом, будто кто-то идёт следом.</p>
         <button onclick="startGame()">Войти в зал</button>
     </div>
+    
+    <div id="city-btn" onclick="goToCity()">🏰 ОТПРАВИТЬСЯ В ГОРОД</div>
     
     <div id="controls-hint">WASD — движение | Мышь — поворот камеры</div>
     
@@ -203,7 +240,6 @@
 
     <script type="module">
         import * as THREE from 'three';
-        import { OrbitControls } from 'https://unpkg.com/three@0.128.0/examples/jsm/controls/OrbitControls.js';
         
         // ========== СОСТОЯНИЕ ==========
         const gameState = {
@@ -215,13 +251,14 @@
             totalItems: 6,
             dialogActive: false,
             canTalk: false,
+            dialogStep: 0,
             items: [
-                { collected: false, pos: [-2, 0.5, -3], icon: '📜' },
-                { collected: false, pos: [3, 0.5, -2], icon: '⚔️' },
-                { collected: false, pos: [-1, 0.5, 2], icon: '🔮' },
-                { collected: false, pos: [4, 0.5, 1], icon: '🗺️' },
-                { collected: false, pos: [-3, 0.5, 4], icon: '👑' },
-                { collected: false, pos: [2, 0.5, -4], icon: '📦' }
+                { collected: false, pos: [-2, 0.8, -3], icon: '📜', name: 'Свиток', eco: 0, sci: 5, army: 0, auth: 0 },
+                { collected: false, pos: [3, 0.8, -2], icon: '⚔️', name: 'Меч', eco: 0, sci: 0, army: 5, auth: 0 },
+                { collected: false, pos: [-1, 0.8, 2], icon: '🔮', name: 'Кристалл', eco: 0, sci: 5, army: 0, auth: 0 },
+                { collected: false, pos: [4, 0.8, 1], icon: '🗺️', name: 'Карта', eco: 5, sci: 0, army: 0, auth: 0 },
+                { collected: false, pos: [-3, 0.8, 4], icon: '👑', name: 'Корона', eco: 0, sci: 0, army: 0, auth: 5 },
+                { collected: false, pos: [2, 0.8, -4], icon: '📦', name: 'Сундук', eco: 5, sci: 0, army: 0, auth: 0 }
             ]
         };
         
@@ -230,7 +267,7 @@
         scene.background = new THREE.Color(0x111122);
         
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 3, 10);
+        camera.position.set(0, 4, 10);
         
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -261,7 +298,6 @@
         floor.receiveShadow = true;
         scene.add(floor);
         
-        // Сетка
         const gridHelper = new THREE.GridHelper(20, 20, 0xffaa00, 0x886622);
         gridHelper.position.y = 0.01;
         scene.add(gridHelper);
@@ -269,7 +305,6 @@
         // ========== СТЕНЫ И КОЛОННЫ ==========
         const wallMaterial = new THREE.MeshStandardMaterial({ color: 0x5a4a3a });
         
-        // Колонны
         for (let i = -6; i <= 6; i += 4) {
             for (let j = -6; j <= 6; j += 4) {
                 if (Math.abs(i) < 2 && Math.abs(j) < 2) continue;
@@ -282,7 +317,6 @@
             }
         }
         
-        // Трон
         const throneGeo = new THREE.BoxGeometry(2, 1.5, 1);
         const throneMat = new THREE.MeshStandardMaterial({ color: 0xaa8c5e });
         const throne = new THREE.Mesh(throneGeo, throneMat);
@@ -294,7 +328,6 @@
         // ========== ПЕРСОНАЖ ИГРОКА ==========
         const playerGroup = new THREE.Group();
         
-        // Тело
         const bodyGeo = new THREE.CylinderGeometry(0.4, 0.4, 1.5);
         const bodyMat = new THREE.MeshStandardMaterial({ color: 0xffaa00 });
         const body = new THREE.Mesh(bodyGeo, bodyMat);
@@ -302,7 +335,6 @@
         body.castShadow = true;
         playerGroup.add(body);
         
-        // Голова
         const headGeo = new THREE.SphereGeometry(0.3);
         const headMat = new THREE.MeshStandardMaterial({ color: 0xffccaa });
         const head = new THREE.Mesh(headGeo, headMat);
@@ -310,7 +342,6 @@
         head.castShadow = true;
         playerGroup.add(head);
         
-        // Корона
         const crownGeo = new THREE.ConeGeometry(0.35, 0.3);
         const crownMat = new THREE.MeshStandardMaterial({ color: 0xffd700 });
         const crown = new THREE.Mesh(crownGeo, crownMat);
@@ -349,37 +380,24 @@
         
         // ========== ПРЕДМЕТЫ ==========
         const items = [];
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
         
         gameState.items.forEach((item, index) => {
-            const spriteMap = new THREE.CanvasTexture(generateTextCanvas(item.icon));
-            const spriteMaterial = new THREE.SpriteMaterial({ map: spriteMap });
-            const sprite = new THREE.Sprite(spriteMaterial);
-            sprite.position.set(item.pos[0], 1, item.pos[1]);
-            sprite.scale.set(0.8, 0.8, 1);
-            sprite.userData = { index, collected: false };
-            
-            const glowGeo = new THREE.SphereGeometry(0.3);
-            const glowMat = new THREE.MeshStandardMaterial({ color: 0xffaa00, emissive: 0x442200 });
+            const glowGeo = new THREE.SphereGeometry(0.4);
+            const glowMat = new THREE.MeshStandardMaterial({ 
+                color: 0xffaa00, 
+                emissive: 0x442200,
+                transparent: true,
+                opacity: 0.8
+            });
             const glow = new THREE.Mesh(glowGeo, glowMat);
-            glow.position.set(item.pos[0], 1, item.pos[1]);
-            glow.userData = { index, collected: false };
-            
+            glow.position.set(item.pos[0], item.pos[1], item.pos[2]);
+            glow.castShadow = true;
+            glow.userData = { index, collected: false, item: item };
             scene.add(glow);
             items.push(glow);
         });
-        
-        function generateTextCanvas(char) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 64;
-            canvas.height = 64;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = 'white';
-            ctx.font = '48px Arial';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(char, 32, 32);
-            return canvas;
-        }
         
         // ========== УПРАВЛЕНИЕ ==========
         const keys = {};
@@ -388,24 +406,63 @@
         
         window.addEventListener('keydown', (e) => {
             keys[e.code] = true;
-            if (e.code === 'Space') e.preventDefault();
+            if (['KeyW','KeyA','KeyS','KeyD'].includes(e.code)) e.preventDefault();
         });
         
         window.addEventListener('keyup', (e) => {
             keys[e.code] = false;
         });
         
-        // ========== КОЛЛИЗИИ ==========
+        window.addEventListener('click', (event) => {
+            if (gameState.dialogActive) return;
+            
+            mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+            mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            
+            const intersects = raycaster.intersectObjects(items);
+            
+            if (intersects.length > 0) {
+                const item = intersects[0].object;
+                if (!item.userData.collected) {
+                    collectItem(item.userData.index);
+                }
+            }
+        });
+        
+        function collectItem(index) {
+            const item = gameState.items[index];
+            if (item.collected) return;
+            
+            item.collected = true;
+            gameState.collectedItems++;
+            
+            gameState.economy += item.eco;
+            gameState.science += item.sci;
+            gameState.army += item.army;
+            gameState.authority += item.auth;
+            
+            items[index].material.emissive.setHex(0x000000);
+            items[index].material.color.setHex(0x666666);
+            items[index].userData.collected = true;
+            
+            updateUI();
+            
+            if (gameState.collectedItems === gameState.totalItems) {
+                document.getElementById('city-btn').style.display = 'block';
+            }
+        }
+        
+        // ========== ДВИЖЕНИЕ ==========
         function checkDistanceToAristarkh() {
             const dist = playerGroup.position.distanceTo(aristarkhGroup.position);
             return dist < 3;
         }
         
-        // ========== ИГРОВОЙ ЦИКЛ ==========
         function animate() {
             requestAnimationFrame(animate);
             
-            // Движение игрока
             if (!gameState.dialogActive) {
                 velocity.x = 0;
                 velocity.z = 0;
@@ -418,18 +475,15 @@
                 playerGroup.position.x += velocity.x;
                 playerGroup.position.z += velocity.z;
                 
-                // Ограничение
                 playerGroup.position.x = Math.max(-8, Math.min(8, playerGroup.position.x));
                 playerGroup.position.z = Math.max(-8, Math.min(8, playerGroup.position.z));
                 
-                // Камера следует
                 camera.position.x = playerGroup.position.x;
                 camera.position.z = playerGroup.position.z + 8;
                 camera.position.y = 5;
                 camera.lookAt(playerGroup.position);
             }
             
-            // Проверка диалога
             const canTalk = checkDistanceToAristarkh() && !gameState.dialogActive;
             document.getElementById('interaction').style.display = canTalk ? 'block' : 'none';
             
@@ -439,20 +493,68 @@
         animate();
         
         // ========== ДИАЛОГИ ==========
+        const dialogSteps = [
+            "Десять лет... Я каждый день приходил сюда. Ждал. Молился, чтобы ты был жив. И ты здесь. Стоишь.",
+            "Твои родители... они не просто умерли. Их убили. Это были свои. Те, кому они доверяли.",
+            "Как ты ответишь?"
+        ];
+        
+        const dialogChoices = [
+            [
+                { text: "Далее", next: 1 }
+            ],
+            [
+                { text: "Далее", next: 2 }
+            ],
+            [
+                { text: "«Я клянусь восстановить честь семьи и спасти город. Расскажи всё.»", effect: () => gameState.authority += 5, next: -1 },
+                { text: "«Посмотрим. Я сделаю, что смогу. Но ничего не обещаю.»", effect: () => gameState.authority -= 2, next: -1 },
+                { text: "«Мне плевать на город. Я ищу убийц. Только это важно.»", effect: () => gameState.authority -= 10, next: -1 }
+            ]
+        ];
+        
         window.interact = function() {
             if (!checkDistanceToAristarkh()) return;
             
             gameState.dialogActive = true;
+            gameState.dialogStep = 0;
             document.getElementById('interaction').style.display = 'none';
             document.getElementById('dialog').style.display = 'block';
-            
-            // TODO: пошаговый диалог из сценария
+            updateDialog();
         };
         
-        // ========== СТАРТ ==========
-        window.startGame = function() {
-            document.getElementById('story').style.display = 'none';
-            gameState.dialogActive = false;
+        function updateDialog() {
+            const step = gameState.dialogStep;
+            document.getElementById('dialog-text').innerHTML = dialogSteps[step];
+            
+            let choicesHtml = '';
+            dialogChoices[step].forEach((choice, index) => {
+                choicesHtml += `<div class="choice-btn" onclick="dialogChoice(${index})">${choice.text}</div>`;
+            });
+            document.getElementById('dialog-choices').innerHTML = choicesHtml;
+        }
+        
+        window.dialogChoice = function(index) {
+            const step = gameState.dialogStep;
+            const choice = dialogChoices[step][index];
+            
+            if (choice.effect) choice.effect();
+            
+            if (choice.next === -1) {
+                // Конец диалога
+                document.getElementById('dialog').style.display = 'none';
+                gameState.dialogActive = false;
+                
+                // Показываем предметы (они уже видны)
+                setTimeout(() => {
+                    alert('Аристарх: «В этом зале спрятаны шесть древних артефактов. Собери их — и узнаешь имена заговорщиков.»');
+                }, 500);
+            } else {
+                gameState.dialogStep = choice.next;
+                updateDialog();
+            }
+            
+            updateUI();
         };
         
         // ========== UI ==========
@@ -463,6 +565,17 @@
             document.getElementById('auth').textContent = gameState.authority;
             document.getElementById('items-count').textContent = gameState.collectedItems;
         }
+        
+        // ========== СТАРТ ==========
+        window.startGame = function() {
+            document.getElementById('story').style.display = 'none';
+            gameState.dialogActive = false;
+        };
+        
+        // ========== ПЕРЕХОД В ГОРОД ==========
+        window.goToCity = function() {
+            window.location.href = 'city-map.html';
+        };
         
         // ========== ЗВУК ==========
         let soundEnabled = true;
