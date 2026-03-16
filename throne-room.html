@@ -89,6 +89,7 @@
             transition: 0.3s;
             opacity: 0.5;
             filter: grayscale(1);
+            position: relative;
         }
         
         .scroll-icon.found {
@@ -99,6 +100,24 @@
         
         .scroll-icon:hover {
             transform: scale(1.2);
+        }
+        
+        .scroll-icon .tooltip {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: gold;
+            color: black;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            display: none;
+        }
+        
+        .scroll-icon:hover .tooltip {
+            display: block;
         }
         
         /* ПЕРСОНАЖИ */
@@ -145,7 +164,7 @@
             50% { transform: translateY(-10px); }
         }
         
-        /* ИНТЕРАКТИВНЫЕ ЗОНЫ */
+        /* ИНТЕРАКТИВНЫЕ ЗОНЫ (ПОЯВЛЯЮТСЯ ПОСЛЕ ДИАЛОГА) */
         .hotspot {
             position: absolute;
             width: 80px;
@@ -154,9 +173,13 @@
             cursor: pointer;
             z-index: 40;
             transition: 0.3s;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
+        }
+        
+        .hotspot.active {
+            display: flex;
         }
         
         .hotspot::before {
@@ -245,18 +268,6 @@
             transform: scale(1.02);
         }
         
-        .next-btn {
-            background: gold;
-            color: black;
-            border: none;
-            padding: 10px 25px;
-            font-size: 1rem;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: bold;
-            border: 2px solid white;
-        }
-        
         /* МОДАЛЬНОЕ ОКНО */
         .zoom-modal {
             position: fixed;
@@ -309,6 +320,7 @@
             cursor: pointer;
             font-weight: bold;
             border: 2px solid white;
+            margin: 5px;
         }
         
         .close-btn {
@@ -360,6 +372,15 @@
             z-index: 2000;
             background: rgba(0,0,0,0.5);
         }
+        
+        .back-link:hover {
+            background: gold;
+            color: black;
+        }
+        
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -379,12 +400,30 @@
                 </div>
                 
                 <div class="scrolls-bar" id="scrollsBar">
-                    <span class="scroll-icon" id="scroll0" onclick="openQuest(0)">📜❓</span>
-                    <span class="scroll-icon" id="scroll1" onclick="openQuest(1)">📜❓</span>
-                    <span class="scroll-icon" id="scroll2" onclick="openQuest(2)">📜❓</span>
-                    <span class="scroll-icon" id="scroll3" onclick="openQuest(3)">📜❓</span>
-                    <span class="scroll-icon" id="scroll4" onclick="openQuest(4)">📜❓</span>
-                    <span class="scroll-icon" id="scroll5" onclick="openQuest(5)">📜❓</span>
+                    <span class="scroll-icon" id="scroll0" onclick="openQuest(0)">
+                        📜❓
+                        <span class="tooltip">Свиток 1</span>
+                    </span>
+                    <span class="scroll-icon" id="scroll1" onclick="openQuest(1)">
+                        📜❓
+                        <span class="tooltip">Свиток 2</span>
+                    </span>
+                    <span class="scroll-icon" id="scroll2" onclick="openQuest(2)">
+                        📜❓
+                        <span class="tooltip">Свиток 3</span>
+                    </span>
+                    <span class="scroll-icon" id="scroll3" onclick="openQuest(3)">
+                        📜❓
+                        <span class="tooltip">Свиток 4</span>
+                    </span>
+                    <span class="scroll-icon" id="scroll4" onclick="openQuest(4)">
+                        📜❓
+                        <span class="tooltip">Свиток 5</span>
+                    </span>
+                    <span class="scroll-icon" id="scroll5" onclick="openQuest(5)">
+                        📜❓
+                        <span class="tooltip">Свиток 6</span>
+                    </span>
                 </div>
             </div>
             
@@ -399,13 +438,13 @@
                 <div class="character-name" id="playerName">Правитель</div>
             </div>
             
-            <!-- Интерактивные точки (предметы) -->
-            <div class="hotspot hotspot-1" onclick="zoomItem(0)"></div>
-            <div class="hotspot hotspot-2" onclick="zoomItem(1)"></div>
-            <div class="hotspot hotspot-3" onclick="zoomItem(2)"></div>
-            <div class="hotspot hotspot-4" onclick="zoomItem(3)"></div>
-            <div class="hotspot hotspot-5" onclick="zoomItem(4)"></div>
-            <div class="hotspot hotspot-6" onclick="zoomItem(5)"></div>
+            <!-- Интерактивные точки (появляются после диалога) -->
+            <div class="hotspot hotspot-1" id="hotspot1" onclick="zoomItem(0)"></div>
+            <div class="hotspot hotspot-2" id="hotspot2" onclick="zoomItem(1)"></div>
+            <div class="hotspot hotspot-3" id="hotspot3" onclick="zoomItem(2)"></div>
+            <div class="hotspot hotspot-4" id="hotspot4" onclick="zoomItem(3)"></div>
+            <div class="hotspot hotspot-5" id="hotspot5" onclick="zoomItem(4)"></div>
+            <div class="hotspot hotspot-6" id="hotspot6" onclick="zoomItem(5)"></div>
             
             <!-- Диалог -->
             <div class="dialogue-area" id="dialogueArea">
@@ -472,7 +511,8 @@
             foundItems: [false, false, false, false, false, false],
             questCompleted: [false, false, false, false, false, false],
             currentItem: null,
-            dialogueStep: 0
+            dialogueStep: 0,
+            dialogueFinished: false
         };
         
         // ========== ДИАЛОГ С ВЫБОРОМ ==========
@@ -500,6 +540,7 @@
             }
         ];
         
+        const dialogueArea = document.getElementById('dialogueArea');
         const dialogueText = document.getElementById('dialogueText');
         const dialogueSpeaker = document.getElementById('dialogueSpeaker');
         const dialogueChoices = document.getElementById('dialogueChoices');
@@ -507,9 +548,14 @@
         function showDialogue() {
             const step = gameState.dialogueStep;
             if (step >= dialogues.length) {
-                dialogueSpeaker.textContent = 'Аристарх';
-                dialogueText.textContent = 'Ищи свитки по всему залу. Они отмечены мерцанием.';
-                dialogueChoices.innerHTML = '';
+                // Диалог окончен - убираем окно и показываем точки поиска
+                dialogueArea.style.display = 'none';
+                gameState.dialogueFinished = true;
+                
+                // Показываем все точки для поиска
+                for (let i = 1; i <= 6; i++) {
+                    document.getElementById(`hotspot${i}`).classList.add('active');
+                }
                 return;
             }
             
@@ -618,9 +664,12 @@
             zoomDesc.innerHTML = `<strong>${items[index].name}</strong><br>✅ Ты нашёл свиток ${index+1}!`;
             zoomBtn.style.display = 'none';
             
+            playSound(sfxDialog);
+            
+            // Если все свитки собраны - показываем сообщение
             if (gameState.foundItems.every(v => v)) {
                 setTimeout(() => {
-                    alert('Все свитки найдены! Открой их в верхней панели.');
+                    alert('✨ Все свитки найдены! Теперь открой их в верхней панели и выполни задания.');
                 }, 500);
             }
         };
@@ -636,12 +685,12 @@
         ];
         
         const optionsList = [
-            ['Речевая', 'Грамматическая', 'Речевая (местоимения)'],
-            ['Речевая', 'Речевая избыточность', 'Орфографическая'],
-            ['Логическая', 'Этическая + логическая', 'Грамматическая'],
-            ['Грамматическая + пунктуационная', 'Грамматическая', 'Пунктуационная'],
-            ['Грамматическая', 'Речевая', 'Грамматическая (дееприч.)'],
-            ['Речевая', 'Грамматическая', 'Логическая + грамматическая']
+            ['Речевая (лексическая несочетаемость)', 'Грамматическая (причастный оборот)', 'Речевая (местоимения)'],
+            ['Речевая (несочетаемость)', 'Речевая избыточность', 'Орфографическая (предлог)'],
+            ['Логическая + орфографическая', 'Этическая + логическая', 'Грамматическая (ОЧП)'],
+            ['Грамматическая + пунктуационная', 'Одна грамматическая', 'Одна пунктуационная'],
+            ['Грамматическая (однородные)', 'Речевая (приведу в пример)', 'Грамматическая (дееприч.)'],
+            ['Речевая (паронимы)', 'Грамматическая (согласование)', 'Логическая + грамматическая']
         ];
         
         window.openQuest = function(index) {
@@ -694,6 +743,11 @@
             
             gameState.questCompleted[questIndex] = true;
             updateStats();
+            
+            document.querySelectorAll('#questModal .zoom-btn').forEach(btn => {
+                btn.style.pointerEvents = 'none';
+                btn.style.opacity = '0.5';
+            });
         };
         
         window.closeQuestModal = function() {
