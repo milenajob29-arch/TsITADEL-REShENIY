@@ -914,4 +914,85 @@
                 gameState.foundItems[index] = true;
                 gameState.questCompleted[index] = true;
                 
-                const
+                const itemIcon = document.getElementById(`item${index}`);
+                itemIcon.innerHTML = `${items[index].icon}✅`;
+                itemIcon.classList.add('found');
+                
+                // Применяем бонус предмета
+                switch(index) {
+                    case 0: gameState.authority += 5; gameState.economy += 2; break;
+                    case 1: gameState.army += 5; gameState.authority += 2; break;
+                    case 2: gameState.science += 5; gameState.authority += 2; break;
+                    case 3: gameState.economy += 5; gameState.science += 2; break;
+                    case 4: gameState.economy += 5; gameState.army += 2; break;
+                    case 5: gameState.authority += 5; gameState.science += 2; break;
+                }
+            } else {
+                gameState.science -= 5;
+                gameState.authority -= 2;
+                questFeedback.textContent = '❌ Неверно. Наука −5, Авторитет −2';
+            }
+            
+            updateStats();
+            
+            document.querySelectorAll('.quest-option').forEach(btn => {
+                btn.style.pointerEvents = 'none';
+                btn.style.opacity = '0.5';
+            });
+            
+            // Проверяем, все ли задания выполнены
+            if (gameState.questCompleted.every(v => v === true)) {
+                cityBtn.classList.add('visible');
+            }
+        };
+        
+        window.finishQuest = function() {
+            questModal.classList.remove('active');
+        };
+        
+        window.closeQuestModal = function() {
+            questModal.classList.remove('active');
+        };
+        
+        // ========== ПЕРЕХОД В ГОРОД ==========
+        window.goToCity = function() {
+            window.location.href = 'city-map.html';
+        };
+        
+        // ========== UI ==========
+        function updateStats() {
+            document.getElementById('statEconomy').textContent = gameState.economy;
+            document.getElementById('statScience').textContent = gameState.science;
+            document.getElementById('statArmy').textContent = gameState.army;
+            document.getElementById('statAuthority').textContent = gameState.authority;
+        }
+        
+        function playSound(audio) {
+            if (soundEnabled) {
+                audio.currentTime = 0;
+                audio.play().catch(e => {});
+            }
+        }
+        
+        // ========== ЗВУК ==========
+        const bgmThrone = document.getElementById('bgmThrone');
+        const sfxDialog = document.getElementById('sfxDialog');
+        let soundEnabled = true;
+        
+        window.addEventListener('load', function() {
+            bgmThrone.volume = 0.3;
+            bgmThrone.play().catch(e => {});
+            showDialogue();
+        });
+        
+        window.toggleSound = function() {
+            soundEnabled = !soundEnabled;
+            const toggle = document.getElementById('soundToggle');
+            bgmThrone.volume = soundEnabled ? 0.3 : 0;
+            toggle.innerHTML = soundEnabled ? '🔊' : '🔇';
+        };
+        
+        updateStats();
+    </script>
+</body>
+</html>
