@@ -264,8 +264,8 @@
             transform: scale(1.02);
         }
         
-        /* МОДАЛЬНОЕ ОКНО */
-        .zoom-modal {
+        /* МОДАЛЬНОЕ ОКНО ЗАДАНИЯ */
+        .quest-modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -279,12 +279,12 @@
             flex-direction: column;
         }
         
-        .zoom-modal.active {
+        .quest-modal.active {
             display: flex;
         }
         
-        .zoom-content {
-            max-width: 600px;
+        .quest-content {
+            max-width: 700px;
             background: rgba(0,0,0,0.8);
             border: 4px solid gold;
             border-radius: 30px;
@@ -292,48 +292,98 @@
             text-align: center;
         }
         
-        .zoom-content img {
+        .quest-content img {
             max-width: 100%;
-            max-height: 400px;
+            max-height: 300px;
             border-radius: 20px;
             margin-bottom: 20px;
         }
         
-        .zoom-desc {
+        .quest-title {
+            color: gold;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        
+        .quest-text {
             color: white;
             font-size: 1.1rem;
             line-height: 1.6;
+            margin-bottom: 25px;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid gold;
+            text-align: left;
+        }
+        
+        .quest-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
             margin-bottom: 20px;
         }
         
-        .zoom-btn {
+        .quest-option {
+            background: #2a3a4a;
+            border: 2px solid gold;
+            border-radius: 15px;
+            padding: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            color: white;
+        }
+        
+        .quest-option:hover {
+            background: gold;
+            color: black;
+            transform: scale(1.02);
+        }
+        
+        .quest-feedback {
+            color: gold;
+            font-size: 1.1rem;
+            min-height: 30px;
+            margin: 10px 0;
+        }
+        
+        .quest-close {
             background: gold;
             color: black;
             border: none;
-            padding: 12px 30px;
-            font-size: 1.1rem;
+            padding: 10px 25px;
+            font-size: 1rem;
             border-radius: 40px;
             cursor: pointer;
             font-weight: bold;
             border: 2px solid white;
-            margin: 5px;
         }
         
-        .close-btn {
+        /* КНОПКА ПЕРЕХОДА */
+        .location-btn {
             position: absolute;
-            top: 30px;
+            bottom: 30px;
             right: 30px;
-            background: rgba(0,0,0,0.7);
-            color: gold;
-            border: 2px solid gold;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
+            background: gold;
+            color: black;
+            border: 2px solid white;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            font-weight: bold;
             cursor: pointer;
+            z-index: 200;
+            display: none;
+            box-shadow: 0 0 30px gold;
+            animation: pulse 2s infinite;
+        }
+        
+        .location-btn.visible {
+            display: block;
+        }
+        
+        .location-btn:hover {
+            transform: scale(1.05);
         }
         
         /* КНОПКА ЗВУКА */
@@ -367,6 +417,11 @@
             border-radius: 40px;
             z-index: 2000;
             background: rgba(0,0,0,0.5);
+        }
+        
+        .back-link:hover {
+            background: gold;
+            color: black;
         }
         
         .hidden {
@@ -445,16 +500,32 @@
                     <div class="dialogue-choices" id="dialogueChoices"></div>
                 </div>
             </div>
+            
+            <!-- Кнопка перехода в город -->
+            <div class="location-btn" id="cityBtn" onclick="goToCity()">🏰 ОТПРАВИТЬСЯ В ГОРОД</div>
         </div>
     </div>
     
-    <!-- Модальное окно -->
-    <div class="zoom-modal" id="zoomModal">
-        <div class="close-btn" onclick="closeZoom()">✖</div>
-        <div class="zoom-content" id="zoomContent">
-            <img id="zoomImage" src="" alt="">
-            <div class="zoom-desc" id="zoomDesc"></div>
-            <button class="zoom-btn" id="zoomBtn" onclick="takeItem()">📦 Взять предмет</button>
+    <!-- Модальное окно предмета -->
+    <div class="quest-modal" id="itemModal">
+        <div class="close-btn" onclick="closeItemModal()">✖</div>
+        <div class="quest-content">
+            <img id="itemModalImage" src="" alt="">
+            <div class="quest-title" id="itemModalTitle"></div>
+            <div class="quest-text" id="itemModalDesc"></div>
+            <button class="quest-close" id="startQuestBtn" onclick="startQuest()">📜 Начать задание</button>
+        </div>
+    </div>
+    
+    <!-- Модальное окно задания -->
+    <div class="quest-modal" id="questModal">
+        <div class="close-btn" onclick="closeQuestModal()">✖</div>
+        <div class="quest-content">
+            <div class="quest-title" id="questTitle">Задание</div>
+            <div class="quest-text" id="questText"></div>
+            <div class="quest-options" id="questOptions"></div>
+            <div class="quest-feedback" id="questFeedback"></div>
+            <button class="quest-close" id="finishQuestBtn" onclick="finishQuest()">Завершить</button>
         </div>
     </div>
 
@@ -502,10 +573,11 @@
             foundItems: [false, false, false, false, false, false],
             questCompleted: [false, false, false, false, false, false],
             currentItem: null,
+            currentQuest: 0,
             dialogueStep: 0
         };
         
-        // ========== РАЗВИЛКА ДИАЛОГОВ ==========
+        // ========== ДИАЛОГ С РАЗВИЛКАМИ ==========
         const dialogues = [
             // Шаг 0 - Вступление
             {
@@ -517,54 +589,103 @@
                 speaker: 'Аристарх',
                 text: 'Твои родители... они не просто умерли. Их убили. Это были свои. Те, кому они доверяли.'
             },
-            // Шаг 2 - Первый выбор (отношение к городу)
+            // Шаг 2 - Воспоминания об отце
+            {
+                speaker: 'Аристарх',
+                text: 'Твой отец был мудрым правителем. Он часто говорил: "Власть — это не право, а ответственность". Ты помнишь его?',
+                choices: [
+                    { 
+                        text: '«Помню его тёплые руки, когда он сажал меня на трон.»',
+                        effect: () => { gameState.authority += 5; gameState.economy += 2; },
+                        response: 'Он любил тебя больше жизни.'
+                    },
+                    { 
+                        text: '«Помню его строгий взгляд. Он редко хвалил.»',
+                        effect: () => { gameState.army += 5; gameState.authority += 2; },
+                        response: 'Он готовил тебя к суровой жизни правителя.'
+                    },
+                    { 
+                        text: '«Я почти не помню его. Только запах старой книги и дыма.»',
+                        effect: () => { gameState.science += 5; gameState.authority += 2; },
+                        response: 'Он всегда работал в библиотеке по ночам.'
+                    }
+                ]
+            },
+            // Шаг 3 - О матери
+            {
+                speaker: 'Аристарх',
+                text: 'А мать? Она часто пела тебе колыбельные в этом зале.',
+                choices: [
+                    { 
+                        text: '«Помню её голос. Он был как свет.»',
+                        effect: () => { gameState.authority += 5; gameState.science += 3; },
+                        response: 'Она звала тебя "мой маленький свет".'
+                    },
+                    { 
+                        text: '«Она учила меня доброте.»',
+                        effect: () => { gameState.economy += 5; gameState.authority += 3; },
+                        response: 'Она раздавала золото бедным, за что знать её ненавидела.'
+                    },
+                    { 
+                        text: '«Я почти не помню её лица.»',
+                        effect: () => { gameState.army += 5; gameState.authority -= 2; },
+                        response: 'Ты был слишком мал... Прости.'
+                    }
+                ]
+            },
+            // Шаг 4 - Кто враг?
+            {
+                speaker: 'Аристарх',
+                text: 'Знаешь, кто мог стоять за убийством? Советник Мортемир, купцы, военные?',
+                choices: [
+                    { 
+                        text: '«Советник. Он всегда смотрел на отца с ненавистью.»',
+                        effect: () => { gameState.science += 5; gameState.authority += 3; },
+                        response: 'Ты прав. Он был главным.'
+                    },
+                    { 
+                        text: '«Купцы. Они хотели захватить рынки.»',
+                        effect: () => { gameState.economy += 5; gameState.authority += 2; },
+                        response: 'Они дали золото на убийство.'
+                    },
+                    { 
+                        text: '«Военные. Отец хотел мира, а они — войны.»',
+                        effect: () => { gameState.army += 5; gameState.authority -= 2; },
+                        response: 'Среди них были предатели.'
+                    }
+                ]
+            },
+            // Шаг 5 - Как поступишь?
             {
                 speaker: 'Аристарх',
                 text: 'Теперь ты должен решить, что для тебя важнее — город или месть.',
                 choices: [
                     { 
                         text: '«Я спасу город. Это мой долг.»',
-                        effect: () => { gameState.authority += 5; gameState.economy += 3; },
+                        effect: () => { gameState.authority += 10; gameState.economy += 5; },
                         response: 'Благородный ответ. Твой отец гордился бы тобой.'
                     },
                     { 
                         text: '«Мне нужна месть. Город подождёт.»',
-                        effect: () => { gameState.authority -= 3; gameState.army += 5; },
+                        effect: () => { gameState.authority -= 5; gameState.army += 10; },
                         response: 'Гнев ведёт тебя... Но помни, он может ослепить.'
                     },
                     { 
                         text: '«Я хочу узнать правду. Остальное неважно.»',
-                        effect: () => { gameState.science += 5; gameState.authority += 2; },
+                        effect: () => { gameState.science += 10; gameState.authority += 5; },
                         response: 'Мудрое решение. Правда — ключ ко всему.'
                     }
                 ]
             },
-            // Шаг 3 - Второй выбор (как действовать)
+            // Шаг 6 - Напутствие
             {
                 speaker: 'Аристарх',
-                text: 'В этом зале спрятаны шесть древних предметов. Они укажут путь. Как будешь искать?',
-                choices: [
-                    { 
-                        text: '«Буду методично осматривать каждый угол.»',
-                        effect: () => { gameState.science += 5; },
-                        response: 'Терпение и труд всё перетрут.'
-                    },
-                    { 
-                        text: '«Найму людей, пусть ищут за меня.»',
-                        effect: () => { gameState.economy -= 5; gameState.authority -= 2; },
-                        response: 'Деньги решают многое, но не всё.'
-                    },
-                    { 
-                        text: '«Быстро обыщу всё сам.»',
-                        effect: () => { gameState.army += 3; gameState.science -= 2; },
-                        response: 'Спешка нужна только при ловле блох.'
-                    }
-                ]
+                text: 'В этом зале спрятаны шесть древних предметов. Они хранят части правды. Найди их, изучи — и узнаешь имена заговорщиков.'
             },
-            // Шаг 4 - Напутствие
+            // Шаг 7 - Последний совет
             {
                 speaker: 'Аристарх',
-                text: 'Ищи по всему залу. Трон, колонны, стол, шкаф, сундук, штору. Там ты найдёшь ответы. Удачи, Правитель.'
+                text: 'Ищи по всему залу. Трон, колонны, стол, шкаф, сундук, штору. Будь осторожен — некоторые предметы охраняются магией.'
             }
         ];
         
@@ -572,6 +693,7 @@
         const dialogueText = document.getElementById('dialogueText');
         const dialogueSpeaker = document.getElementById('dialogueSpeaker');
         const dialogueChoices = document.getElementById('dialogueChoices');
+        const cityBtn = document.getElementById('cityBtn');
         
         function showDialogue() {
             if (gameState.dialogueStep >= dialogues.length) {
@@ -629,7 +751,6 @@
                 icon: '👑',
                 image: baseUrl + 'item_crown.png',
                 desc: 'Старинная корона с рубинами. Внутри выгравировано имя.',
-                bonus: { auth: 5, eco: 2 },
                 pos: 'На троне'
             },
             {
@@ -637,7 +758,6 @@
                 icon: '⚔️',
                 image: baseUrl + 'item_sword.png',
                 desc: 'Древний меч с рунами. Лезвие всё ещё остро.',
-                bonus: { army: 5, auth: 2 },
                 pos: 'За колонной'
             },
             {
@@ -645,7 +765,6 @@
                 icon: '🔮',
                 image: baseUrl + 'предмет_кристалл.png',
                 desc: 'Магический кристалл, пульсирует тёплым светом.',
-                bonus: { science: 5, auth: 2 },
                 pos: 'В нише стены'
             },
             {
@@ -653,7 +772,6 @@
                 icon: '🗺️',
                 image: baseUrl + 'item_map.jpg',
                 desc: 'Старая карта города. Некоторые места отмечены.',
-                bonus: { eco: 5, science: 2 },
                 pos: 'На столе'
             },
             {
@@ -661,7 +779,6 @@
                 icon: '📦',
                 image: baseUrl + 'item_chest.png',
                 desc: 'Небольшой сундук с монетами и свитками.',
-                bonus: { eco: 5, army: 2 },
                 pos: 'В углу'
             },
             {
@@ -669,178 +786,132 @@
                 icon: '🏆',
                 image: baseUrl + 'item_crown.png',
                 desc: 'Золотой кубок с гербом рода. Внутри послание.',
-                bonus: { auth: 5, science: 2 },
                 pos: 'За шторой'
             }
         ];
         
-        const zoomModal = document.getElementById('zoomModal');
-        const zoomImage = document.getElementById('zoomImage');
-        const zoomDesc = document.getElementById('zoomDesc');
-        const zoomBtn = document.getElementById('zoomBtn');
+        const itemModal = document.getElementById('itemModal');
+        const itemModalImage = document.getElementById('itemModalImage');
+        const itemModalTitle = document.getElementById('itemModalTitle');
+        const itemModalDesc = document.getElementById('itemModalDesc');
         
         window.zoomItem = function(index) {
             gameState.currentItem = index;
             const item = items[index];
             
-            zoomImage.src = item.image;
-            zoomDesc.innerHTML = `<strong>${item.name}</strong> (${item.pos})<br>${item.desc}`;
-            zoomBtn.style.display = gameState.foundItems[index] ? 'none' : 'block';
-            zoomModal.classList.add('active');
+            itemModalImage.src = item.image;
+            itemModalTitle.textContent = item.name;
+            itemModalDesc.innerHTML = `<strong>${item.name}</strong> (${item.pos})<br>${item.desc}`;
+            
+            document.getElementById('startQuestBtn').style.display = gameState.questCompleted[index] ? 'none' : 'block';
+            itemModal.classList.add('active');
         };
         
-        window.closeZoom = function() {
-            zoomModal.classList.remove('active');
+        window.closeItemModal = function() {
+            itemModal.classList.remove('active');
         };
         
-        window.takeItem = function() {
-            const index = gameState.currentItem;
-            if (index === null || gameState.foundItems[index]) return;
-            
-            const item = items[index];
-            
-            // Применяем бонусы
-            if (item.bonus.auth) gameState.authority += item.bonus.auth;
-            if (item.bonus.eco) gameState.economy += item.bonus.eco;
-            if (item.bonus.army) gameState.army += item.bonus.army;
-            if (item.bonus.science) gameState.science += item.bonus.science;
-            
-            gameState.foundItems[index] = true;
-            
-            const itemIcon = document.getElementById(`item${index}`);
-            itemIcon.innerHTML = `${item.icon}✅`;
-            itemIcon.classList.add('found');
-            
-            zoomDesc.innerHTML = `<strong>${item.name}</strong><br>✅ Ты нашёл ${item.name}!<br>+${item.bonus.auth || 0} 👑, +${item.bonus.eco || 0} 💰, +${item.bonus.army || 0} ⚔️, +${item.bonus.science || 0} 📚`;
-            zoomBtn.style.display = 'none';
-            
-            updateStats();
-            playSound(sfxDialog);
-            
-            // Если все предметы собраны
-            if (gameState.foundItems.every(v => v)) {
-                setTimeout(() => {
-                    alert('✨ Все предметы найдены! Теперь изучи их в верхней панели.');
-                }, 500);
-            }
-        };
-        
-        // ========== ЗАДАНИЯ ПО ПРЕДМЕТАМ ==========
+        // ========== ЗАДАНИЯ ПО РУССКОМУ ЯЗЫКУ ==========
         const quests = [
-            { text: 'Что написано на короне?', correct: 2 },
-            { text: 'Какая надпись на мече?', correct: 1 },
-            { text: 'Что видно внутри кристалла?', correct: 0 },
-            { text: 'Что отмечено на карте?', correct: 1 },
-            { text: 'Что в сундуке?', correct: 2 },
-            { text: 'Что в кубке?', correct: 0 }
-        ];
-        
-        const optionsList = [
-            ['Имя отца', 'Дата убийства', 'Герб рода'],
-            ['Имя врага', 'Руны силы', 'Клятва'],
-            ['Лицо', 'Город', 'Символ'],
-            ['Тронный зал', 'Убежище', 'Порт'],
-            ['Золото', 'Свитки', 'И то, и другое'],
-            ['Вино', 'Послание', 'Прах']
-        ];
-        
-        window.openQuest = function(index) {
-            if (!gameState.foundItems[index]) {
-                alert('Сначала найди этот предмет в зале!');
-                return;
+            {
+                text: '«Именно над этим вопросом задумывается Ю. Алешковский... различные обстоятельства оказывают сильное влияние на эмоциональное состояние человека.»',
+                options: [
+                    'Речевая (лексическая несочетаемость)',
+                    'Грамматическая (ошибка в причастном обороте)',
+                    'Речевая (неудачное употребление местоимений)'
+                ],
+                correct: 2
+            },
+            {
+                text: '«В заключение можно сделать вывод, что в детстве чувства ребёнка к отцу нельзя назвать осмысленными.»',
+                options: [
+                    'Речевая (лексическая несочетаемость)',
+                    'Речевая избыточность',
+                    'Орфографическая (ошибка в предлоге)'
+                ],
+                correct: 1
+            },
+            {
+                text: '«Множество важных вещей могут связывать человека с родиной, таких как семья, друзья и даже обычные рассказы...»',
+                options: [
+                    'Логическая + орфографическая',
+                    'Этическая + логическая',
+                    'Грамматическая (ОЧП)'
+                ],
+                correct: 1
+            },
+            {
+                text: '«...проявляет заботу к своим ученикам, даже в мелочах: спасает щенков, которых родители наказали утопить...»',
+                options: [
+                    'Грамматическая + пунктуационная',
+                    'Одна грамматическая',
+                    'Одна пунктуационная'
+                ],
+                correct: 0
+            },
+            {
+                text: '«Чтобы подтвердить эту мысль, приведу в пример историю Антона Макаренко...»',
+                options: [
+                    'Грамматическая (однородные члены)',
+                    'Речевая (приведу в пример)',
+                    'Грамматическая (деепричастный оборот)'
+                ],
+                correct: 1
+            },
+            {
+                text: '«Герои защищают свою родину и честь, а их поступки достойно уважения и признательности.»',
+                options: [
+                    'Речевая (паронимы)',
+                    'Грамматическая (согласование)',
+                    'Логическая + грамматическая'
+                ],
+                correct: 2
             }
+        ];
+        
+        const questModal = document.getElementById('questModal');
+        const questTitle = document.getElementById('questTitle');
+        const questText = document.getElementById('questText');
+        const questOptions = document.getElementById('questOptions');
+        const questFeedback = document.getElementById('questFeedback');
+        
+        window.startQuest = function() {
+            const index = gameState.currentItem;
+            if (index === null) return;
+            
             if (gameState.questCompleted[index]) {
-                alert('Ты уже изучил этот предмет!');
+                alert('Ты уже выполнил это задание!');
                 return;
             }
             
+            gameState.currentQuest = index;
             const quest = quests[index];
-            const options = optionsList[index];
-            const item = items[index];
             
-            const modal = document.createElement('div');
-            modal.className = 'zoom-modal active';
-            modal.id = 'questModal';
+            questTitle.textContent = items[index].name;
+            questText.textContent = quest.text;
             
             let optionsHtml = '';
-            options.forEach((opt, i) => {
-                optionsHtml += `<div class="zoom-btn" style="margin:5px;" onclick="answerQuest(${index}, ${i})">${opt}</div>`;
+            quest.options.forEach((opt, i) => {
+                optionsHtml += `<div class="quest-option" onclick="answerQuest(${i})">${opt}</div>`;
             });
+            questOptions.innerHTML = optionsHtml;
+            questFeedback.textContent = '';
             
-            modal.innerHTML = `
-                <div class="close-btn" onclick="closeQuestModal()">✖</div>
-                <div class="zoom-content">
-                    <h2 style="color: gold;">${item.name}</h2>
-                    <p style="color:white; margin:20px;">${quest.text}</p>
-                    ${optionsHtml}
-                    <div id="questFeedback" style="color:gold; margin-top:20px;"></div>
-                </div>
-            `;
-            document.body.appendChild(modal);
+            itemModal.classList.remove('active');
+            questModal.classList.add('active');
         };
         
-        window.answerQuest = function(itemIndex, optionIndex) {
-            const quest = quests[itemIndex];
-            const feedback = document.getElementById('questFeedback');
+        window.answerQuest = function(optionIndex) {
+            const quest = quests[gameState.currentQuest];
             
             if (optionIndex === quest.correct) {
                 gameState.science += 10;
                 gameState.authority += 5;
-                feedback.innerHTML = '✅ Верно! +10 Наука, +5 Авторитет';
-            } else {
-                gameState.science -= 5;
-                gameState.authority -= 2;
-                feedback.innerHTML = '❌ Неверно. Наука −5, Авторитет −2';
-            }
-            
-            gameState.questCompleted[itemIndex] = true;
-            updateStats();
-            
-            document.querySelectorAll('#questModal .zoom-btn').forEach(btn => {
-                btn.style.pointerEvents = 'none';
-                btn.style.opacity = '0.5';
-            });
-        };
-        
-        window.closeQuestModal = function() {
-            const modal = document.getElementById('questModal');
-            if (modal) modal.remove();
-        };
-        
-        // ========== UI ==========
-        function updateStats() {
-            document.getElementById('statEconomy').textContent = gameState.economy;
-            document.getElementById('statScience').textContent = gameState.science;
-            document.getElementById('statArmy').textContent = gameState.army;
-            document.getElementById('statAuthority').textContent = gameState.authority;
-        }
-        
-        function playSound(audio) {
-            if (soundEnabled) {
-                audio.currentTime = 0;
-                audio.play().catch(e => {});
-            }
-        }
-        
-        // ========== ЗВУК ==========
-        const bgmThrone = document.getElementById('bgmThrone');
-        const sfxDialog = document.getElementById('sfxDialog');
-        let soundEnabled = true;
-        
-        window.addEventListener('load', function() {
-            bgmThrone.volume = 0.3;
-            bgmThrone.play().catch(e => {});
-            showDialogue();
-        });
-        
-        window.toggleSound = function() {
-            soundEnabled = !soundEnabled;
-            const toggle = document.getElementById('soundToggle');
-            bgmThrone.volume = soundEnabled ? 0.3 : 0;
-            toggle.innerHTML = soundEnabled ? '🔊' : '🔇';
-        };
-        
-        updateStats();
-    </script>
-</body>
-</html>
+                questFeedback.textContent = '✅ Верно! +10 Наука, +5 Авторитет';
+                
+                // Отмечаем предмет как найденный
+                const index = gameState.currentQuest;
+                gameState.foundItems[index] = true;
+                gameState.questCompleted[index] = true;
+                
+                const
