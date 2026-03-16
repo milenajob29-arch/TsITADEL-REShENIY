@@ -181,6 +181,29 @@
             margin-top: 5px;
         }
         
+        /* ИНДИКАТОР НАД NPC */
+        .npc-indicator {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: gold;
+            color: black;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            white-space: nowrap;
+            border: 2px solid white;
+            box-shadow: 0 0 20px gold;
+            animation: pulse 1.5s infinite;
+            z-index: 20;
+        }
+        
+        .npc-indicator.hidden {
+            display: none;
+        }
+        
         /* Игрок (ходит по полу) */
         .character-right {
             position: absolute;
@@ -253,14 +276,8 @@
             filter: grayscale(0.5);
         }
         
-        @keyframes pulse {
-            0% { box-shadow: 0 0 10px gold; }
-            50% { box-shadow: 0 0 30px gold; }
-            100% { box-shadow: 0 0 10px gold; }
-        }
-        
-        /* КНОПКА ДИАЛОГА */
-        .dialog-start-btn {
+        /* ИНДИКАТОР ДИАЛОГА (ПОЯВЛЯЕТСЯ ПРИ ПОДХОДЕ) */
+        .dialog-indicator {
             position: absolute;
             left: 130px;
             bottom: 280px;
@@ -276,15 +293,56 @@
             z-index: 30;
             transition: 0.3s;
             animation: pulse 1.5s infinite;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .dialog-start-btn:hover {
+        .dialog-indicator:hover {
             transform: scale(1.05);
             background: #ffd966;
         }
         
-        .dialog-start-btn.hidden {
+        .dialog-indicator.hidden {
             display: none;
+        }
+        
+        .dialog-indicator .icon {
+            font-size: 1.5rem;
+        }
+        
+        /* ПОДСКАЗКА */
+        .hint-box {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            border: 2px solid gold;
+            border-radius: 30px;
+            padding: 10px 25px;
+            color: white;
+            z-index: 40;
+            backdrop-filter: blur(5px);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .hint-box.hidden {
+            display: none;
+        }
+        
+        .hint-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.7; transform: scale(1); }
         }
         
         /* КОНТЕЙНЕР ДИАЛОГА */
@@ -295,7 +353,7 @@
             transform: translateX(-50%);
             width: 80%;
             max-width: 900px;
-            z-index: 40;
+            z-index: 100;
         }
         
         .dialog-box {
@@ -401,7 +459,7 @@
             border-radius: 30px;
             padding: 30px;
             color: white;
-            z-index: 100;
+            z-index: 200;
             backdrop-filter: blur(10px);
             display: none;
         }
@@ -572,6 +630,12 @@
             <!-- Подсказка управления -->
             <div class="controls-hint">WASD / Стрелки — движение</div>
 
+            <!-- ПОДСКАЗКА ДЛЯ ДИАЛОГА -->
+            <div class="hint-box" id="hintBox">
+                <span class="hint-icon">💬</span>
+                <span>Подойди к NPC, чтобы заговорить</span>
+            </div>
+
             <!-- ЗОЛОТАЯ РАМКА (СЮЖЕТ) -->
             <div class="story-frame" id="storyFrame">
                 <p>Толстая дубовая дверь со скрипом открывается. Внутри — тишина. Такой тишины не бывает в живых местах. Она давит на уши, заставляет сердце биться чаще.</p>
@@ -585,6 +649,10 @@
                 <img class="character-image" src="https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/npc_elder.png" alt="Аристарх">
                 <div class="character-name">Старейшина Аристарх</div>
                 <div class="character-title">Хранитель знаний</div>
+                <!-- ИНДИКАТОР НАД NPC -->
+                <div class="npc-indicator hidden" id="npcIndicator">
+                    💬 Нажми, чтобы говорить
+                </div>
             </div>
             
             <!-- Игрок (двигается) -->
@@ -601,8 +669,11 @@
             <div class="item" id="item5" style="left: 600px; bottom: 100px;" onclick="collectItem(4)">👑</div>
             <div class="item" id="item6" style="left: 800px; bottom: 200px;" onclick="collectItem(5)">📦</div>
 
-            <!-- Кнопка начала диалога -->
-            <button class="dialog-start-btn hidden" id="startDialogBtn" onclick="startDialog()">💬 Поговорить с Аристархом</button>
+            <!-- ИНДИКАТОР ДИАЛОГА -->
+            <div class="dialog-indicator hidden" id="dialogIndicator" onclick="startDialog()">
+                <span class="icon">💬</span>
+                <span>Поговорить с Аристархом</span>
+            </div>
             
             <!-- Контейнер диалога -->
             <div class="dialog-container" id="dialogContainer" style="display: none;">
@@ -648,6 +719,9 @@
     <audio id="sfxWrong" preload="auto">
         <source src="https://milenajob29-arch.github.io/TsITADEL-REShENIY/sounds/sfx_authority_down.mp3" type="audio/mpeg">
     </audio>
+    <audio id="sfxFootstep" preload="auto">
+        <source src="https://milenajob29-arch.github.io/TsITADEL-REShENIY/sounds/sfx_footstep.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         // ========== ЗАГРУЗКА ПЕРСОНАЖА ==========
@@ -657,6 +731,9 @@
         const playerName = document.getElementById('playerName');
         const playerChar = document.getElementById('playerCharacter');
         const aristarkh = document.getElementById('aristarkh');
+        const npcIndicator = document.getElementById('npcIndicator');
+        const dialogIndicator = document.getElementById('dialogIndicator');
+        const hintBox = document.getElementById('hintBox');
         
         if (playerData.imageUrl) {
             playerImage.src = playerData.imageUrl;
@@ -700,49 +777,72 @@
         
         // ========== УПРАВЛЕНИЕ ==========
         const player = document.getElementById('playerCharacter');
-        const startDialogBtn = document.getElementById('startDialogBtn');
-        const dialogContainer = document.getElementById('dialogContainer');
         
-        let posX = 800, posY = 200; // Фиксированная высота (по полу)
+        let posX = 800, posY = 200;
         const speed = 5;
         const keys = {};
         
         const minX = 400, maxX = 1100;
-        const minY = 180, maxY = 220; // Ограничение по Y, чтобы персонаж ходил по полу
+        const minY = 180, maxY = 220;
         
         const aristarkhX = 200, aristarkhY = 220;
         const talkDistance = 150;
         
         let dialogStarted = false;
         let movementEnabled = false;
+        let lastFootstep = 0;
         
         function startMovement() {
             movementEnabled = true;
             updatePosition();
         }
         
+        function playFootstep() {
+            if (!soundEnabled || dialogStarted) return;
+            
+            const now = Date.now();
+            if (now - lastFootstep > 300) { // Шаг каждые 300мс
+                sfxFootstep.currentTime = 0;
+                sfxFootstep.volume = 0.2;
+                sfxFootstep.play().catch(e => {});
+                lastFootstep = now;
+            }
+        }
+        
         function updatePosition() {
             if (!movementEnabled || dialogStarted) return;
             
+            let moved = false;
             let newX = posX, newY = posY;
             
-            if (keys['KeyW'] || keys['ArrowUp']) newY -= speed;
-            if (keys['KeyS'] || keys['ArrowDown']) newY += speed;
-            if (keys['KeyA'] || keys['ArrowLeft']) newX -= speed;
-            if (keys['KeyD'] || keys['ArrowRight']) newX += speed;
+            if (keys['KeyW'] || keys['ArrowUp']) { newY -= speed; moved = true; }
+            if (keys['KeyS'] || keys['ArrowDown']) { newY += speed; moved = true; }
+            if (keys['KeyA'] || keys['ArrowLeft']) { newX -= speed; moved = true; }
+            if (keys['KeyD'] || keys['ArrowRight']) { newX += speed; moved = true; }
             
-            posX = Math.min(maxX, Math.max(minX, newX));
-            posY = Math.min(maxY, Math.max(minY, newY));
+            if (moved) {
+                posX = Math.min(maxX, Math.max(minX, newX));
+                posY = Math.min(maxY, Math.max(minY, newY));
+                
+                player.style.left = posX + 'px';
+                player.style.bottom = posY + 'px';
+                
+                playFootstep();
+            }
             
-            player.style.left = posX + 'px';
-            player.style.bottom = posY + 'px';
-            
+            // Проверка расстояния до Аристарха
             const dist = Math.hypot(posX - aristarkhX, posY - aristarkhY);
             
             if (dist < talkDistance && !dialogStarted) {
-                startDialogBtn.classList.remove('hidden');
+                npcIndicator.classList.remove('hidden');
+                dialogIndicator.classList.remove('hidden');
+                hintBox.classList.add('hidden');
             } else {
-                startDialogBtn.classList.add('hidden');
+                npcIndicator.classList.add('hidden');
+                dialogIndicator.classList.add('hidden');
+                if (!dialogStarted) {
+                    hintBox.classList.remove('hidden');
+                }
             }
             
             requestAnimationFrame(updatePosition);
@@ -763,8 +863,10 @@
         
         window.startDialog = function() {
             dialogStarted = true;
-            startDialogBtn.classList.add('hidden');
+            npcIndicator.classList.add('hidden');
+            dialogIndicator.classList.add('hidden');
             dialogContainer.style.display = 'block';
+            hintBox.classList.add('hidden');
             dialogStep = 0;
             showDialogStep();
             
@@ -925,7 +1027,7 @@
                 title: 'Свиток 4',
                 text: '«В них автор текста показывает нам Алеся Ивановича Мороза, учителя, который проявляет заботу к своим ученикам, даже в мелочах: спасает щенков, которых родители наказали утопить, покупает обувь девочкам из бедной семьи, провожает их через лес в холодные дни.»',
                 options: [
-                    'Одна грамматическая («проявлять заботу по отношению к») и одна пунктуационная (лишняя запятая перед «даве»)',
+                    'Одна грамматическая («проявлять заботу по отношению к») и одна пунктуационная (лишняя запятая перед «даже»)',
                     'Одна грамматическая ошибка',
                     'Одна пунктуационная'
                 ],
@@ -967,7 +1069,6 @@
         
         function showQuests() {
             alert('Теперь открой каждый свиток и выполни задание.');
-            // Здесь можно добавить логику появления свитков в инвентаре
         }
         
         window.openQuest = function(index) {
@@ -1031,7 +1132,16 @@
             if (questCompleted.every(v => v === true)) {
                 setTimeout(() => {
                     alert('Все задания выполнены! Теперь ты можешь отправиться в город.');
-                    document.getElementById('startBtn')?.classList.remove('hidden');
+                    const startBtn = document.createElement('button');
+                    startBtn.className = 'btn';
+                    startBtn.textContent = 'ОТПРАВИТЬСЯ В ГОРОД';
+                    startBtn.onclick = goToMap;
+                    startBtn.style.position = 'absolute';
+                    startBtn.style.bottom = '20px';
+                    startBtn.style.left = '50%';
+                    startBtn.style.transform = 'translateX(-50%)';
+                    startBtn.style.zIndex = '300';
+                    document.querySelector('.throne-room').appendChild(startBtn);
                 }, 1000);
             }
         };
@@ -1051,6 +1161,7 @@
         const sfxItem = document.getElementById('sfxItem');
         const sfxCorrect = document.getElementById('sfxCorrect');
         const sfxWrong = document.getElementById('sfxWrong');
+        const sfxFootstep = document.getElementById('sfxFootstep');
         let soundEnabled = true;
         
         window.addEventListener('load', function() {
