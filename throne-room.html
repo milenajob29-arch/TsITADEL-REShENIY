@@ -3,109 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ЦИТАДЕЛЬ РЕШЕНИЙ - ТРОННЫЙ ЗАЛ 3D</title>
+    <title>ЦИТАДЕЛЬ РЕШЕНИЙ - ТРОННЫЙ ЗАЛ</title>
     <style>
-        body { margin: 0; overflow: hidden; font-family: 'Cinzel', serif; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cinzel', serif;
+        }
         
-        /* HUD */
-        #hud {
+        body {
+            background: #0a0c14;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .game-container {
+            width: 1400px;
+            max-width: 100%;
+            background: linear-gradient(145deg, #1e2a3a, #0f1a24);
+            border-radius: 30px;
+            padding: 30px;
+            border: 3px solid gold;
+            box-shadow: 0 0 50px rgba(255,215,0,0.2);
+        }
+        
+        .throne-room {
+            background-image: url('https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/bg_throne.jpg');
+            background-size: cover;
+            background-position: center;
+            border: 3px solid gold;
+            border-radius: 20px;
+            padding: 40px;
+            min-height: 700px;
+            position: relative;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.7);
+        }
+        
+        .throne-room::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            pointer-events: none;
+        }
+        
+        /* ПАНЕЛЬ СТАТОВ */
+        .stats-panel {
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.7);
             border: 2px solid gold;
             border-radius: 20px;
             padding: 15px 25px;
             color: white;
-            z-index: 100;
-            backdrop-filter: blur(5px);
+            z-index: 50;
             display: flex;
             gap: 30px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-size: 1.2rem;
         }
         
-        #items-counter {
+        .stat-icon {
+            font-size: 1.5rem;
+        }
+        
+        .economy { color: #ffd700; }
+        .science { color: #00ffff; }
+        .army { color: #ff4444; }
+        .authority { color: gold; }
+        
+        /* ИНВЕНТАРЬ */
+        .inventory {
             position: absolute;
             top: 20px;
             left: 20px;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.7);
             border: 2px solid gold;
             border-radius: 20px;
-            padding: 10px 20px;
+            padding: 15px;
             color: white;
-            z-index: 100;
-            font-size: 1.1rem;
+            z-index: 50;
+            backdrop-filter: blur(5px);
+            width: 300px;
         }
         
-        #interaction {
-            position: absolute;
-            bottom: 150px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: gold;
-            color: black;
-            border: 2px solid white;
-            padding: 15px 40px;
-            font-size: 1.3rem;
-            border-radius: 50px;
-            font-weight: bold;
-            z-index: 100;
-            display: none;
+        .inventory h3 {
+            color: gold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .inventory-slot {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid gold;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
             cursor: pointer;
-            box-shadow: 0 0 30px gold;
-            animation: pulse 1.5s infinite;
+            transition: 0.3s;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         
-        #dialog {
+        .inventory-slot:hover {
+            background: rgba(255,215,0,0.3);
+            transform: scale(1.05);
+        }
+        
+        .inventory-slot.found {
+            border-color: #00ff00;
+            background: rgba(0,255,0,0.1);
+        }
+        
+        .inventory-slot .icon {
+            font-size: 2rem;
+        }
+        
+        .inventory-slot .name {
+            font-size: 0.8rem;
+            color: #b8a07c;
+        }
+        
+        /* ЗОНА ДЛЯ ОСМОТРА */
+        .examine-area {
             position: absolute;
             bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
-            width: 600px;
-            background: rgba(0,0,0,0.95);
+            width: 80%;
+            max-width: 600px;
+            background: rgba(0,0,0,0.8);
             border: 3px solid gold;
             border-radius: 30px;
-            padding: 25px;
+            padding: 20px;
             color: white;
             z-index: 200;
             backdrop-filter: blur(10px);
             display: none;
         }
         
-        #dialog-speaker {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        .examine-area.active {
+            display: block;
+        }
+        
+        .examine-title {
+            color: gold;
+            font-size: 1.5rem;
             margin-bottom: 15px;
             border-bottom: 2px solid gold;
             padding-bottom: 10px;
         }
         
-        #dialog-choices {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 20px;
+        .examine-desc {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
         }
         
-        .choice-btn {
+        .examine-btn {
+            background: gold;
+            color: black;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            border: 2px solid white;
+            transition: 0.3s;
+            margin-right: 10px;
+        }
+        
+        .examine-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px gold;
+        }
+        
+        /* ПАНЕЛЬ ЗАДАНИЙ */
+        .quest-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px;
+            background: rgba(0,0,0,0.95);
+            border: 4px solid gold;
+            border-radius: 40px;
+            padding: 30px;
+            color: white;
+            z-index: 300;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+        
+        .quest-panel.active {
+            display: block;
+        }
+        
+        .quest-title {
+            color: gold;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            border-bottom: 2px solid gold;
+            padding-bottom: 10px;
+        }
+        
+        .quest-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid gold;
+        }
+        
+        .quest-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .quest-option {
             background: #2a3a4a;
             border: 2px solid gold;
             border-radius: 15px;
             padding: 15px;
             cursor: pointer;
-            text-align: center;
             transition: 0.3s;
+            text-align: center;
             color: white;
         }
         
-        .choice-btn:hover {
+        .quest-option:hover {
             background: gold;
             color: black;
             transform: scale(1.02);
         }
         
-        #story {
+        .quest-feedback {
+            text-align: center;
+            font-size: 1.2rem;
+            min-height: 40px;
+            color: gold;
+        }
+        
+        /* СТАРТОВЫЙ ЭКРАН */
+        .story-frame {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -116,14 +285,14 @@
             border-radius: 40px;
             padding: 40px;
             color: white;
-            z-index: 300;
+            z-index: 400;
             text-align: center;
             font-size: 1.3rem;
             line-height: 1.8;
             backdrop-filter: blur(10px);
         }
         
-        #story button {
+        .story-frame button {
             background: gold;
             color: black;
             border: none;
@@ -136,39 +305,50 @@
             border: 2px solid white;
         }
         
-        #controls-hint {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            color: #b8a07c;
-            background: rgba(0,0,0,0.5);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            z-index: 100;
+        .story-frame button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px gold;
         }
         
-        #sound-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            background: rgba(0,0,0,0.8);
+        /* ПОДСКАЗКА */
+        .hint-box {
+            position: absolute;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
             border: 2px solid gold;
-            color: gold;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            z-index: 1000;
+            border-radius: 30px;
+            padding: 10px 25px;
+            color: white;
+            z-index: 100;
+            font-size: 1rem;
+            animation: pulse 2s infinite;
         }
         
-        #city-btn {
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.05); }
+            100% { opacity: 0.7; }
+        }
+        
+        .back-link {
             position: absolute;
-            bottom: 100px;
+            top: 20px;
+            left: 20px;
+            color: gold;
+            text-decoration: none;
+            font-size: 1.2rem;
+            border: 1px solid gold;
+            padding: 8px 15px;
+            border-radius: 30px;
+            z-index: 100;
+            background: rgba(0,0,0,0.5);
+        }
+        
+        .city-btn {
+            position: absolute;
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
             background: gold;
@@ -184,373 +364,378 @@
             box-shadow: 0 0 30px gold;
         }
         
-        @keyframes pulse {
-            0% { box-shadow: 0 0 10px gold; }
-            50% { box-shadow: 0 0 30px gold; }
-            100% { box-shadow: 0 0 10px gold; }
+        .city-btn.visible {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <!-- HUD -->
-    <div id="hud">
-        <span>💰 <span id="eco">50</span></span>
-        <span>📚 <span id="sci">50</span></span>
-        <span>⚔️ <span id="arm">50</span></span>
-        <span>👑 <span id="auth">50</span></span>
-    </div>
-    
-    <div id="items-counter">📦 Предметов: <span id="items-count">0</span>/6</div>
-    
-    <div id="interaction" onclick="interact()">💬 Поговорить</div>
-    
-    <div id="dialog">
-        <div id="dialog-speaker">
-            <img id="npc-portrait" src="https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/npc_elder.png" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid gold;">
-            <div>
-                <div style="color: gold; font-size: 1.3rem;">Старейшина Аристарх</div>
-                <div style="color: #b8a07c;">Хранитель знаний</div>
-            </div>
-        </div>
-        <div id="dialog-text"></div>
-        <div id="dialog-choices"></div>
-    </div>
-    
-    <div id="story">
-        <p>Толстая дубовая дверь со скрипом открывается. Внутри — тишина. Такой тишины не бывает в живых местах.</p>
-        <p>Тронный зал встречает тебя холодом и запахом пыли. Высокие витражи разбиты, и ветер свободно гуляет по каменным плитам.</p>
-        <p>Ты делаешь шаг. Под ногой хрустит стекло. Звук разносится эхом, будто кто-то идёт следом.</p>
-        <button onclick="startGame()">Войти в зал</button>
-    </div>
-    
-    <div id="city-btn" onclick="goToCity()">🏰 ОТПРАВИТЬСЯ В ГОРОД</div>
-    
-    <div id="controls-hint">WASD — движение | Мышь — поворот камеры</div>
-    
-    <div id="sound-toggle" onclick="toggleSound()">🔊</div>
-
-    <!-- Three.js -->
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
-            }
-        }
-    </script>
-
-    <script type="module">
-        import * as THREE from 'three';
+    <div class="game-container">
+        <a href="index.html" class="back-link">← Назад</a>
         
+        <div class="throne-room">
+            <!-- Статистика -->
+            <div class="stats-panel">
+                <div class="stat-item"><span class="stat-icon economy">💰</span> <span id="statEconomy">50</span></div>
+                <div class="stat-item"><span class="stat-icon science">📚</span> <span id="statScience">50</span></div>
+                <div class="stat-item"><span class="stat-icon army">⚔️</span> <span id="statArmy">50</span></div>
+                <div class="stat-item"><span class="stat-icon authority">👑</span> <span id="statAuthority">50</span></div>
+            </div>
+            
+            <!-- Инвентарь -->
+            <div class="inventory">
+                <h3>📦 НАЙДЕННЫЕ СВИТКИ</h3>
+                <div class="inventory-grid" id="inventoryGrid">
+                    <div class="inventory-slot" id="slot0" onclick="openQuest(0)">
+                        <span class="icon">❓</span>
+                        <span class="name">Не найдено</span>
+                    </div>
+                    <div class="inventory-slot" id="slot1" onclick="openQuest(1)">
+                        <span class="icon">❓</span>
+                        <span class="name">Не найдено</span>
+                    </div>
+                    <div class="inventory-slot" id="slot2" onclick="openQuest(2)">
+                        <span class="icon">❓</span>
+                        <span class="name">Не найдено</span>
+                    </div>
+                    <div class="inventory-slot" id="slot3" onclick="openQuest(3)">
+                        <span class="icon">❓</span>
+                        <span class="name">Не найдено</span>
+                    </div>
+                    <div class="inventory-slot" id="slot4" onclick="openQuest(4)">
+                        <span class="icon">❓</span>
+                        <span class="name">Не найдено</span>
+                    </div>
+                    <div class="inventory-slot" id="slot5" onclick="openQuest(5)">
+                        <span class="icon">❓</span>
+                        <span class="name">Не найдено</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Подсказка -->
+            <div class="hint-box" id="hintBox">
+                🔍 Осмотри зал — найди 6 свитков
+            </div>
+            
+            <!-- Кнопка выхода в город -->
+            <div class="city-btn" id="cityBtn" onclick="goToCity()">🏰 ОТПРАВИТЬСЯ В ГОРОД</div>
+            
+            <!-- СТАРТОВЫЙ СЮЖЕТ -->
+            <div class="story-frame" id="storyFrame">
+                <p>Толстая дубовая дверь со скрипом открывается. Внутри — тишина. Такой тишины не бывает в живых местах.</p>
+                <p>Тронный зал встречает тебя холодом и запахом пыли. Высокие витражи разбиты, и ветер свободно гуляет по каменным плитам.</p>
+                <p>Ты делаешь шаг. Под ногой хрустит стекло. Звук разносится эхом, будто кто-то идёт следом.</p>
+                <p>Из тени выходит старик в синей мантии.</p>
+                <p><strong>Аристарх:</strong> «Десять лет... Я ждал тебя. В этом зале спрятаны древние свитки. Найди их — они укажут путь к правде.»</p>
+                <button onclick="startGame()">НАЧАТЬ ПОИСК</button>
+            </div>
+            
+            <!-- Зона осмотра -->
+            <div class="examine-area" id="examineArea">
+                <div class="examine-title" id="examineTitle"></div>
+                <div class="examine-desc" id="examineDesc"></div>
+                <div>
+                    <button class="examine-btn" id="examineBtn" onclick="examineItem()">🔍 Осмотреть</button>
+                    <button class="examine-btn" onclick="closeExamine()">✖ Закрыть</button>
+                </div>
+            </div>
+            
+            <!-- Панель заданий -->
+            <div class="quest-panel" id="questPanel">
+                <div class="quest-title" id="questTitle">Задание</div>
+                <div class="quest-text" id="questText"></div>
+                <div class="quest-options" id="questOptions"></div>
+                <div class="quest-feedback" id="questFeedback"></div>
+                <button class="examine-btn" onclick="closeQuest()">Закрыть</button>
+            </div>
+            
+            <!-- ИНТЕРАКТИВНЫЕ ТОЧКИ (мебель) -->
+            <div style="position: absolute; left: 200px; top: 300px; width: 50px; height: 50px; cursor: pointer;" onclick="showExamine('throne')"></div>
+            <div style="position: absolute; left: 400px; top: 200px; width: 50px; height: 50px; cursor: pointer;" onclick="showExamine('column')"></div>
+            <div style="position: absolute; left: 600px; top: 400px; width: 50px; height: 50px; cursor: pointer;" onclick="showExamine('table')"></div>
+            <div style="position: absolute; left: 800px; top: 250px; width: 50px; height: 50px; cursor: pointer;" onclick="showExamine('bookshelf')"></div>
+            <div style="position: absolute; left: 300px; top: 500px; width: 50px; height: 50px; cursor: pointer;" onclick="showExamine('chest')"></div>
+            <div style="position: absolute; left: 700px; top: 500px; width: 50px; height: 50px; cursor: pointer;" onclick="showExamine('curtain')"></div>
+        </div>
+    </div>
+
+    <script>
         // ========== СОСТОЯНИЕ ==========
         const gameState = {
             economy: 50,
             science: 50,
             army: 50,
             authority: 50,
-            collectedItems: 0,
-            totalItems: 6,
-            dialogActive: false,
-            dialogStep: 0,
-            items: [
-                { collected: false, pos: [-2, 1, -3], icon: '📜', name: 'Свиток', eco: 0, sci: 5, army: 0, auth: 0 },
-                { collected: false, pos: [3, 1, -2], icon: '⚔️', name: 'Меч', eco: 0, sci: 0, army: 5, auth: 0 },
-                { collected: false, pos: [-1, 1, 2], icon: '🔮', name: 'Кристалл', eco: 0, sci: 5, army: 0, auth: 0 },
-                { collected: false, pos: [4, 1, 1], icon: '🗺️', name: 'Карта', eco: 5, sci: 0, army: 0, auth: 0 },
-                { collected: false, pos: [-3, 1, 4], icon: '👑', name: 'Корона', eco: 0, sci: 0, army: 0, auth: 5 },
-                { collected: false, pos: [2, 1, -4], icon: '📦', name: 'Сундук', eco: 5, sci: 0, army: 0, auth: 0 }
-            ]
+            foundItems: [false, false, false, false, false, false],
+            currentExamine: null,
+            questCompleted: [false, false, false, false, false, false],
+            currentQuest: 0
         };
         
-        // ========== СЦЕНА ==========
-        const scene = new THREE.Scene();
+        // ========== ТОЧКИ ОСМОТРА ==========
+        const examinePoints = {
+            throne: {
+                title: '👑 Трон',
+                desc: 'Массивный дубовый трон с резными подлокотниками. На сиденье что-то блестит.',
+                item: 0 // свиток 1
+            },
+            column: {
+                title: '🏛️ Колонна',
+                desc: 'Огромная каменная колонна с трещиной. Внутри что-то зажато.',
+                item: 1 // свиток 2
+            },
+            table: {
+                title: '📜 Стол',
+                desc: 'Дубовый стол, покрытый пылью. На столе старая карта и стопка бумаг.',
+                item: 2 // свиток 3
+            },
+            bookshelf: {
+                title: '📚 Книжный шкаф',
+                desc: 'Старый шкаф с книгами. Некоторые книги выпадают.',
+                item: 3 // свиток 4
+            },
+            chest: {
+                title: '📦 Сундук',
+                desc: 'Огромный железный сундук с ржавым замком. Крышка приоткрыта.',
+                item: 4 // свиток 5
+            },
+            curtain: {
+                title: '🎭 Штора',
+                desc: 'Тяжёлая бархатная штора. За ней кто-то оставил свёрток.',
+                item: 5 // свиток 6
+            }
+        };
         
-        // Твой фон
-        const bgTexture = new THREE.TextureLoader().load('https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/bg_throne.jpg');
-        scene.background = bgTexture;
+        // ========== ЗАДАНИЯ ==========
+        const quests = [
+            {
+                title: 'Свиток 1',
+                text: '«Именно над этим вопросом задумывается Ю. Алешковский, автор текста, предложенного для анализа. Его позиция такова: различные обстоятельства оказывают сильное влияние на эмоциональное состояние человека.»',
+                options: [
+                    'Речевая (лексическая несочетаемость)',
+                    'Грамматическая (ошибка в употреблении причастного оборота)',
+                    'Речевая (неудачное употребление местоимений)'
+                ],
+                correct: 2,
+                result: { sci: 10, auth: 5 }
+            },
+            {
+                title: 'Свиток 2',
+                text: '«В заключение можно сделать вывод, что в детстве чувства ребёнка к отцу нельзя назвать осмысленными.»',
+                options: [
+                    'Речевая (лексическая несочетаемость)',
+                    'Речевая избыточность',
+                    'Орфографическая (ошибка в окончании производного предлога)'
+                ],
+                correct: 1,
+                result: { sci: 10, auth: 5 }
+            },
+            {
+                title: 'Свиток 3',
+                text: '«Множество важных вещей могут связывать человека с родиной, таких как семья, друзья и даже обычные рассказы, которые заставят восхищаться отчизной.»',
+                options: [
+                    'Логическая (семья, друзья, рассказы в качестве однородных) и орфографическая',
+                    'Этическая (семья и друзья = вещи) и логическая (семья, друзья, рассказы как ОЧП)',
+                    'Грамматическая (нарушение в построении предложения с ОЧП)'
+                ],
+                correct: 1,
+                result: { sci: 10, auth: 5 }
+            },
+            {
+                title: 'Свиток 4',
+                text: '«В них автор текста показывает нам Алеся Ивановича Мороза, учителя, который проявляет заботу к своим ученикам, даже в мелочах: спасает щенков, которых родители наказали утопить, покупает обувь девочкам из бедной семьи, провожает их через лес в холодные дни.»',
+                options: [
+                    'Одна грамматическая («проявлять заботу по отношению к») и одна пунктуационная (лишняя запятая перед «даже»)',
+                    'Одна грамматическая ошибка',
+                    'Одна пунктуационная'
+                ],
+                correct: 0,
+                result: { sci: 10, auth: 5 }
+            },
+            {
+                title: 'Свиток 5',
+                text: '«Чтобы подтвердить эту мысль, приведу в пример историю Антона Макаренко, который смог перевоспитать сотни беспризорников, став для них не только учителем, но и другом.»',
+                options: [
+                    'Грамматическая ошибка (нарушение в построении предложения с однородными членами)',
+                    'Речевая ошибка (приведу в пример)',
+                    'Грамматическая ошибка (нарушение построения предложения с деепричастным оборотом)'
+                ],
+                correct: 1,
+                result: { sci: 10, auth: 5 }
+            },
+            {
+                title: 'Свиток 6',
+                text: '«Герои защищают свою родину и честь, а их поступки достойно уважения и признательности.»',
+                options: [
+                    'Речевая ошибка (паронимы)',
+                    'Грамматическая ошибка (нарушение согласования между подлежащим и сказуемым)',
+                    'Логическая (несопоставимые понятия в ряду однородных членов предложения) и грамматическая ошибка (нарушение согласования)'
+                ],
+                correct: 2,
+                result: { sci: 10, auth: 5 }
+            }
+        ];
         
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 4, 8);
-        camera.lookAt(0, 1, 0);
+        // ========== UI ЭЛЕМЕНТЫ ==========
+        const statEconomy = document.getElementById('statEconomy');
+        const statScience = document.getElementById('statScience');
+        const statArmy = document.getElementById('statArmy');
+        const statAuthority = document.getElementById('statAuthority');
+        const examineArea = document.getElementById('examineArea');
+        const examineTitle = document.getElementById('examineTitle');
+        const examineDesc = document.getElementById('examineDesc');
+        const examineBtn = document.getElementById('examineBtn');
+        const questPanel = document.getElementById('questPanel');
+        const questTitle = document.getElementById('questTitle');
+        const questText = document.getElementById('questText');
+        const questOptions = document.getElementById('questOptions');
+        const questFeedback = document.getElementById('questFeedback');
+        const cityBtn = document.getElementById('cityBtn');
+        const hintBox = document.getElementById('hintBox');
         
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMap.enabled = true;
-        document.body.appendChild(renderer.domElement);
+        function updateStats() {
+            statEconomy.textContent = gameState.economy;
+            statScience.textContent = gameState.science;
+            statArmy.textContent = gameState.army;
+            statAuthority.textContent = gameState.authority;
+        }
         
-        // ========== ОСВЕЩЕНИЕ ==========
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
-        scene.add(ambientLight);
-        
-        const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-        dirLight.position.set(5, 10, 7);
-        dirLight.castShadow = true;
-        scene.add(dirLight);
-        
-        // ========== ПОЛ ==========
-        const floorGeometry = new THREE.PlaneGeometry(20, 20);
-        const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x2a2a3a, transparent: true, opacity: 0.2 });
-        const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-        floor.rotation.x = -Math.PI / 2;
-        floor.position.y = 0;
-        floor.receiveShadow = true;
-        scene.add(floor);
-        
-        // ========== ПЕРСОНАЖ ИГРОКА ==========
-        const playerGroup = new THREE.Group();
-        
-        // Создаём спрайт игрока (из твоего PNG)
-        const playerTexture = new THREE.TextureLoader().load('https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/male_warrior.png');
-        const playerMaterial = new THREE.SpriteMaterial({ map: playerTexture });
-        const playerSprite = new THREE.Sprite(playerMaterial);
-        playerSprite.scale.set(1.2, 1.8, 1);
-        playerGroup.add(playerSprite);
-        
-        playerGroup.position.set(0, 0.9, 4);
-        scene.add(playerGroup);
-        
-        // ========== АРИСТАРХ ==========
-        const aristarkhGroup = new THREE.Group();
-        
-        const npcTexture = new THREE.TextureLoader().load('https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/npc_elder.png');
-        const npcMaterial = new THREE.SpriteMaterial({ map: npcTexture });
-        const npcSprite = new THREE.Sprite(npcMaterial);
-        npcSprite.scale.set(1.2, 1.8, 1);
-        aristarkhGroup.add(npcSprite);
-        
-        aristarkhGroup.position.set(-2, 0.9, -4);
-        scene.add(aristarkhGroup);
-        
-        // ========== ПРЕДМЕТЫ ==========
-        const items = [];
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-        
-        gameState.items.forEach((item, index) => {
-            // Сфера-индикатор
-            const glowGeo = new THREE.SphereGeometry(0.4);
-            const glowMat = new THREE.MeshStandardMaterial({ 
-                color: 0xffaa00, 
-                emissive: 0x442200,
-                transparent: true,
-                opacity: 0.8
-            });
-            const glow = new THREE.Mesh(glowGeo, glowMat);
-            glow.position.set(item.pos[0], item.pos[1], item.pos[2]);
-            glow.castShadow = true;
-            glow.userData = { index, collected: false };
-            scene.add(glow);
-            items.push(glow);
-            
-            // Текст с эмодзи
-            const canvas = document.createElement('canvas');
-            canvas.width = 64;
-            canvas.height = 64;
-            const ctx = canvas.getContext('2d');
-            ctx.font = '48px Arial';
-            ctx.fillStyle = 'white';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(item.icon, 32, 32);
-            
-            const texture = new THREE.CanvasTexture(canvas);
-            const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
-            const sprite = new THREE.Sprite(spriteMaterial);
-            sprite.position.set(item.pos[0], item.pos[1] + 0.8, item.pos[2]);
-            sprite.scale.set(0.8, 0.8, 1);
-            scene.add(sprite);
-        });
-        
-        // ========== УПРАВЛЕНИЕ ==========
-        const keys = {};
-        const velocity = new THREE.Vector3();
-        const speed = 0.15;
-        
-        window.addEventListener('keydown', (e) => {
-            keys[e.code] = true;
-            e.preventDefault();
-        });
-        
-        window.addEventListener('keyup', (e) => {
-            keys[e.code] = false;
-        });
-        
-        window.addEventListener('click', (event) => {
-            if (gameState.dialogActive) return;
-            
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-            
-            raycaster.setFromCamera(mouse, camera);
-            
-            const intersects = raycaster.intersectObjects(items);
-            
-            if (intersects.length > 0) {
-                const item = intersects[0].object;
-                if (!item.userData.collected) {
-                    collectItem(item.userData.index);
+        function updateInventory() {
+            for (let i = 0; i < 6; i++) {
+                const slot = document.getElementById(`slot${i}`);
+                if (gameState.foundItems[i]) {
+                    slot.innerHTML = `<span class="icon">📜</span><span class="name">Свиток ${i+1}</span>`;
+                    slot.classList.add('found');
                 }
             }
-        });
-        
-        function collectItem(index) {
-            const item = gameState.items[index];
-            if (item.collected) return;
             
-            item.collected = true;
-            gameState.collectedItems++;
-            
-            gameState.economy += item.eco;
-            gameState.science += item.sci;
-            gameState.army += item.army;
-            gameState.authority += item.auth;
-            
-            items[index].material.emissive.setHex(0x000000);
-            items[index].material.color.setHex(0x666666);
-            items[index].userData.collected = true;
-            
-            updateUI();
-            
-            if (gameState.collectedItems === gameState.totalItems) {
-                document.getElementById('city-btn').style.display = 'block';
+            // Проверка, все ли найдены
+            if (gameState.foundItems.every(v => v === true)) {
+                hintBox.innerHTML = '✅ Все свитки найдены! Открой их и выполни задания.';
+                if (gameState.questCompleted.every(v => v === true)) {
+                    cityBtn.classList.add('visible');
+                }
             }
         }
         
-        // ========== ДВИЖЕНИЕ ==========
-        function checkDistanceToAristarkh() {
-            const dist = playerGroup.position.distanceTo(aristarkhGroup.position);
-            return dist < 3;
-        }
-        
-        function animate() {
-            requestAnimationFrame(animate);
+        window.showExamine = function(point) {
+            gameState.currentExamine = point;
+            const data = examinePoints[point];
+            examineTitle.innerHTML = data.title;
+            examineDesc.innerHTML = data.desc;
+            examineArea.classList.add('active');
             
-            if (!gameState.dialogActive) {
-                velocity.x = 0;
-                velocity.z = 0;
-                
-                if (keys['KeyW']) velocity.z = -speed;
-                if (keys['KeyS']) velocity.z = speed;
-                if (keys['KeyA']) velocity.x = -speed;
-                if (keys['KeyD']) velocity.x = speed;
-                
-                playerGroup.position.x += velocity.x;
-                playerGroup.position.z += velocity.z;
-                
-                playerGroup.position.x = Math.max(-7, Math.min(7, playerGroup.position.x));
-                playerGroup.position.z = Math.max(-6, Math.min(6, playerGroup.position.z));
-                
-                // Камера следует
-                camera.position.x = playerGroup.position.x;
-                camera.position.z = playerGroup.position.z + 6;
-                camera.position.y = 4;
-                camera.lookAt(playerGroup.position.x, 1, playerGroup.position.z);
-            }
-            
-            const canTalk = checkDistanceToAristarkh() && !gameState.dialogActive;
-            document.getElementById('interaction').style.display = canTalk ? 'block' : 'none';
-            
-            renderer.render(scene, camera);
-        }
-        
-        animate();
-        
-        // ========== ДИАЛОГИ ==========
-        const dialogSteps = [
-            "Десять лет... Я каждый день приходил сюда. Ждал. Молился, чтобы ты был жив. И ты здесь. Стоишь.",
-            "Твои родители... они не просто умерли. Их убили. Это были свои. Те, кому они доверяли.",
-            "Как ты ответишь?"
-        ];
-        
-        const dialogChoices = [
-            [
-                { text: "Далее", next: 1 }
-            ],
-            [
-                { text: "Далее", next: 2 }
-            ],
-            [
-                { text: "«Я клянусь восстановить честь семьи и спасти город.»", effect: () => gameState.authority += 5, next: -1 },
-                { text: "«Посмотрим. Я сделаю, что смогу.»", effect: () => gameState.authority -= 2, next: -1 },
-                { text: "«Мне плевать на город. Я ищу убийц.»", effect: () => gameState.authority -= 10, next: -1 }
-            ]
-        ];
-        
-        window.interact = function() {
-            if (!checkDistanceToAristarkh()) return;
-            
-            gameState.dialogActive = true;
-            gameState.dialogStep = 0;
-            document.getElementById('interaction').style.display = 'none';
-            document.getElementById('dialog').style.display = 'block';
-            updateDialog();
-        };
-        
-        function updateDialog() {
-            const step = gameState.dialogStep;
-            document.getElementById('dialog-text').innerHTML = dialogSteps[step];
-            
-            let choicesHtml = '';
-            dialogChoices[step].forEach((choice, index) => {
-                choicesHtml += `<div class="choice-btn" onclick="dialogChoice(${index})">${choice.text}</div>`;
-            });
-            document.getElementById('dialog-choices').innerHTML = choicesHtml;
-        }
-        
-        window.dialogChoice = function(index) {
-            const step = gameState.dialogStep;
-            const choice = dialogChoices[step][index];
-            
-            if (choice.effect) choice.effect();
-            
-            if (choice.next === -1) {
-                document.getElementById('dialog').style.display = 'none';
-                gameState.dialogActive = false;
-                
-                setTimeout(() => {
-                    alert('Аристарх: «В этом зале спрятаны шесть древних артефактов. Собери их — и узнаешь имена заговорщиков.»');
-                }, 500);
+            // Если предмет уже найден, меняем кнопку
+            const itemIndex = data.item;
+            if (gameState.foundItems[itemIndex]) {
+                examineBtn.innerHTML = '🔍 Уже найдено';
+                examineBtn.disabled = true;
+                examineBtn.style.opacity = '0.5';
             } else {
-                gameState.dialogStep = choice.next;
-                updateDialog();
+                examineBtn.innerHTML = '🔍 Осмотреть';
+                examineBtn.disabled = false;
+                examineBtn.style.opacity = '1';
+            }
+        };
+        
+        window.closeExamine = function() {
+            examineArea.classList.remove('active');
+        };
+        
+        window.examineItem = function() {
+            if (!gameState.currentExamine) return;
+            
+            const point = gameState.currentExamine;
+            const data = examinePoints[point];
+            const itemIndex = data.item;
+            
+            if (!gameState.foundItems[itemIndex]) {
+                gameState.foundItems[itemIndex] = true;
+                updateInventory();
+                
+                examineDesc.innerHTML = data.desc + '<br><br>✅ Ты нашёл свиток! Он появился в инвентаре.';
+                examineBtn.innerHTML = '✅ Найдено';
+                examineBtn.disabled = true;
+                
+                // Сообщение
+                if (gameState.foundItems.every(v => v === true)) {
+                    setTimeout(() => {
+                        alert('Все свитки найдены! Открой их в инвентаре.');
+                    }, 500);
+                }
+            }
+        };
+        
+        window.openQuest = function(index) {
+            if (!gameState.foundItems[index]) {
+                alert('Сначала найди этот свиток в зале!');
+                return;
             }
             
-            updateUI();
+            if (gameState.questCompleted[index]) {
+                alert('Это задание уже выполнено!');
+                return;
+            }
+            
+            gameState.currentQuest = index;
+            const quest = quests[index];
+            
+            questTitle.innerHTML = quest.title;
+            questText.innerHTML = quest.text;
+            
+            let optionsHtml = '';
+            quest.options.forEach((opt, i) => {
+                optionsHtml += `<div class="quest-option" onclick="selectQuestOption(${i})">${opt}</div>`;
+            });
+            
+            questOptions.innerHTML = optionsHtml;
+            questFeedback.innerHTML = '';
+            questPanel.classList.add('active');
         };
         
-        // ========== UI ==========
-        function updateUI() {
-            document.getElementById('eco').textContent = gameState.economy;
-            document.getElementById('sci').textContent = gameState.science;
-            document.getElementById('arm').textContent = gameState.army;
-            document.getElementById('auth').textContent = gameState.authority;
-            document.getElementById('items-count').textContent = gameState.collectedItems;
-        }
+        window.selectQuestOption = function(optionIndex) {
+            const quest = quests[gameState.currentQuest];
+            
+            if (optionIndex === quest.correct) {
+                gameState.science += quest.result.sci;
+                gameState.authority += quest.result.auth;
+                questFeedback.innerHTML = '✅ Верно! +10 Наука, +5 Авторитет';
+            } else {
+                gameState.science -= 5;
+                gameState.authority -= 2;
+                questFeedback.innerHTML = '❌ Неверно. Наука −5, Авторитет −2';
+            }
+            
+            gameState.questCompleted[gameState.currentQuest] = true;
+            updateStats();
+            
+            document.querySelectorAll('.quest-option').forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                opt.style.opacity = '0.7';
+            });
+            
+            if (gameState.questCompleted.every(v => v === true)) {
+                setTimeout(() => {
+                    cityBtn.classList.add('visible');
+                }, 1000);
+            }
+        };
         
-        // ========== СТАРТ ==========
+        window.closeQuest = function() {
+            questPanel.classList.remove('active');
+        };
+        
         window.startGame = function() {
-            document.getElementById('story').style.display = 'none';
-            gameState.dialogActive = false;
+            document.getElementById('storyFrame').style.display = 'none';
+            hintBox.style.display = 'block';
         };
         
-        // ========== ПЕРЕХОД В ГОРОД ==========
         window.goToCity = function() {
             window.location.href = 'city-map.html';
         };
         
-        // ========== ЗВУК ==========
-        let soundEnabled = true;
-        window.toggleSound = function() {
-            soundEnabled = !soundEnabled;
-            document.getElementById('sound-toggle').innerHTML = soundEnabled ? '🔊' : '🔇';
-        };
-        
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-        
-        updateUI();
+        updateStats();
     </script>
 </body>
 </html>
