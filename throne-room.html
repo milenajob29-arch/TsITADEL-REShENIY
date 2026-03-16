@@ -12,7 +12,7 @@
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             border: 2px solid gold;
             border-radius: 20px;
             padding: 15px 25px;
@@ -28,7 +28,7 @@
             position: absolute;
             top: 20px;
             left: 20px;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             border: 2px solid gold;
             border-radius: 20px;
             padding: 10px 20px;
@@ -62,7 +62,7 @@
             left: 50%;
             transform: translateX(-50%);
             width: 600px;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             border: 3px solid gold;
             border-radius: 30px;
             padding: 25px;
@@ -154,7 +154,7 @@
             right: 20px;
             width: 50px;
             height: 50px;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             border: 2px solid gold;
             color: gold;
             border-radius: 50%;
@@ -269,7 +269,8 @@
         scene.background = bgTexture;
         
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 4, 10);
+        camera.position.set(0, 4, 8);
+        camera.lookAt(0, 1, 0);
         
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -277,38 +278,34 @@
         document.body.appendChild(renderer.domElement);
         
         // ========== ОСВЕЩЕНИЕ ==========
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
         scene.add(ambientLight);
         
-        const dirLight = new THREE.DirectionalLight(0xffeedd, 1);
-        dirLight.position.set(5, 10, 5);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+        dirLight.position.set(5, 10, 7);
         dirLight.castShadow = true;
         scene.add(dirLight);
         
         // ========== ПОЛ ==========
         const floorGeometry = new THREE.PlaneGeometry(20, 20);
-        const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x2a2a3a, transparent: true, opacity: 0.3 });
+        const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x2a2a3a, transparent: true, opacity: 0.2 });
         const floor = new THREE.Mesh(floorGeometry, floorMaterial);
         floor.rotation.x = -Math.PI / 2;
         floor.position.y = 0;
         floor.receiveShadow = true;
         scene.add(floor);
         
-        const gridHelper = new THREE.GridHelper(20, 20, 0xffaa00, 0x886622);
-        gridHelper.position.y = 0.01;
-        scene.add(gridHelper);
-        
         // ========== ПЕРСОНАЖ ИГРОКА ==========
         const playerGroup = new THREE.Group();
         
-        // Загружаем спрайт игрока (выбранного в index.html)
+        // Создаём спрайт игрока (из твоего PNG)
         const playerTexture = new THREE.TextureLoader().load('https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/male_warrior.png');
         const playerMaterial = new THREE.SpriteMaterial({ map: playerTexture });
         const playerSprite = new THREE.Sprite(playerMaterial);
-        playerSprite.scale.set(1, 1.5, 1);
+        playerSprite.scale.set(1.2, 1.8, 1);
         playerGroup.add(playerSprite);
         
-        playerGroup.position.set(0, 0.75, 5);
+        playerGroup.position.set(0, 0.9, 4);
         scene.add(playerGroup);
         
         // ========== АРИСТАРХ ==========
@@ -317,10 +314,10 @@
         const npcTexture = new THREE.TextureLoader().load('https://milenajob29-arch.github.io/TsITADEL-REShENIY/images/npc_elder.png');
         const npcMaterial = new THREE.SpriteMaterial({ map: npcTexture });
         const npcSprite = new THREE.Sprite(npcMaterial);
-        npcSprite.scale.set(1, 1.5, 1);
+        npcSprite.scale.set(1.2, 1.8, 1);
         aristarkhGroup.add(npcSprite);
         
-        aristarkhGroup.position.set(-2, 0.75, -5);
+        aristarkhGroup.position.set(-2, 0.9, -4);
         scene.add(aristarkhGroup);
         
         // ========== ПРЕДМЕТЫ ==========
@@ -344,7 +341,7 @@
             scene.add(glow);
             items.push(glow);
             
-            // Эмодзи-спрайт
+            // Текст с эмодзи
             const canvas = document.createElement('canvas');
             canvas.width = 64;
             canvas.height = 64;
@@ -370,7 +367,7 @@
         
         window.addEventListener('keydown', (e) => {
             keys[e.code] = true;
-            if (['KeyW','KeyA','KeyS','KeyD'].includes(e.code)) e.preventDefault();
+            e.preventDefault();
         });
         
         window.addEventListener('keyup', (e) => {
@@ -380,8 +377,8 @@
         window.addEventListener('click', (event) => {
             if (gameState.dialogActive) return;
             
-            mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
-            mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
             
             raycaster.setFromCamera(mouse, camera);
             
@@ -416,27 +413,12 @@
             if (gameState.collectedItems === gameState.totalItems) {
                 document.getElementById('city-btn').style.display = 'block';
             }
-            
-            if (soundEnabled) {
-                // Звук сбора (можно добавить позже)
-            }
         }
         
         // ========== ДВИЖЕНИЕ ==========
         function checkDistanceToAristarkh() {
             const dist = playerGroup.position.distanceTo(aristarkhGroup.position);
             return dist < 3;
-        }
-        
-        let lastFootstep = 0;
-        
-        function playFootstep() {
-            if (!soundEnabled || gameState.dialogActive) return;
-            const now = Date.now();
-            if (now - lastFootstep > 300) {
-                // Звук шага (можно добавить позже)
-                lastFootstep = now;
-            }
         }
         
         function animate() {
@@ -446,27 +428,22 @@
                 velocity.x = 0;
                 velocity.z = 0;
                 
-                let moved = false;
+                if (keys['KeyW']) velocity.z = -speed;
+                if (keys['KeyS']) velocity.z = speed;
+                if (keys['KeyA']) velocity.x = -speed;
+                if (keys['KeyD']) velocity.x = speed;
                 
-                if (keys['KeyW']) { velocity.z = -speed; moved = true; }
-                if (keys['KeyS']) { velocity.z = speed; moved = true; }
-                if (keys['KeyA']) { velocity.x = -speed; moved = true; }
-                if (keys['KeyD']) { velocity.x = speed; moved = true; }
+                playerGroup.position.x += velocity.x;
+                playerGroup.position.z += velocity.z;
                 
-                if (moved) {
-                    playerGroup.position.x += velocity.x;
-                    playerGroup.position.z += velocity.z;
-                    
-                    playerGroup.position.x = Math.max(-8, Math.min(8, playerGroup.position.x));
-                    playerGroup.position.z = Math.max(-8, Math.min(8, playerGroup.position.z));
-                    
-                    playFootstep();
-                }
+                playerGroup.position.x = Math.max(-7, Math.min(7, playerGroup.position.x));
+                playerGroup.position.z = Math.max(-6, Math.min(6, playerGroup.position.z));
                 
+                // Камера следует
                 camera.position.x = playerGroup.position.x;
-                camera.position.z = playerGroup.position.z + 8;
-                camera.position.y = 5;
-                camera.lookAt(playerGroup.position);
+                camera.position.z = playerGroup.position.z + 6;
+                camera.position.y = 4;
+                camera.lookAt(playerGroup.position.x, 1, playerGroup.position.z);
             }
             
             const canTalk = checkDistanceToAristarkh() && !gameState.dialogActive;
@@ -492,9 +469,9 @@
                 { text: "Далее", next: 2 }
             ],
             [
-                { text: "«Я клянусь восстановить честь семьи и спасти город. Расскажи всё.»", effect: () => gameState.authority += 5, next: -1 },
-                { text: "«Посмотрим. Я сделаю, что смогу. Но ничего не обещаю.»", effect: () => gameState.authority -= 2, next: -1 },
-                { text: "«Мне плевать на город. Я ищу убийц. Только это важно.»", effect: () => gameState.authority -= 10, next: -1 }
+                { text: "«Я клянусь восстановить честь семьи и спасти город.»", effect: () => gameState.authority += 5, next: -1 },
+                { text: "«Посмотрим. Я сделаю, что смогу.»", effect: () => gameState.authority -= 2, next: -1 },
+                { text: "«Мне плевать на город. Я ищу убийц.»", effect: () => gameState.authority -= 10, next: -1 }
             ]
         ];
         
@@ -567,7 +544,6 @@
             document.getElementById('sound-toggle').innerHTML = soundEnabled ? '🔊' : '🔇';
         };
         
-        // ========== РЕСАЙЗ ==========
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
