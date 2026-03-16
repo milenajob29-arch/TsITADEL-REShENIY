@@ -74,7 +74,7 @@
         .army { color: #ff4444; }
         .authority { color: gold; }
         
-        .scrolls-bar {
+        .items-bar {
             display: flex;
             gap: 15px;
             background: rgba(0,0,0,0.5);
@@ -83,7 +83,7 @@
             border: 1px solid gold;
         }
         
-        .scroll-icon {
+        .item-icon {
             font-size: 1.5rem;
             cursor: pointer;
             transition: 0.3s;
@@ -92,17 +92,17 @@
             position: relative;
         }
         
-        .scroll-icon.found {
+        .item-icon.found {
             opacity: 1;
             filter: none;
             animation: pulse 2s infinite;
         }
         
-        .scroll-icon:hover {
+        .item-icon:hover {
             transform: scale(1.2);
         }
         
-        .scroll-icon .tooltip {
+        .item-icon .tooltip {
             position: absolute;
             bottom: -25px;
             left: 50%;
@@ -116,7 +116,7 @@
             display: none;
         }
         
-        .scroll-icon:hover .tooltip {
+        .item-icon:hover .tooltip {
             display: block;
         }
         
@@ -164,7 +164,7 @@
             50% { transform: translateY(-10px); }
         }
         
-        /* ИНТЕРАКТИВНЫЕ ЗОНЫ (ПОЯВЛЯЮТСЯ ПОСЛЕ ДИАЛОГА) */
+        /* ИНТЕРАКТИВНЫЕ ЗОНЫ */
         .hotspot {
             position: absolute;
             width: 80px;
@@ -195,10 +195,6 @@
         
         .hotspot:hover::before {
             opacity: 1;
-            transform: scale(1.1);
-        }
-        
-        .hotspot:hover {
             transform: scale(1.1);
         }
         
@@ -373,11 +369,6 @@
             background: rgba(0,0,0,0.5);
         }
         
-        .back-link:hover {
-            background: gold;
-            color: black;
-        }
-        
         .hidden {
             display: none;
         }
@@ -399,30 +390,30 @@
                     <div class="stat-item"><span class="authority">👑</span> <span id="statAuthority">50</span></div>
                 </div>
                 
-                <div class="scrolls-bar" id="scrollsBar">
-                    <span class="scroll-icon" id="scroll0" onclick="openQuest(0)">
-                        📜❓
-                        <span class="tooltip">Свиток 1</span>
+                <div class="items-bar" id="itemsBar">
+                    <span class="item-icon" id="item0" onclick="openQuest(0)">
+                        👑❓
+                        <span class="tooltip">Корона</span>
                     </span>
-                    <span class="scroll-icon" id="scroll1" onclick="openQuest(1)">
-                        📜❓
-                        <span class="tooltip">Свиток 2</span>
+                    <span class="item-icon" id="item1" onclick="openQuest(1)">
+                        ⚔️❓
+                        <span class="tooltip">Меч</span>
                     </span>
-                    <span class="scroll-icon" id="scroll2" onclick="openQuest(2)">
-                        📜❓
-                        <span class="tooltip">Свиток 3</span>
+                    <span class="item-icon" id="item2" onclick="openQuest(2)">
+                        🔮❓
+                        <span class="tooltip">Кристалл</span>
                     </span>
-                    <span class="scroll-icon" id="scroll3" onclick="openQuest(3)">
-                        📜❓
-                        <span class="tooltip">Свиток 4</span>
+                    <span class="item-icon" id="item3" onclick="openQuest(3)">
+                        🗺️❓
+                        <span class="tooltip">Карта</span>
                     </span>
-                    <span class="scroll-icon" id="scroll4" onclick="openQuest(4)">
-                        📜❓
-                        <span class="tooltip">Свиток 5</span>
+                    <span class="item-icon" id="item4" onclick="openQuest(4)">
+                        📦❓
+                        <span class="tooltip">Сундук</span>
                     </span>
-                    <span class="scroll-icon" id="scroll5" onclick="openQuest(5)">
-                        📜❓
-                        <span class="tooltip">Свиток 6</span>
+                    <span class="item-icon" id="item5" onclick="openQuest(5)">
+                        🏆❓
+                        <span class="tooltip">Кубок</span>
                     </span>
                 </div>
             </div>
@@ -438,13 +429,13 @@
                 <div class="character-name" id="playerName">Правитель</div>
             </div>
             
-            <!-- Интерактивные точки (появляются после диалога) -->
-            <div class="hotspot hotspot-1" id="hotspot1" onclick="zoomItem(0)"></div>
-            <div class="hotspot hotspot-2" id="hotspot2" onclick="zoomItem(1)"></div>
-            <div class="hotspot hotspot-3" id="hotspot3" onclick="zoomItem(2)"></div>
-            <div class="hotspot hotspot-4" id="hotspot4" onclick="zoomItem(3)"></div>
-            <div class="hotspot hotspot-5" id="hotspot5" onclick="zoomItem(4)"></div>
-            <div class="hotspot hotspot-6" id="hotspot6" onclick="zoomItem(5)"></div>
+            <!-- Интерактивные точки -->
+            <div class="hotspot hotspot-1" id="hotspot0" onclick="zoomItem(0)"></div>
+            <div class="hotspot hotspot-2" id="hotspot1" onclick="zoomItem(1)"></div>
+            <div class="hotspot hotspot-3" id="hotspot2" onclick="zoomItem(2)"></div>
+            <div class="hotspot hotspot-4" id="hotspot3" onclick="zoomItem(3)"></div>
+            <div class="hotspot hotspot-5" id="hotspot4" onclick="zoomItem(4)"></div>
+            <div class="hotspot hotspot-6" id="hotspot5" onclick="zoomItem(5)"></div>
             
             <!-- Диалог -->
             <div class="dialogue-area" id="dialogueArea">
@@ -463,7 +454,7 @@
         <div class="zoom-content" id="zoomContent">
             <img id="zoomImage" src="" alt="">
             <div class="zoom-desc" id="zoomDesc"></div>
-            <button class="zoom-btn" id="zoomBtn" onclick="takeItem()">📜 Взять свиток</button>
+            <button class="zoom-btn" id="zoomBtn" onclick="takeItem()">📦 Взять предмет</button>
         </div>
     </div>
 
@@ -511,32 +502,69 @@
             foundItems: [false, false, false, false, false, false],
             questCompleted: [false, false, false, false, false, false],
             currentItem: null,
-            dialogueStep: 0,
-            dialogueFinished: false
+            dialogueStep: 0
         };
         
-        // ========== ДИАЛОГ С ВЫБОРОМ ==========
+        // ========== РАЗВИЛКА ДИАЛОГОВ ==========
         const dialogues = [
+            // Шаг 0 - Вступление
             {
                 speaker: 'Аристарх',
                 text: 'Десять лет... Я каждый день приходил сюда. Ждал. Молился, чтобы ты был жив. И ты здесь. Стоишь.'
             },
+            // Шаг 1 - Трагедия
             {
                 speaker: 'Аристарх',
                 text: 'Твои родители... они не просто умерли. Их убили. Это были свои. Те, кому они доверяли.'
             },
+            // Шаг 2 - Первый выбор (отношение к городу)
             {
                 speaker: 'Аристарх',
-                text: 'В этом зале спрятаны шесть древних свитков. Они укажут путь к правде.',
+                text: 'Теперь ты должен решить, что для тебя важнее — город или месть.',
                 choices: [
-                    { text: '«Я найду их. Клянусь.»', effect: () => gameState.authority += 5 },
-                    { text: '«А если не найду?»', effect: () => gameState.authority -= 2 },
-                    { text: '«Мне плевать на свитки. Говори имена!»', effect: () => gameState.authority -= 5 }
+                    { 
+                        text: '«Я спасу город. Это мой долг.»',
+                        effect: () => { gameState.authority += 5; gameState.economy += 3; },
+                        response: 'Благородный ответ. Твой отец гордился бы тобой.'
+                    },
+                    { 
+                        text: '«Мне нужна месть. Город подождёт.»',
+                        effect: () => { gameState.authority -= 3; gameState.army += 5; },
+                        response: 'Гнев ведёт тебя... Но помни, он может ослепить.'
+                    },
+                    { 
+                        text: '«Я хочу узнать правду. Остальное неважно.»',
+                        effect: () => { gameState.science += 5; gameState.authority += 2; },
+                        response: 'Мудрое решение. Правда — ключ ко всему.'
+                    }
                 ]
             },
+            // Шаг 3 - Второй выбор (как действовать)
             {
                 speaker: 'Аристарх',
-                text: 'Ищи по всему залу. Трон, колонны, стол, шкаф, сундук, штору. Там ты найдёшь ответы.'
+                text: 'В этом зале спрятаны шесть древних предметов. Они укажут путь. Как будешь искать?',
+                choices: [
+                    { 
+                        text: '«Буду методично осматривать каждый угол.»',
+                        effect: () => { gameState.science += 5; },
+                        response: 'Терпение и труд всё перетрут.'
+                    },
+                    { 
+                        text: '«Найму людей, пусть ищут за меня.»',
+                        effect: () => { gameState.economy -= 5; gameState.authority -= 2; },
+                        response: 'Деньги решают многое, но не всё.'
+                    },
+                    { 
+                        text: '«Быстро обыщу всё сам.»',
+                        effect: () => { gameState.army += 3; gameState.science -= 2; },
+                        response: 'Спешка нужна только при ловле блох.'
+                    }
+                ]
+            },
+            // Шаг 4 - Напутствие
+            {
+                speaker: 'Аристарх',
+                text: 'Ищи по всему залу. Трон, колонны, стол, шкаф, сундук, штору. Там ты найдёшь ответы. Удачи, Правитель.'
             }
         ];
         
@@ -546,26 +574,24 @@
         const dialogueChoices = document.getElementById('dialogueChoices');
         
         function showDialogue() {
-            const step = gameState.dialogueStep;
-            if (step >= dialogues.length) {
-                // Диалог окончен - убираем окно и показываем точки поиска
+            if (gameState.dialogueStep >= dialogues.length) {
+                // Диалог окончен
                 dialogueArea.style.display = 'none';
-                gameState.dialogueFinished = true;
                 
-                // Показываем все точки для поиска
-                for (let i = 1; i <= 6; i++) {
+                // Показываем точки поиска
+                for (let i = 0; i < 6; i++) {
                     document.getElementById(`hotspot${i}`).classList.add('active');
                 }
                 return;
             }
             
-            const d = dialogues[step];
-            dialogueSpeaker.textContent = d.speaker;
-            dialogueText.textContent = d.text;
+            const step = dialogues[gameState.dialogueStep];
+            dialogueSpeaker.textContent = step.speaker;
+            dialogueText.textContent = step.text;
             
-            if (d.choices) {
+            if (step.choices) {
                 let choicesHtml = '';
-                d.choices.forEach((choice, index) => {
+                step.choices.forEach((choice, index) => {
                     choicesHtml += `<div class="choice-btn" onclick="makeChoice(${index})">${choice.text}</div>`;
                 });
                 dialogueChoices.innerHTML = choicesHtml;
@@ -578,16 +604,20 @@
             gameState.dialogueStep++;
             showDialogue();
             playSound(sfxDialog);
+            updateStats();
         };
         
         window.makeChoice = function(index) {
-            const step = gameState.dialogueStep;
-            const choice = dialogues[step].choices[index];
+            const step = dialogues[gameState.dialogueStep];
+            const choice = step.choices[index];
             
+            // Применяем эффекты
             if (choice.effect) choice.effect();
             
-            gameState.dialogueStep++;
-            showDialogue();
+            // Показываем ответ персонажа
+            dialogueText.textContent = choice.response;
+            dialogueChoices.innerHTML = `<div class="choice-btn" onclick="nextDialogue()">Далее →</div>`;
+            
             updateStats();
             playSound(sfxDialog);
         };
@@ -595,40 +625,52 @@
         // ========== ПРЕДМЕТЫ ==========
         const items = [
             {
-                name: 'Трон',
+                name: 'Корона',
+                icon: '👑',
                 image: baseUrl + 'item_crown.png',
-                desc: 'На троне лежит старинная корона. Под ней что-то блестит... Это свиток!',
-                pos: 'У трона'
+                desc: 'Старинная корона с рубинами. Внутри выгравировано имя.',
+                bonus: { auth: 5, eco: 2 },
+                pos: 'На троне'
             },
             {
-                name: 'Колонна',
+                name: 'Меч',
+                icon: '⚔️',
+                image: baseUrl + 'item_sword.png',
+                desc: 'Древний меч с рунами. Лезвие всё ещё остро.',
+                bonus: { army: 5, auth: 2 },
+                pos: 'За колонной'
+            },
+            {
+                name: 'Кристалл',
+                icon: '🔮',
                 image: baseUrl + 'предмет_кристалл.png',
-                desc: 'В трещине колонны зажат магический кристалл. Внутри него виден свиток.',
-                pos: 'У центральной колонны'
+                desc: 'Магический кристалл, пульсирует тёплым светом.',
+                bonus: { science: 5, auth: 2 },
+                pos: 'В нише стены'
             },
             {
-                name: 'Стол',
+                name: 'Карта',
+                icon: '🗺️',
                 image: baseUrl + 'item_map.jpg',
-                desc: 'На столе разложена старая карта. Под ней лежит свиток.',
-                pos: 'У дубового стола'
-            },
-            {
-                name: 'Книжный шкаф',
-                image: baseUrl + 'item_scroll.png',
-                desc: 'Между книг торчит край древнего свитка.',
-                pos: 'У книжного шкафа'
+                desc: 'Старая карта города. Некоторые места отмечены.',
+                bonus: { eco: 5, science: 2 },
+                pos: 'На столе'
             },
             {
                 name: 'Сундук',
+                icon: '📦',
                 image: baseUrl + 'item_chest.png',
-                desc: 'Сундук приоткрыт. Внутри что-то блестит... это свиток!',
-                pos: 'У сундука в углу'
+                desc: 'Небольшой сундук с монетами и свитками.',
+                bonus: { eco: 5, army: 2 },
+                pos: 'В углу'
             },
             {
-                name: 'Штора',
+                name: 'Кубок',
+                icon: '🏆',
                 image: baseUrl + 'item_crown.png',
-                desc: 'За тяжёлой бархатной шторой кто-то спрятал свёрток.',
-                pos: 'У окна за шторой'
+                desc: 'Золотой кубок с гербом рода. Внутри послание.',
+                bonus: { auth: 5, science: 2 },
+                pos: 'За шторой'
             }
         ];
         
@@ -655,56 +697,66 @@
             const index = gameState.currentItem;
             if (index === null || gameState.foundItems[index]) return;
             
+            const item = items[index];
+            
+            // Применяем бонусы
+            if (item.bonus.auth) gameState.authority += item.bonus.auth;
+            if (item.bonus.eco) gameState.economy += item.bonus.eco;
+            if (item.bonus.army) gameState.army += item.bonus.army;
+            if (item.bonus.science) gameState.science += item.bonus.science;
+            
             gameState.foundItems[index] = true;
             
-            const scrollIcon = document.getElementById(`scroll${index}`);
-            scrollIcon.innerHTML = '📜✅';
-            scrollIcon.classList.add('found');
+            const itemIcon = document.getElementById(`item${index}`);
+            itemIcon.innerHTML = `${item.icon}✅`;
+            itemIcon.classList.add('found');
             
-            zoomDesc.innerHTML = `<strong>${items[index].name}</strong><br>✅ Ты нашёл свиток ${index+1}!`;
+            zoomDesc.innerHTML = `<strong>${item.name}</strong><br>✅ Ты нашёл ${item.name}!<br>+${item.bonus.auth || 0} 👑, +${item.bonus.eco || 0} 💰, +${item.bonus.army || 0} ⚔️, +${item.bonus.science || 0} 📚`;
             zoomBtn.style.display = 'none';
             
+            updateStats();
             playSound(sfxDialog);
             
-            // Если все свитки собраны - показываем сообщение
+            // Если все предметы собраны
             if (gameState.foundItems.every(v => v)) {
                 setTimeout(() => {
-                    alert('✨ Все свитки найдены! Теперь открой их в верхней панели и выполни задания.');
+                    alert('✨ Все предметы найдены! Теперь изучи их в верхней панели.');
                 }, 500);
             }
         };
         
-        // ========== ЗАДАНИЯ ==========
+        // ========== ЗАДАНИЯ ПО ПРЕДМЕТАМ ==========
         const quests = [
-            { text: '«Именно над этим вопросом задумывается Ю. Алешковский... различные обстоятельства оказывают сильное влияние на эмоциональное состояние человека.»', correct: 2 },
-            { text: '«В заключение можно сделать вывод, что в детстве чувства ребёнка к отцу нельзя назвать осмысленными.»', correct: 1 },
-            { text: '«Множество важных вещей могут связывать человека с родиной, таких как семья, друзья и даже обычные рассказы...»', correct: 1 },
-            { text: '«...проявляет заботу к своим ученикам, даже в мелочах: спасает щенков, которых родители наказали утопить...»', correct: 0 },
-            { text: '«Чтобы подтвердить эту мысль, приведу в пример историю Антона Макаренко...»', correct: 1 },
-            { text: '«Герои защищают свою родину и честь, а их поступки достойно уважения и признательности.»', correct: 2 }
+            { text: 'Что написано на короне?', correct: 2 },
+            { text: 'Какая надпись на мече?', correct: 1 },
+            { text: 'Что видно внутри кристалла?', correct: 0 },
+            { text: 'Что отмечено на карте?', correct: 1 },
+            { text: 'Что в сундуке?', correct: 2 },
+            { text: 'Что в кубке?', correct: 0 }
         ];
         
         const optionsList = [
-            ['Речевая (лексическая несочетаемость)', 'Грамматическая (причастный оборот)', 'Речевая (местоимения)'],
-            ['Речевая (несочетаемость)', 'Речевая избыточность', 'Орфографическая (предлог)'],
-            ['Логическая + орфографическая', 'Этическая + логическая', 'Грамматическая (ОЧП)'],
-            ['Грамматическая + пунктуационная', 'Одна грамматическая', 'Одна пунктуационная'],
-            ['Грамматическая (однородные)', 'Речевая (приведу в пример)', 'Грамматическая (дееприч.)'],
-            ['Речевая (паронимы)', 'Грамматическая (согласование)', 'Логическая + грамматическая']
+            ['Имя отца', 'Дата убийства', 'Герб рода'],
+            ['Имя врага', 'Руны силы', 'Клятва'],
+            ['Лицо', 'Город', 'Символ'],
+            ['Тронный зал', 'Убежище', 'Порт'],
+            ['Золото', 'Свитки', 'И то, и другое'],
+            ['Вино', 'Послание', 'Прах']
         ];
         
         window.openQuest = function(index) {
             if (!gameState.foundItems[index]) {
-                alert('Сначала найди этот свиток в зале!');
+                alert('Сначала найди этот предмет в зале!');
                 return;
             }
             if (gameState.questCompleted[index]) {
-                alert('Это задание уже выполнено!');
+                alert('Ты уже изучил этот предмет!');
                 return;
             }
             
             const quest = quests[index];
             const options = optionsList[index];
+            const item = items[index];
             
             const modal = document.createElement('div');
             modal.className = 'zoom-modal active';
@@ -718,7 +770,7 @@
             modal.innerHTML = `
                 <div class="close-btn" onclick="closeQuestModal()">✖</div>
                 <div class="zoom-content">
-                    <h2 style="color: gold;">Свиток ${index+1}</h2>
+                    <h2 style="color: gold;">${item.name}</h2>
                     <p style="color:white; margin:20px;">${quest.text}</p>
                     ${optionsHtml}
                     <div id="questFeedback" style="color:gold; margin-top:20px;"></div>
@@ -727,8 +779,8 @@
             document.body.appendChild(modal);
         };
         
-        window.answerQuest = function(questIndex, optionIndex) {
-            const quest = quests[questIndex];
+        window.answerQuest = function(itemIndex, optionIndex) {
+            const quest = quests[itemIndex];
             const feedback = document.getElementById('questFeedback');
             
             if (optionIndex === quest.correct) {
@@ -741,7 +793,7 @@
                 feedback.innerHTML = '❌ Неверно. Наука −5, Авторитет −2';
             }
             
-            gameState.questCompleted[questIndex] = true;
+            gameState.questCompleted[itemIndex] = true;
             updateStats();
             
             document.querySelectorAll('#questModal .zoom-btn').forEach(btn => {
@@ -755,7 +807,7 @@
             if (modal) modal.remove();
         };
         
-        // ========== ВСПОМОГАТЕЛЬНОЕ ==========
+        // ========== UI ==========
         function updateStats() {
             document.getElementById('statEconomy').textContent = gameState.economy;
             document.getElementById('statScience').textContent = gameState.science;
